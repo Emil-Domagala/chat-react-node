@@ -1,0 +1,71 @@
+@import '../../_colors.css';
+@import '../../_fontSizes.css';
+
+:root {
+  --space-beetwen: 3rem;
+}
+
+.buttons__wrapper {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: var(--space-beetwen);
+
+  .button {
+    position: relative;
+    width: 100%;
+    padding: 1rem;
+    font-size: var(--fz-l);
+    color: var(--text);
+    background-color: transparent;
+    border: none;
+  }
+
+  .button::after,
+  .button::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0px;
+    height: 3px;
+    width: 100%;
+  }
+
+  .button::after {
+    background-color: var(--color-1);
+    z-index: 2;
+  }
+  .button::before {
+    z-index: 3;
+    background-color: var(--primary);
+    transform: scaleX(0);
+    transition: transform 0.4s;
+  }
+  .active::before {
+    z-index: 3;
+    transform: scaleX(1);
+  }
+  .login::before {
+    transform-origin: right;
+  }
+  .signup::before {
+    transform-origin: left;
+  }
+}
+
+.input-wrapper {
+  padding: 1rem 0;
+}
+
+.auth-button {
+  margin-top: var(--space-beetwen);
+  font-size: var(--fz-l);
+  padding: 1rem;
+  border: none;
+  border-radius: 100rem;
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+.auth-button:disabled {
+  background-color: var(--color-1);
+}

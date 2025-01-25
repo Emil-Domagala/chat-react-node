@@ -1,0 +1,30 @@
+@import '../../../_colors.css';
+@import '../../../_fontSizes.css';
+
+.main {
+  color: var(--text);
+  background-color: var(--color-1);
+  font-size: var(--fz-m);
+  padding: 1rem;
+  border: none;
+  border-radius: 100rem;
+  width: 100%;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.input__wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  .svg {
+    position: absolute;
+    right: 1rem;
+    padding: 0.5rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    cursor: pointer;
+  }
+}

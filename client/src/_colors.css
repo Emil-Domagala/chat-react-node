@@ -1,0 +1,17 @@
+:root {
+  --black: #000;
+  --white: #fff;
+  --primary: #952eb4;
+  --text: #000;
+  --text-reverse: #fff;
+  --color-1: #f3f3f3;
+  --color-2: #ffffff;
+  --color-3: rgb(175, 175, 175);
+}
+
+[color-mode='dark'] {
+  --text: #fff;
+  --text-reverse: #000;
+  --color-1: #343434;
+  --color-2: #1a1a1a;
+}

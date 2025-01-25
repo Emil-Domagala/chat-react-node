@@ -1,0 +1,8 @@
+@import '../../../_colors.css';
+@import '../../../_fontSizes.css';
+
+.label {
+  margin-left: 2rem;
+  color: var(--text);
+  font-size: var(--fz-m);
+}
