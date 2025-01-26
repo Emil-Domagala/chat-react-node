@@ -30,7 +30,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-size: var(--fz-m);
-  line-height: 1.5;
+  line-height: 1.2;
 }
 
 img,
@@ -72,8 +72,40 @@ h6 {
   color: var(--text);
 }
 
+.container-full,
 .container {
-  margin: 0 auto;
   width: 100%;
-  padding: 0 2rem;
+  padding: 0px 4vw;
+  margin: 0 auto;
+}
+
+.container-full {
+  min-height: 100vh;
+}
+
+.fl-col {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 576px) {
+  .container {
+    padding: 0 2.5vw;
+  }
+}
+/* @media (min-width: 768px) {
+} */
+@media (min-width: 992px) {
+  .container {
+    padding: 0 2vw;
+  }
+}
+
+/* @media (min-width: 1200px) {
+} */
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1400px;
+  }
 }

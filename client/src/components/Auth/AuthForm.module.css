@@ -5,6 +5,8 @@
   --space-beetwen: 3rem;
 }
 
+
+
 .buttons__wrapper {
   display: flex;
   flex-direction: row;
@@ -53,6 +55,7 @@
 }
 
 .input-wrapper {
+  position: relative;
   padding: 1rem 0;
 }
 

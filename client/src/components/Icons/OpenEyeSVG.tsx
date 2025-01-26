@@ -1,6 +1,6 @@
 const OpenEyeSVG = () => {
   return (
-    <svg fill="#000000" version="1.1" id="Capa_1" viewBox="0 0 60.254 60.254" xmlSpace="preserve" >
+    <svg fill="currentColor" version="1.1" id="Capa_1" viewBox="0 0 60.254 60.254" xmlSpace="preserve">
       <g>
         <g>
           <g>

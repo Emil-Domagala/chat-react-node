@@ -1,0 +1,15 @@
+@import '../../../_colors.css';
+@import '../../../_fontSizes.css';
+
+.input-error-text {
+  display: none;
+  position: absolute;
+  padding-top: 0.5rem;
+  width: 100%;
+  font-size: var(--fz-xs);
+  color: red;
+  text-align: center;
+}
+.input-error-text.error-active {
+  display: block;
+}

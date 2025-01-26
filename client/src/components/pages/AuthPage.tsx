@@ -2,7 +2,7 @@ import Auth from '../Auth/Auth';
 
 const AuthPage = () => {
   return (
-    <div className="container">
+    <div className="container-full">
       <Auth></Auth>
     </div>
   );
