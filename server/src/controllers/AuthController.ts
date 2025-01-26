@@ -21,7 +21,8 @@ type ErrorType = {
 
 export const signup: BasicType = async (req, res, next) => {
   try {
-    const { email, password, confirmPassword } = req.body;
+    let { email, password, confirmPassword } = req.body;
+    email = email.trim().toLowerCase()
     let isError = false;
     const error: ErrorType = {
       status: null,
@@ -89,7 +90,8 @@ export const signup: BasicType = async (req, res, next) => {
 
 export const login: BasicType = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+    email = email.trim().toLowerCase()
     let isError = false;
     const error: ErrorType = {
       status: null,
@@ -111,7 +113,8 @@ export const login: BasicType = async (req, res, next) => {
 
     const foundUser = await User.findOne({ email });
 
-    if (foundUser) {
+
+    if (!foundUser) {
       isError = true;
       error.status = 400;
       error.email = 'User not found';

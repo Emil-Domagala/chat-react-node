@@ -6,7 +6,7 @@ import classes from './AuthForm.module.css';
 import { useActionState } from 'react';
 import useInputValidation from '../../hooks/UseInputValidation';
 import ErrorText from '../UI/Form/ErrorText';
-// import { SIGNUP_ROUTE } from '../../utils/constants.js';
+import { useNavigate } from 'react-router';
 
 interface CustomError extends Error {
   errorData?: {
@@ -19,6 +19,7 @@ interface CustomError extends Error {
 }
 
 const AuthForm: React.FC = () => {
+  const navigate = useNavigate();
   const [emailErrMsg, setEmailErrMsg] = useState('Check if email is valid');
   const [pwErrMsg, setPwErrMsg] = useState('Check if password is valid');
   const [cpwErrMsg, setCpwErrMsg] = useState('Password and confirm password must be this same');
@@ -128,8 +129,12 @@ const AuthForm: React.FC = () => {
     try {
       if (mode === 'signup') {
         await signupHandler(email, password, confirmPassword);
+        navigate('/profile');
       } else {
-        await loginHandler(email, password);
+        const resData = await loginHandler(email, password);
+        console.log(resData);
+        if (resData.user.profileSetup) navigate('/chat');
+        else navigate('/profile');
       }
       clearEmailHandler();
       clearConfirmPasswordHandler();
