@@ -7,6 +7,8 @@ import { useActionState } from 'react';
 import useInputValidation from '../../hooks/UseInputValidation';
 import ErrorText from '../UI/Form/ErrorText';
 import { useNavigate } from 'react-router';
+import { loginHandler, signupHandler } from '../../utils/fetchAuth';
+import { useUser } from '../../store/userContext';
 
 interface CustomError extends Error {
   errorData?: {
@@ -19,58 +21,18 @@ interface CustomError extends Error {
 }
 
 const AuthForm: React.FC = () => {
+  const { setUser } = useUser();
   const navigate = useNavigate();
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [emailErrMsg, setEmailErrMsg] = useState('Check if email is valid');
   const [pwErrMsg, setPwErrMsg] = useState('Check if password is valid');
   const [cpwErrMsg, setCpwErrMsg] = useState('Password and confirm password must be this same');
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
 
   const [emailHasErr, setEmailHasErr] = useState(false);
   const [pwHasErr, setPwHasErr] = useState(false);
   const [cpwHasErr, setCpwHasErr] = useState(false);
 
-  const serverUrl = import.meta.env.VITE_SERVER_URL;
-  const authPath = import.meta.env.VITE_AUTH_BASE_PATH;
-  const SIGNUP_ROUTE = serverUrl + authPath + '/signup';
-  const LOGIN_ROUTE = serverUrl + authPath + '/login';
-
-  const signupHandler = async (email: string, password: string, confirmPassword: string) => {
-    const response = await fetch(SIGNUP_ROUTE, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ email, password, confirmPassword }),
-    });
-    const resData = await response.json();
-
-    if (!response.ok) {
-      const error = new Error(resData.message || 'Signup failed') as Error & { errorData?: object };
-      error.errorData = resData;
-      throw error;
-    }
-    return resData;
-  };
-
-  const loginHandler = async (email: string, password: string) => {
-    const response = await fetch(LOGIN_ROUTE, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ email, password }),
-    });
-    const resData = await response.json();
-
-    if (!response.ok) {
-      const error = new Error(resData.message || 'Signup failed') as Error & { errorData?: object };
-      error.errorData = resData;
-      throw error;
-    }
-    return resData;
-  };
+  //validate inputs
 
   const {
     value: entredEmail,
@@ -99,14 +61,12 @@ const AuthForm: React.FC = () => {
 
   let formIsValid = false;
 
-  const submitAction = async () => {
-    if (entredEmailIsValid && entredPasswordIsValid) {
-      formIsValid = true;
-    }
+  //action on submitting form
 
-    if (mode === 'signup' && !entredConfirmPasswordIsValid) {
-      formIsValid = false;
-    }
+  const submitAction = async () => {
+    //check if form is valid
+    if (entredEmailIsValid && entredPasswordIsValid) formIsValid = true;
+    if (mode === 'signup' && !entredConfirmPasswordIsValid) formIsValid = false;
 
     const form = document.querySelector('form');
     if (!formIsValid || !form) return;
@@ -117,22 +77,21 @@ const AuthForm: React.FC = () => {
     const password = formData.get('password') as string;
     let confirmPassword = '';
 
-    if (mode === 'signup') {
-      confirmPassword = formData.get('confirmPassword') as string;
-      console.log(confirmPassword);
-    }
+    if (mode === 'signup') confirmPassword = formData.get('confirmPassword') as string;
 
+    //reset error after submitting
     setEmailHasErr(false);
     setPwHasErr(false);
     setCpwHasErr(false);
 
     try {
       if (mode === 'signup') {
-        await signupHandler(email, password, confirmPassword);
+        const resData = await signupHandler(email, password, confirmPassword);
+        setUser(resData.user);
         navigate('/profile');
       } else {
         const resData = await loginHandler(email, password);
-        console.log(resData);
+        setUser(resData.user);
         if (resData.user.profileSetup) navigate('/chat');
         else navigate('/profile');
       }

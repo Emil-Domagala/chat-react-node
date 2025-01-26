@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "typeRoots": ["./node_modules/@types", "./types/types.d.ts"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "baseUrl": "./src",
@@ -9,5 +10,5 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "types/types.d.ts"]
 }

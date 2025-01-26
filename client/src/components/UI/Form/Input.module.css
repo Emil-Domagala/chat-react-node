@@ -31,3 +31,7 @@ textarea {
     color: var(--text);
   }
 }
+
+.sq {
+  border-radius: 0.7rem;
+}

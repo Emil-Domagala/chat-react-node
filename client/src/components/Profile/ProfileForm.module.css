@@ -1,0 +1,63 @@
+@import '../../_fontSizes.css';
+@import '../../_colors.css';
+
+.left {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4rem;
+}
+
+.circle-avatar {
+  background-color: red;
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+}
+
+.input-wrapper {
+  margin-bottom: 2rem;
+}
+
+.input-wrapper-flex {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  background-color: pink;
+}
+.prof-col-1{
+    background-color: var(--prof-2-bg);
+    border: 1px solid var(--prof-2-bg);
+    border: 1px solid var(--prof-2-bg);
+    border: 1px solid var(--prof-2-bg);
+}
+
+.save-changes {
+  padding: 1rem;
+  border: none;
+  width: 100%;
+  color: var(--white);
+  background-color: var(--primary);
+  font-size: var(--fz-m);
+}
+
+@media screen and (min-width: 768px) {
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5rem;
+    flex-direction: row;
+  }
+  .left {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0rem;
+  }
+}

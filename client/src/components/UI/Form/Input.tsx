@@ -16,9 +16,10 @@ type InputType = {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string | number | readonly string[] | undefined;
+  square?: boolean;
 };
 
-function Input({ value, id, name, isPassword, isTextarea, type, ...props }: InputType) {
+function Input({ square, value, id, name, isPassword, isTextarea, type, ...props }: InputType) {
   const [isTypePassword, setIsTypePassword] = useState('password');
 
   const handleType = () => {
@@ -44,7 +45,14 @@ function Input({ value, id, name, isPassword, isTextarea, type, ...props }: Inpu
         </div>
       )}
       {!isTextarea && !isPassword && (
-        <input value={value} id={id} name={name} type={type} className={classes.main} {...props} />
+        <input
+          value={value}
+          id={id}
+          name={name}
+          type={type}
+          className={`${classes.main} ${square ? classes.sq : ''}`}
+          {...props}
+        />
       )}
     </>
   );

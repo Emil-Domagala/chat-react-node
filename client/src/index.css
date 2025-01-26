@@ -79,6 +79,13 @@ h6 {
   margin: 0 auto;
 }
 
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: baseline;
+}
+
 .container-full {
   min-height: 100vh;
 }
@@ -86,6 +93,10 @@ h6 {
 .fl-col {
   display: flex;
   flex-direction: column;
+}
+.fl-row {
+  display: flex;
+  flex-direction: row;
 }
 
 @media (min-width: 576px) {
