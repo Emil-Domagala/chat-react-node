@@ -22,7 +22,7 @@ type ErrorType = {
 export const signup: BasicType = async (req, res, next) => {
   try {
     let { email, password, confirmPassword } = req.body;
-    email = email.trim().toLowerCase()
+    email = email.trim().toLowerCase();
     let isError = false;
     const error: ErrorType = {
       status: null,
@@ -91,7 +91,7 @@ export const signup: BasicType = async (req, res, next) => {
 export const login: BasicType = async (req, res, next) => {
   try {
     let { email, password } = req.body;
-    email = email.trim().toLowerCase()
+    email = email.trim().toLowerCase();
     let isError = false;
     const error: ErrorType = {
       status: null,
@@ -112,7 +112,6 @@ export const login: BasicType = async (req, res, next) => {
     }
 
     const foundUser = await User.findOne({ email });
-
 
     if (!foundUser) {
       isError = true;
@@ -151,17 +150,44 @@ export const login: BasicType = async (req, res, next) => {
     internalError(err, res);
   }
 };
+
 export const getUserInfo: BasicType = async (req, res, next) => {
   try {
+    const user = await User.findById(req.userId);
 
-    const user =await User.findById(req.userId)
-   
+    if (!user) return res.status(404).send({ message: 'User with the given id not found' });
 
-    if(!user){
-      return res.status(404).send({message:'User with the given id not found'})
-    }
+    return res.status(201).json({
+      user: {
+        id: user.id,
+        email: user.email,
+        profileSetup: user.profileSetup,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        image: user.image,
+        color: user.color,
+      },
+    });
+  } catch (err) {
+    internalError(err, res);
+  }
+};
+export const updateUserProfil: BasicType = async (req, res, next) => {
+  console.log('object');
+  try {
+    const { userId } = req;
+    const { firstName, lastName, color } = req.body;
 
-  
+    if (!firstName || !lastName || !color)
+      return res.status(404).send({ message: 'First Name, Last Name and color is required' });
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { firstName, lastName, color, profileSetup: true },
+      { new: true },
+    );
+
+    if (!user) return res.status(404).send({ message: 'User with the given id not found' });
 
     return res.status(201).json({
       user: {

@@ -58,7 +58,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const { user } = useUser();
+  const { user, loading } = useUser();
   console.log(user);
   const getPreferredColorScheme = () => {
     const body = document.querySelector('body');
@@ -75,6 +75,10 @@ function App() {
       body!.setAttribute('color-mode', localStorage.getItem('color-mode')!);
     }
   };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   getPreferredColorScheme();
   return <RouterProvider router={router} />;

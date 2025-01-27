@@ -8,34 +8,87 @@
 }
 
 .circle-avatar {
-  background-color: red;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5rem;
+  text-transform: uppercase;
   width: 100px;
   height: 100px;
+  border: 2px solid;
   border-radius: 100%;
+
+  p {
+    opacity: 1;
+    color: inherit;
+    transition: opacity 0.3s;
+    transition-delay: 0.2s;
+  }
+  .svg {
+    opacity: 0;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    color: inherit;
+    transition: opacity 0.3s;
+    transition-delay: 0s;
+  }
+}
+
+.circle-avatar:hover {
+  p {
+    opacity: 0;
+    transition-delay: 0s;
+  }
+  .svg {
+    opacity: 1;
+    transition-delay: 0.2s;
+  }
 }
 
 .input-wrapper {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .input-wrapper-flex {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 2rem;
   margin-bottom: 4rem;
 }
 
-.circle {
+.error-message-container {
+  position: relative;
+  width: 100%;
+}
+
+input[type='radio'] {
   width: 50px;
   height: 50px;
   border-radius: 100%;
-  background-color: pink;
+  border: 2px solid;
+  transition: 0.4s;
+  cursor: pointer;
 }
-.prof-col-1{
-    background-color: var(--prof-2-bg);
-    border: 1px solid var(--prof-2-bg);
-    border: 1px solid var(--prof-2-bg);
-    border: 1px solid var(--prof-2-bg);
+
+input[type='file'] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+input[type='file']::-webkit-file-upload-button {
+  cursor: pointer;
+}
+
+input[type='radio']:hover {
+  opacity: 0.8;
 }
 
 .save-changes {
@@ -45,6 +98,10 @@
   color: var(--white);
   background-color: var(--primary);
   font-size: var(--fz-m);
+}
+.save-changes:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @media screen and (min-width: 768px) {

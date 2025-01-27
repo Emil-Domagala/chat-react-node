@@ -2,15 +2,22 @@ import { useUser } from '../../store/userContext';
 import ArrowBackSVG from '../Icons/ArrowBackSVG';
 import ProfileForm from './ProfileForm';
 import classes from './Profile.module.css';
+import { Link } from 'react-router';
 
 const Profile = () => {
   const { user } = useUser();
   // console.log(user);
   return (
     <div className={`${classes['card']}`}>
-      <div className={classes['svg']}>
-        <ArrowBackSVG />
-      </div>
+      {user?.profileSetup ? (
+        <Link to={'/chat'}>
+          <div className={classes['svg']}>
+            <ArrowBackSVG />
+          </div>
+        </Link>
+      ) : (
+        <h1>Set up your account to continue</h1>
+      )}
       <ProfileForm />
     </div>
   );

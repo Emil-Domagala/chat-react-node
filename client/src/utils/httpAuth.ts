@@ -2,7 +2,7 @@ const serverUrl = import.meta.env.VITE_SERVER_URL;
 const authPath = import.meta.env.VITE_AUTH_BASE_PATH;
 const SIGNUP_ROUTE = serverUrl + authPath + '/signup';
 const LOGIN_ROUTE = serverUrl + authPath + '/login';
-const FETCH_USER_URL = serverUrl + authPath + '/user-info';
+const PUT_PROFILE_URL = serverUrl + authPath + '/update-profile';
 
 export const loginHandler = async (email: string, password: string) => {
   const response = await fetch(LOGIN_ROUTE, {
@@ -58,3 +58,23 @@ export const signupHandler = async (email: string, password: string, confirmPass
 //     return false;
 //   }
 // };
+
+export const updateProfileHandler = async (firstName: string, lastName: string, color: number) => {
+  const response = await fetch(PUT_PROFILE_URL, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ firstName, lastName, color }),
+  });
+
+  const resData = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(resData.message || 'Failed to update profile') as Error & { errorData?: object };
+    error.errorData = resData;
+    throw error;
+  }
+  return resData;
+};

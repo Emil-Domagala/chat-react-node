@@ -7,7 +7,7 @@ import { useActionState } from 'react';
 import useInputValidation from '../../hooks/UseInputValidation';
 import ErrorText from '../UI/Form/ErrorText';
 import { useNavigate } from 'react-router';
-import { loginHandler, signupHandler } from '../../utils/fetchAuth';
+import { loginHandler, signupHandler } from '../../utils/httpAuth';
 import { useUser } from '../../store/userContext';
 
 interface CustomError extends Error {

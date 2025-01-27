@@ -50,14 +50,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('isLoggedIn', 'true');
-    }
-  }, [user]);
-
   return <UserContext.Provider value={{ user, setUser, loading, fetchUser }}>{children}</UserContext.Provider>;
 };
 
