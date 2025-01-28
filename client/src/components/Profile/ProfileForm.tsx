@@ -1,14 +1,17 @@
-import { useActionState, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { useUser } from '../../store/userContext';
 import Form from '../UI/Form/Form';
 import Input from '../UI/Form/Input';
 import classes from './ProfileForm.module.css';
 import { colors } from '../../utils/getColors';
-import PlusIconSVG from '../Icons/PlusSVG';
 import ErrorText from '../UI/Form/ErrorText';
 import { updateProfileHandler } from '../../utils/httpAuth';
+import Avatar from './Avatar';
+import { useNavigate } from 'react-router';
 
 const ProfileForm = () => {
+  const navigate = useNavigate();
+  const serverURL = import.meta.env.VITE_SERVER_URL;
   const { user, setUser } = useUser();
   const [firstName, setFirstName] = useState(user?.firstName || '');
   const [firstNameWasTouched, setFirstNameWasTouched] = useState(false);
@@ -16,8 +19,12 @@ const ProfileForm = () => {
   const [lastName, setLastName] = useState(user?.lastName || '');
   const [lastNameWasTouched, setLastNameWasTouched] = useState(false);
 
-  const [image, setImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string | undefined | File>(user?.image || undefined);
   const [selectedColor, setSelectedColor] = useState(user?.color || 0);
+
+  let imagePath = undefined;
+  if (user?.image) imagePath = `${serverURL}${user?.image}`;
 
   let formIsValid = false;
   const firstNameIsValid = firstName.trim() !== '';
@@ -28,9 +35,23 @@ const ProfileForm = () => {
   if (lastNameIsValid && firstNameIsValid && selectedColor != null) formIsValid = true;
 
   const submitAction = async () => {
+    const formData = new FormData();
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    formData.append('color', selectedColor.toString());
+    if (image) formData.append('image', image);
+
     if (!formIsValid) return;
-    const newUser = await updateProfileHandler(firstName, lastName, +selectedColor);
-    console.log(newUser);
+    await updateProfileHandler(formData);
+    navigate('/chat');
+  };
+
+  const handleAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImage(file);
+    setPreviewImage(URL.createObjectURL(file));
   };
 
   const [, action, isPending] = useActionState<void>(submitAction, undefined);
@@ -39,19 +60,14 @@ const ProfileForm = () => {
       <Form action={action}>
         <div className={classes['top']}>
           <div className={`${classes['left']}`}>
-            <div style={{ ...colors[selectedColor] }} className={`${classes['circle-avatar']}`}>
-              <input type="file" accept="image/png, image/jpeg, image/jpg" />
-              <div className={classes['svg']}>
-                <PlusIconSVG />
-              </div>
-              {image !== null ? (
-                <image href="/" />
-              ) : firstName != '' ? (
-                <p>{firstName.split('')[0]}</p>
-              ) : (
-                <p>{user?.email.split('')[0]}</p>
-              )}
-            </div>
+            <Avatar
+              firstName={firstName}
+              email={user?.email || ''}
+              selectedColor={colors[selectedColor]}
+              image={imagePath}
+              previewImage={previewImage} 
+              handleAddImage={handleAddImage}
+            />
           </div>
           <div className={`${classes['right']}`}>
             <div className={`${classes['input-wrapper']}`}>

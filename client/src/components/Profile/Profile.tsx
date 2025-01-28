@@ -9,14 +9,14 @@ const Profile = () => {
   // console.log(user);
   return (
     <div className={`${classes['card']}`}>
-      {user?.profileSetup ? (
+      {user?.profileSetup === true ? (
         <Link to={'/chat'}>
           <div className={classes['svg']}>
             <ArrowBackSVG />
           </div>
         </Link>
       ) : (
-        <h1>Set up your account to continue</h1>
+        <h1 className={classes.header}>Set up your account to continue</h1>
       )}
       <ProfileForm />
     </div>

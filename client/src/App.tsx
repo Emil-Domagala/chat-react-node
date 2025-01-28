@@ -18,9 +18,27 @@ const PrivateRoute = async () => {
     throw redirect('/');
   }
 
+  return null;
+};
+
+const ChatRoute = async () => {
+  const serverUrl = import.meta.env.VITE_SERVER_URL;
+  const authPath = import.meta.env.VITE_AUTH_BASE_PATH;
+  const FETCH_USER_URL = serverUrl + authPath + '/user-info';
+
+  const response = await fetch(FETCH_USER_URL, {
+    method: 'GET',
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    throw redirect('/');
+  }
+
   const user = await response.json();
 
-  return { user };
+  if (user.profileSetup === false) throw redirect('/profile');
+
+  return null;
 };
 
 const AuthRoute = async () => {
@@ -46,7 +64,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <AuthPage />, loader: AuthRoute },
       { path: '/profile', element: <ProfilePage />, loader: PrivateRoute },
-      { path: '/chat', element: <ChatPage />, loader: PrivateRoute },
+      { path: '/chat', element: <ChatPage />, loader: ChatRoute },
     ],
   },
   // { path: '/error', element: <ErrorPage /> },

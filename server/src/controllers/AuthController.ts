@@ -4,10 +4,21 @@ import jswt from 'jsonwebtoken';
 import User from '../models/UserModel.ts';
 import bcrypt from 'bcryptjs';
 import { validateEmailPassword } from '../utils/validateEmailPassword.ts';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import fs from 'node:fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const tokenExpiration = 60 * 60 * 1000 * 2;
 const createToken = (email: string, userId: string) => {
   return jswt.sign({ email, userId }, process.env.JWT_KEY!, { expiresIn: tokenExpiration });
+};
+
+const deleteOldImage = (filePath: string) => {
+  filePath = path.join(__dirname, '..', '..', filePath);
+  fs.unlink(filePath, (err) => console.log(err));
 };
 
 type BasicType = (req: Request, res: Response, next: NextFunction) => Promise<any>;
@@ -173,23 +184,38 @@ export const getUserInfo: BasicType = async (req, res, next) => {
   }
 };
 export const updateUserProfil: BasicType = async (req, res, next) => {
-  console.log('object');
   try {
     const { userId } = req;
     const { firstName, lastName, color } = req.body;
+    const image = req.file;
+    let relativeFilePath;
+    if (image) relativeFilePath = path.join('/uploads/profiles', image.filename);
 
-    if (!firstName || !lastName || !color)
-      return res.status(404).send({ message: 'First Name, Last Name and color is required' });
+    if (!firstName || !lastName || !color) {
+      return res.status(400).send({ message: 'First Name, Last Name, and Color are required' });
+    }
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { firstName, lastName, color, profileSetup: true },
-      { new: true },
-    );
+    const user = await User.findById(userId);
 
-    if (!user) return res.status(404).send({ message: 'User with the given id not found' });
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }
 
-    return res.status(201).json({
+    // Delete old image if a new one is uploaded
+    if (image && user.image) {
+      const oldImagePath = path.join(__dirname,'..', '..', user.image);
+      fs.unlink(oldImagePath, (err) => console.log(err));
+    }
+
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.color = color;
+    if (image) user.image = relativeFilePath;
+    user.profileSetup = true;
+
+    await user.save();
+
+    return res.status(200).json({
       user: {
         id: user.id,
         email: user.email,

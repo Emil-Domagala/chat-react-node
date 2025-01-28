@@ -41,7 +41,11 @@ const AuthForm: React.FC = () => {
     inputBlurHandler: emailBlurHandler,
     valueChangeHandler: emailChangeHandler,
     clearInputHandler: clearEmailHandler,
-  } = useInputValidation((value: string) => value.trim() !== '' && value.includes('@'));
+  } = useInputValidation(
+    (value: string) =>
+      value.trim() !== '' &&
+      !!value.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/),
+  );
   const {
     value: entredPassword,
     isValid: entredPasswordIsValid,
@@ -60,15 +64,20 @@ const AuthForm: React.FC = () => {
   } = useInputValidation((value: string) => value === entredPassword);
 
   let formIsValid = false;
+  if (
+    (mode === 'login' && entredEmailIsValid && entredPasswordIsValid) ||
+    (mode === 'signup' && entredEmailIsValid && entredPasswordIsValid && entredConfirmPasswordIsValid)
+  ) {
+    formIsValid = true;
+  }
 
   //action on submitting form
 
   const submitAction = async () => {
     //check if form is valid
-    if (entredEmailIsValid && entredPasswordIsValid) formIsValid = true;
-    if (mode === 'signup' && !entredConfirmPasswordIsValid) formIsValid = false;
 
     const form = document.querySelector('form');
+    console.log(formIsValid);
     if (!formIsValid || !form) return;
 
     const formData = new FormData(form);
@@ -184,7 +193,7 @@ const AuthForm: React.FC = () => {
           <ErrorText hasErrors={confirmPasswordImputHasError || cpwHasErr} errorMessage={cpwErrMsg} />
         </div>
       )}
-      <button type="submit" className={classes['auth-button']} disabled={isPending}>
+      <button type="submit" className={classes['auth-button']} disabled={isPending || !formIsValid}>
         {mode === 'login' ? 'Login' : 'Signup'}
       </button>
     </Form>

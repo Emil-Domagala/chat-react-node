@@ -59,14 +59,15 @@ export const signupHandler = async (email: string, password: string, confirmPass
 //   }
 // };
 
-export const updateProfileHandler = async (firstName: string, lastName: string, color: number) => {
+export const updateProfileHandler = async (formData: FormData) => {
+  console.log(PUT_PROFILE_URL);
+
+  console.log(formData);
+
   const response = await fetch(PUT_PROFILE_URL, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     credentials: 'include',
-    body: JSON.stringify({ firstName, lastName, color }),
+    body: formData,
   });
 
   const resData = await response.json();
