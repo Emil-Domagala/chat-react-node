@@ -1,4 +1,4 @@
-import MoreInfoSvg from '../../Icons/MoreInfoSVG';
+import MoreInfoSvg from '../../../assets/Icons/MoreInfoSVG';
 import classes from './Label.module.css';
 import classNames from 'classnames';
 

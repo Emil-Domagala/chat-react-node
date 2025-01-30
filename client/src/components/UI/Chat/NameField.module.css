@@ -1,0 +1,9 @@
+
+
+.nameField {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--fz-m);
+  font-weight: 600;
+}

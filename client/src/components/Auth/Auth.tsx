@@ -1,5 +1,5 @@
 import AuthForm from './AuthForm';
-import VictorySVG from '../Icons/VictorySVG';
+import VictorySVG from '../../assets/Icons/VictorySVG';
 import classes from './Auth.module.css';
 import LottieComp from '../UI/Lottie/Lottie';
 import loginImage from '../../assets/login2.png';

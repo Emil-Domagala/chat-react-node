@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import classes from './Input.module.css';
-import OpenEyeSVG from '../../Icons/OpenEyeSVG';
-import CloseEyeSVG from '../../Icons/CloseEyeSVG';
+import OpenEyeSVG from '../../../assets/Icons/OpenEyeSVG';
+import CloseEyeSVG from '../../../assets/Icons/CloseEyeSVG';
 
 type InputType = {
   id?: string;
@@ -19,7 +19,7 @@ type InputType = {
   square?: boolean;
 };
 
-function Input({ square, value, id, name, isPassword, isTextarea, type, ...props }: InputType) {
+function Input({ square, value, id, name, isPassword, type, ...props }: InputType) {
   const [isTypePassword, setIsTypePassword] = useState('password');
 
   const handleType = () => {
@@ -28,7 +28,6 @@ function Input({ square, value, id, name, isPassword, isTextarea, type, ...props
 
   return (
     <>
-      {isTextarea && <textarea className={classes.main} {...props}></textarea>}
       {isPassword && (
         <div className={classes.input__wrapper}>
           <input value={value} id={id} name={name} type={isTypePassword} className={classes.main} {...props} />
@@ -44,7 +43,7 @@ function Input({ square, value, id, name, isPassword, isTextarea, type, ...props
           }
         </div>
       )}
-      {!isTextarea && !isPassword && (
+      {!isPassword && (
         <input
           value={value}
           id={id}

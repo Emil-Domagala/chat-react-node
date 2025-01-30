@@ -1,0 +1,24 @@
+.whole-chat {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  width: 100%;
+}
+
+@media screen and (min-width: 648px) {
+  .whole-chat {
+    width: 50%;
+  }
+}
+
+@media (min-width: 992px) {
+  .whole-chat {
+    width: 65%;
+  }
+}
+@media (min-width: 1200px) {
+  .whole-chat {
+    width: 100%;
+  }
+}

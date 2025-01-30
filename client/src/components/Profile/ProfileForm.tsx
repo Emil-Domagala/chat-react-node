@@ -1,4 +1,4 @@
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useActionState, useState } from 'react';
 import { useUser } from '../../store/userContext';
 import Form from '../UI/Form/Form';
 import Input from '../UI/Form/Input';
@@ -6,13 +6,13 @@ import classes from './ProfileForm.module.css';
 import { colors } from '../../utils/getColors';
 import ErrorText from '../UI/Form/ErrorText';
 import { updateProfileHandler } from '../../utils/httpAuth';
-import Avatar from './Avatar';
+import UserImage from './UserImage';
 import { useNavigate } from 'react-router';
 
 const ProfileForm = () => {
   const navigate = useNavigate();
   const serverURL = import.meta.env.VITE_SERVER_URL;
-  const { user, setUser } = useUser();
+  const { user } = useUser();
   const [firstName, setFirstName] = useState(user?.firstName || '');
   const [firstNameWasTouched, setFirstNameWasTouched] = useState(false);
 
@@ -60,12 +60,12 @@ const ProfileForm = () => {
       <Form action={action}>
         <div className={classes['top']}>
           <div className={`${classes['left']}`}>
-            <Avatar
+            <UserImage
               firstName={firstName}
               email={user?.email || ''}
-              selectedColor={colors[selectedColor]}
-              image={imagePath}
-              previewImage={previewImage} 
+              selectedColor={selectedColor}
+              imagePath={imagePath}
+              previewImage={previewImage}
               handleAddImage={handleAddImage}
             />
           </div>

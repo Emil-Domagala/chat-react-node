@@ -1,0 +1,24 @@
+.chat-container {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+.inside {
+  transform: translateY(-50%);
+  font-size: var(--fz-l);
+  h2 {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  span {
+    color: var(--primary);
+  }
+}
+
+@media screen and (min-width: 648px) {
+  .chat-container {
+    display: flex;
+  }
+}

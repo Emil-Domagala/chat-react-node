@@ -1,6 +1,6 @@
-import classes from './Form.module.css'
+import classes from './Form.module.css';
 
-function Form({ children, action }) {
+function Form({ children, action }: { children: React.ReactNode; action?: () => void }) {
   return (
     <form action={action} className={`${classes.form} }`}>
       {children}

@@ -1,29 +1,29 @@
 import { useRef } from 'react';
-import PlusIconSVG from '../Icons/PlusSVG';
-import Image from '../UI/Image/Image';
-import classes from './Avatar.module.css';
+import PlusIconSVG from '../../assets/Icons/PlusSVG';
+import classes from './UserImage.module.css';
+import Avatar from '../UI/Avatar/Avatar';
 
-interface CircleAvatarProps {
+interface UserImageProps {
   firstName: string;
   email: string;
-  selectedColor: React.CSSProperties;
-  image: string | File | undefined;
+  selectedColor: number;
+  imagePath: string | undefined;
   previewImage: string | null; // Preview URL for selected image
   handleAddImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const CircleAvatar: React.FC<CircleAvatarProps> = ({
+const UserImage: React.FC<UserImageProps> = ({
   firstName,
   email,
   selectedColor,
-  image,
+  imagePath,
   previewImage,
   handleAddImage,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div style={{ ...selectedColor }} className={`${classes['circle-avatar']}`}>
+    <div className={`${classes['avatar--wrapper']}`}>
       <input
         ref={inputRef}
         onChange={handleAddImage}
@@ -34,16 +34,12 @@ const CircleAvatar: React.FC<CircleAvatarProps> = ({
         <PlusIconSVG />
       </div>
       {previewImage ? (
-        <Image imageUrl={previewImage} />
-      ) : image ? (
-        <Image imageUrl={typeof image === 'string' ? image : ''}/>
-      ) : firstName !== '' ? (
-        <p>{firstName.charAt(0)}</p>
+        <Avatar userColor={+selectedColor} imageUrl={previewImage} />
       ) : (
-        <p>{email.charAt(0)}</p>
+        <Avatar email={email} firstName={firstName} userColor={+selectedColor} imageUrl={imagePath} />
       )}
     </div>
   );
 };
 
-export default CircleAvatar;
+export default UserImage;

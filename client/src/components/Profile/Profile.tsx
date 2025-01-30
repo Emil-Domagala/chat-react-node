@@ -1,5 +1,5 @@
 import { useUser } from '../../store/userContext';
-import ArrowBackSVG from '../Icons/ArrowBackSVG';
+import ArrowBackSVG from '../../assets/Icons/ArrowBackSVG';
 import ProfileForm from './ProfileForm';
 import classes from './Profile.module.css';
 import { Link } from 'react-router';

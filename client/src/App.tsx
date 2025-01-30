@@ -1,9 +1,9 @@
 import './App.css';
-import AuthPage from './components/pages/AuthPage';
+import AuthPage from './pages/AuthPage';
 import { RouterProvider, createBrowserRouter, redirect } from 'react-router';
-import ProfilePage from './components/pages/ProfilePage';
+import ProfilePage from './pages/ProfilePage';
 import { useUser } from './store/userContext';
-import ChatPage from './components/pages/ChatPage';
+import ChatPage from './pages/ChatPage';
 
 const PrivateRoute = async () => {
   const serverUrl = import.meta.env.VITE_SERVER_URL;

@@ -1,4 +1,4 @@
-import Profile from '../Profile/Profile';
+import Profile from '../components/Profile/Profile';
 
 const ProfilePage = () => {
   return (
@@ -8,4 +8,3 @@ const ProfilePage = () => {
   );
 };
 export default ProfilePage;
-

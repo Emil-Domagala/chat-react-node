@@ -155,6 +155,7 @@ export const login: BasicType = async (req, res, next) => {
         lastName: foundUser.lastName,
         image: foundUser.image,
         color: foundUser.color,
+        
       },
     });
   } catch (err) {
@@ -203,7 +204,7 @@ export const updateUserProfil: BasicType = async (req, res, next) => {
 
     // Delete old image if a new one is uploaded
     if (image && user.image) {
-      const oldImagePath = path.join(__dirname,'..', '..', user.image);
+      const oldImagePath = path.join(__dirname, '..', '..', user.image);
       fs.unlink(oldImagePath, (err) => console.log(err));
     }
 

@@ -1,0 +1,21 @@
+.side-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100%;
+}
+
+@media screen and (min-width: 648px) {
+  .side-bar {
+    border-right: 1px solid var(--color-1);
+    width: 50%;
+  }
+}
+
+@media (min-width: 992px) {
+  .side-bar {
+    width: 35%;
+  }
+}
