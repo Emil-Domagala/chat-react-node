@@ -155,7 +155,6 @@ export const login: BasicType = async (req, res, next) => {
         lastName: foundUser.lastName,
         image: foundUser.image,
         color: foundUser.color,
-        
       },
     });
   } catch (err) {
@@ -227,6 +226,15 @@ export const updateUserProfil: BasicType = async (req, res, next) => {
         color: user.color,
       },
     });
+  } catch (err) {
+    internalError(err, res);
+  }
+};
+
+export const logout: BasicType = async (req, res, next) => {
+  try {
+    res.cookie('jwt', '', { maxAge: 1, secure: true, sameSite: 'none' });
+    res.status(200).send({ message: 'Logout was successfull' });
   } catch (err) {
     internalError(err, res);
   }

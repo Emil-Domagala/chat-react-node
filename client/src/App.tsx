@@ -76,29 +76,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const { user, loading } = useUser();
-  console.log(user);
-  const getPreferredColorScheme = () => {
-    const body = document.querySelector('body');
-
-    if (window.matchMedia && !localStorage.getItem('color-mode')) {
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        body!.setAttribute('color-mode', 'dark');
-        localStorage.setItem('color-mode', 'dark');
-      } else {
-        body!.setAttribute('color-mode', 'dark');
-        localStorage.setItem('color-mode', 'light');
-      }
-    } else if (localStorage.getItem('color-mode')) {
-      body!.setAttribute('color-mode', localStorage.getItem('color-mode')!);
-    }
-  };
+  const { loading } = useUser();
 
   if (loading) {
     return <p>Loading...</p>;
   }
 
-  getPreferredColorScheme();
   return <RouterProvider router={router} />;
 }
 

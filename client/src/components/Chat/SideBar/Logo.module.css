@@ -15,5 +15,6 @@
     display: flex;
     align-items: center;
     font-size: 1.7em;
+    transition: background-color 0.4s, color 0.4s;
   }
 }

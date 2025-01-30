@@ -14,7 +14,10 @@
   display: flex;
   flex-direction: row;
   gap: 2rem;
+  color: var(--text);
   padding: var(--padding) 0;
+  transition: color 0.4s;
+
   .avatar-wrapper {
     width: var(--size);
     height: var(--size);
@@ -24,8 +27,15 @@
 
 .svg {
   border: none;
+  border-radius: 1rem;
   background: none;
   width: var(--size);
-  padding: 0.7rem;
+  padding: 1rem;
   color: var(--text);
+  transition: background-color 0.4s, color 0.4s;
+}
+
+.svg:hover {
+  color: var(--white);
+  background-color: var(--primary);
 }

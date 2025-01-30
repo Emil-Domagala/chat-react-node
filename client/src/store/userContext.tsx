@@ -14,6 +14,9 @@ type UserContextType = {
   setUser: (user: User | undefined) => void;
   loading: boolean;
   fetchUser: () => Promise<void>;
+  mode: 'light' | 'dark' | undefined;
+  setDarkColorMode: () => void;
+  setLightColorMode: () => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -21,10 +24,31 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const [mode, setMode] = useState<'light' | 'dark'>();
 
   const serverUrl = import.meta.env.VITE_SERVER_URL;
   const authPath = import.meta.env.VITE_AUTH_BASE_PATH;
   const FETCH_USER_URL = serverUrl + authPath + '/user-info';
+
+  const body = document.querySelector('body');
+
+  const setLightColorMode = () => {
+    setMode('light');
+    body!.setAttribute('color-mode', 'light');
+    localStorage.setItem('color-mode', 'light');
+  };
+
+  const setDarkColorMode = () => {
+    setMode('dark');
+    body!.setAttribute('color-mode', 'dark');
+    localStorage.setItem('color-mode', 'dark');
+  };
+
+  useEffect(() => {
+    const colorMode = localStorage.getItem('color-mode');
+    if (colorMode === 'light') return setLightColorMode();
+    if (colorMode === 'dark') return setDarkColorMode();
+  }, []);
 
   const fetchUser = async () => {
     try {
@@ -50,7 +74,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     fetchUser();
   }, []);
 
-  return <UserContext.Provider value={{ user, setUser, loading, fetchUser }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user, setUser, loading, fetchUser, mode, setLightColorMode, setDarkColorMode }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 // Custom hook for using the context

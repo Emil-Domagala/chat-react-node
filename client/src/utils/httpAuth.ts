@@ -2,7 +2,24 @@ const serverUrl = import.meta.env.VITE_SERVER_URL;
 const authPath = import.meta.env.VITE_AUTH_BASE_PATH;
 const SIGNUP_ROUTE = serverUrl + authPath + '/signup';
 const LOGIN_ROUTE = serverUrl + authPath + '/login';
+const LOGOUT_ROUTE = serverUrl + authPath + '/logout';
 const PUT_PROFILE_URL = serverUrl + authPath + '/update-profile';
+
+export const logoutHandler = async () => {
+  const response = await fetch(LOGOUT_ROUTE, {
+    method: 'POST',
+    credentials: 'include',
+
+  });
+  const resData = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(resData.message || 'Signup failed') as Error & { errorData?: object };
+    error.errorData = resData;
+    throw error;
+  }
+  return resData;
+};
 
 export const loginHandler = async (email: string, password: string) => {
   const response = await fetch(LOGIN_ROUTE, {

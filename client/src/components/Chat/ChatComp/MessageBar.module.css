@@ -1,13 +1,29 @@
+.background {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+}
+
 .message-bar--wrapper {
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   width: 100%;
   padding: 0 3rem 2rem;
   gap: 20px;
 }
 
+.textarea-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
 
 textarea {
   color: var(--text);
@@ -17,12 +33,41 @@ textarea {
   border: none;
   border-radius: 1rem;
   width: 100%;
-  overflow: auto;
   resize: vertical;
   padding: 1rem;
 }
 textarea::-webkit-resizer {
   display: none;
+}
+
+.textarea-icons {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  display: flex;
+  flex-direction: row;
+  .svg {
+    background: transparent;
+    border: none;
+    border-radius: 1rem;
+    width: 4rem;
+    padding: 0.7rem;
+    color: var(--color-3);
+    cursor: pointer;
+    transition: background-color 0.4s, color 0.4s;
+  }
+  .svg:hover {
+    color: var(--white);
+    background-color: var(--primary);
+  }
+}
+
+.emoji-picker {
+  position: absolute !important;
+  right: 0;
+  bottom: 8rem;
+  margin: 0 3rem;
+  width: calc(100% - 6rem) !important;
 }
 
 .send-button {
@@ -38,6 +83,13 @@ textarea::-webkit-resizer {
     width: 100%;
     height: 100%;
     padding: 0.8rem;
-    color: var(--text);
+    color: var(--white);
+    transition: transform 0.4s;
+  }
+}
+
+.send-button:hover {
+  .svg {
+    transform: translateX(0.5rem);
   }
 }

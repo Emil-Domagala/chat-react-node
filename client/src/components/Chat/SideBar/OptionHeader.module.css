@@ -3,10 +3,11 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  color: var(--color-3);
+  color: var(--text);
   text-decoration: none;
   padding: 0rem 3rem;
   cursor: pointer;
+  transition: background-color 0.4s, color 0.4s;
   .svg {
     display: flex;
     align-items: center;
@@ -21,5 +22,6 @@
 }
 
 .option-header:hover {
-  background-color: rgba(var(--primary-val), 0.5);
+  color: var(--white);
+  background-color: var(--primary);
 }
