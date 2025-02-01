@@ -1,0 +1,13 @@
+.info-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  color: var(--text);
+  transition: color 0.4s;
+
+  .avatar-wrapper {
+    width: 3.75rem;
+    height: 3.75rem;
+    flex-grow: 0;
+  }
+}

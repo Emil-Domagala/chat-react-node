@@ -16,6 +16,7 @@
     background-repeat: no-repeat;
   }
   p {
+    text-align: center;
     text-transform: uppercase;
     color: inherit;
   }

@@ -34,9 +34,9 @@ const UserImage: React.FC<UserImageProps> = ({
         <PlusIconSVG />
       </div>
       {previewImage ? (
-        <Avatar userColor={+selectedColor} imageUrl={previewImage} />
+        <Avatar fontSize={6} userColor={+selectedColor} imageUrl={previewImage} />
       ) : (
-        <Avatar email={email} firstName={firstName} userColor={+selectedColor} imageUrl={imagePath} />
+        <Avatar fontSize={6} email={email} firstName={firstName} userColor={+selectedColor} imageUrl={imagePath} />
       )}
     </div>
   );

@@ -1,4 +1,3 @@
-import type { Request, Response, NextFunction } from 'express';
 import { internalError } from '../utils/InternalError.ts';
 import jswt from 'jsonwebtoken';
 import User from '../models/UserModel.ts';
@@ -16,26 +15,17 @@ const createToken = (email: string, userId: string) => {
   return jswt.sign({ email, userId }, process.env.JWT_KEY!, { expiresIn: tokenExpiration });
 };
 
-const deleteOldImage = (filePath: string) => {
-  filePath = path.join(__dirname, '..', '..', filePath);
+const deleteOldImage = (oldFilePath: string) => {
+  const filePath = path.join(__dirname, '..', '..', oldFilePath);
   fs.unlink(filePath, (err) => console.log(err));
 };
 
-type BasicType = (req: Request, res: Response, next: NextFunction) => Promise<any>;
-type ErrorType = {
-  status: number | null;
-  password: string | null;
-  confirmPassword?: string | null;
-  email: string | null;
-  messages: string[];
-};
-
-export const signup: BasicType = async (req, res, next) => {
+export const signup: ControllerFunctionType = async (req, res, next) => {
   try {
     let { email, password, confirmPassword } = req.body;
     email = email.trim().toLowerCase();
     let isError = false;
-    const error: ErrorType = {
+    const error: ControllerErrorType = {
       status: null,
       password: null,
       confirmPassword: null,
@@ -63,9 +53,7 @@ export const signup: BasicType = async (req, res, next) => {
       error.confirmPassword = 'Password and confirm password must match';
     }
 
-    if (isError) {
-      return res.status(error.status).send({ error });
-    }
+    if (isError) return res.status(error.status).send({ error });
 
     const foundUser = await User.findOne({ email });
 
@@ -75,9 +63,7 @@ export const signup: BasicType = async (req, res, next) => {
       error.email = 'Email is already in use';
     }
 
-    if (isError) {
-      return res.status(error.status).send({ error });
-    }
+    if (isError) return res.status(error.status).send({ error });
 
     const user = await User.create({ email, password });
 
@@ -87,24 +73,28 @@ export const signup: BasicType = async (req, res, next) => {
       sameSite: 'none',
     });
 
-    return res.status(201).json({
-      user: {
-        id: user.id,
-        email: user.email,
-        profileSetup: user.profileSetup,
-      },
-    });
+    // return res.status(201).json({ message: 'Succes' });
+
+    return res.status(200).json({ user: { id: user.id, email: user.email, profileSetup: user.profileSetup } });
+
+    // return res.status(201).json({
+    //   user: {
+    //     id: user.id,
+    //     email: user.email,
+    //     profileSetup: user.profileSetup,
+    //   },
+    // });
   } catch (err) {
     internalError(err, res);
   }
 };
 
-export const login: BasicType = async (req, res, next) => {
+export const login: ControllerFunctionType = async (req, res, next) => {
   try {
     let { email, password } = req.body;
     email = email.trim().toLowerCase();
     let isError = false;
-    const error: ErrorType = {
+    const error: ControllerErrorType = {
       status: null,
       password: null,
       email: null,
@@ -118,11 +108,9 @@ export const login: BasicType = async (req, res, next) => {
       Object.assign(error, isValidationSucces);
     }
 
-    if (isError) {
-      return res.status(error.status).send({ error });
-    }
+    if (isError) return res.status(error.status).send({ error });
 
-    const foundUser = await User.findOne({ email });
+    const foundUser = await User.findOne({ email }).populate('contacts', 'firstName lastName image color');
 
     if (!foundUser) {
       isError = true;
@@ -130,9 +118,7 @@ export const login: BasicType = async (req, res, next) => {
       error.email = 'User not found';
     }
 
-    if (isError) {
-      return res.status(error.status).send({ error });
-    }
+    if (isError) return res.status(error.status).send({ error });
 
     const auth = await bcrypt.compare(password, foundUser.password);
     if (!auth) {
@@ -146,7 +132,7 @@ export const login: BasicType = async (req, res, next) => {
       sameSite: 'none',
     });
 
-    return res.status(201).json({
+    return res.status(200).json({
       user: {
         id: foundUser.id,
         email: foundUser.email,
@@ -155,6 +141,8 @@ export const login: BasicType = async (req, res, next) => {
         lastName: foundUser.lastName,
         image: foundUser.image,
         color: foundUser.color,
+        contacts: foundUser.contacts,
+        // groups:{foundUser.groups}
       },
     });
   } catch (err) {
@@ -162,13 +150,29 @@ export const login: BasicType = async (req, res, next) => {
   }
 };
 
-export const getUserInfo: BasicType = async (req, res, next) => {
+export const getProfileSetup: ControllerFunctionType = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.userId).populate('contacts', 'firstName lastName image color');
 
     if (!user) return res.status(404).send({ message: 'User with the given id not found' });
 
-    return res.status(201).json({
+    return res.status(200).json({
+      user: {
+        profileSetup: user.profileSetup,
+      },
+    });
+  } catch (err) {
+    internalError(err, res);
+  }
+};
+
+export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId).populate('contacts', 'firstName lastName image color');
+
+    if (!user) return res.status(404).send({ message: 'User with the given id not found' });
+
+    return res.status(200).json({
       user: {
         id: user.id,
         email: user.email,
@@ -177,13 +181,16 @@ export const getUserInfo: BasicType = async (req, res, next) => {
         lastName: user.lastName,
         image: user.image,
         color: user.color,
+        contacts: user.contacts,
+        // groups:{user.groups}
       },
     });
   } catch (err) {
     internalError(err, res);
   }
 };
-export const updateUserProfil: BasicType = async (req, res, next) => {
+
+export const updateUserProfil: ControllerFunctionType = async (req, res, next) => {
   try {
     const { userId } = req;
     const { firstName, lastName, color } = req.body;
@@ -191,21 +198,15 @@ export const updateUserProfil: BasicType = async (req, res, next) => {
     let relativeFilePath;
     if (image) relativeFilePath = path.join('/uploads/profiles', image.filename);
 
-    if (!firstName || !lastName || !color) {
+    if (!firstName || !lastName || !color)
       return res.status(400).send({ message: 'First Name, Last Name, and Color are required' });
-    }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate('contacts', 'firstName lastName image color');
 
-    if (!user) {
-      return res.status(404).send({ message: 'User not found' });
-    }
+    if (!user) return res.status(404).send({ message: 'User not found' });
 
     // Delete old image if a new one is uploaded
-    if (image && user.image) {
-      const oldImagePath = path.join(__dirname, '..', '..', user.image);
-      fs.unlink(oldImagePath, (err) => console.log(err));
-    }
+    if (image && user.image) deleteOldImage(user.image);
 
     user.firstName = firstName;
     user.lastName = lastName;
@@ -224,6 +225,8 @@ export const updateUserProfil: BasicType = async (req, res, next) => {
         lastName: user.lastName,
         image: user.image,
         color: user.color,
+        contacts: user.contacts,
+        // groups:{user.groups}
       },
     });
   } catch (err) {
@@ -231,7 +234,7 @@ export const updateUserProfil: BasicType = async (req, res, next) => {
   }
 };
 
-export const logout: BasicType = async (req, res, next) => {
+export const logout: ControllerFunctionType = async (req, res, next) => {
   try {
     res.cookie('jwt', '', { maxAge: 1, secure: true, sameSite: 'none' });
     res.status(200).send({ message: 'Logout was successfull' });

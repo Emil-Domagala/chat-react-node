@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
-import authRoutes from './router/AuthRoutes.ts';
+import authRoutes from './src/router/AuthRoutes.ts';
+import contactRoutes from './src/router/ContactRoutes.ts';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -22,9 +23,10 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/contacts', contactRoutes);
 
 app.listen(PORT, () => {
   console.log(`SERVER RUN ON PORT: ${PORT}`);

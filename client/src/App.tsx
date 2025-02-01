@@ -8,7 +8,7 @@ import ChatPage from './pages/ChatPage';
 const PrivateRoute = async () => {
   const serverUrl = import.meta.env.VITE_SERVER_URL;
   const authPath = import.meta.env.VITE_AUTH_BASE_PATH;
-  const FETCH_USER_URL = serverUrl + authPath + '/user-info';
+  const FETCH_USER_URL = serverUrl + authPath + '/profile-setup';
 
   const response = await fetch(FETCH_USER_URL, {
     method: 'GET',
@@ -24,7 +24,7 @@ const PrivateRoute = async () => {
 const ChatRoute = async () => {
   const serverUrl = import.meta.env.VITE_SERVER_URL;
   const authPath = import.meta.env.VITE_AUTH_BASE_PATH;
-  const FETCH_USER_URL = serverUrl + authPath + '/user-info';
+  const FETCH_USER_URL = serverUrl + authPath + '/profile-setup';
 
   const response = await fetch(FETCH_USER_URL, {
     method: 'GET',
@@ -35,8 +35,7 @@ const ChatRoute = async () => {
   }
 
   const user = await response.json();
-
-  if (user.profileSetup === false) throw redirect('/profile');
+  if (user.user.profileSetup === false) throw redirect('/profile');
 
   return null;
 };
@@ -44,7 +43,7 @@ const ChatRoute = async () => {
 const AuthRoute = async () => {
   const serverUrl = import.meta.env.VITE_SERVER_URL;
   const authPath = import.meta.env.VITE_AUTH_BASE_PATH;
-  const FETCH_USER_URL = serverUrl + authPath + '/user-info';
+  const FETCH_USER_URL = serverUrl + authPath + '/profile-setup';
 
   const response = await fetch(FETCH_USER_URL, {
     method: 'GET',
@@ -76,12 +75,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const { loading } = useUser();
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   return <RouterProvider router={router} />;
 }
 

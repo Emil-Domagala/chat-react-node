@@ -1,0 +1,28 @@
+.contact {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text);
+  text-decoration: none;
+  padding: 0.5rem 3rem 0.5rem 4rem;
+  cursor: pointer;
+  transition: background-color 0.4s, color 0.4s;
+  .svg {
+    display: flex;
+    align-items: center;
+    border-radius: 1rem;
+    padding: 1.35rem;
+    height: 4rem;
+    width: 4rem;
+    transition: background-color 0.4s;
+  }
+}
+
+.contact:hover {
+  color: var(--white);
+  background-color: rgba(var(--primary-val), 0.5);
+  .svg:hover {
+    background-color: red;
+  }
+}

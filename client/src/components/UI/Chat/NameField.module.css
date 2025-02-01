@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: var(--fz-m);
+  font-size: var(--fz-l);
   font-weight: 600;
   color: inherit;
 }

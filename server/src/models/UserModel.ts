@@ -31,6 +31,8 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Group' }],
 });
 
 userSchema.pre('save', async function name(next) {
@@ -39,6 +41,6 @@ userSchema.pre('save', async function name(next) {
   next();
 });
 
-const User = mongoose.model('Users', userSchema);
+const User = mongoose.model('User', userSchema);
 
 export default User;

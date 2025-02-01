@@ -22,10 +22,11 @@
     color: inherit;
     transition: opacity 0.3s;
     transition-delay: 0s;
+    z-index: 1;
   }
 }
 
-.circle-avatar:hover {
+.avatar--wrapper:hover {
   p {
     opacity: 0;
     transition-delay: 0s;
@@ -42,7 +43,7 @@ input[type='file'] {
   height: 100%;
   opacity: 0;
   cursor: pointer;
-  background-color: #fff;
+  background-color: transparent;
   z-index: 2;
 }
 

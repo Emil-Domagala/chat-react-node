@@ -10,5 +10,5 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": ["src/**/*", "types/types.d.ts"]
+  "include": ["src/**/*", "types/types.d.ts", "app.ts"]
 }

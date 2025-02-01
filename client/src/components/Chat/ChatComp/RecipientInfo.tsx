@@ -1,10 +1,8 @@
 import XIconSVG from '../../../assets/Icons/XIconSVG';
-import Avatar from '../../UI/Avatar/Avatar';
-import NameField from '../../UI/Chat/NameField';
+import UserItem from '../../UI/Chat/UserItem';
 import classes from './RecipientInfo.module.css';
 
 const RecipientInfo = ({ onClick }: { onClick: () => void }) => {
-  const serverURL = import.meta.env.VITE_SERVER_URL;
   const userColor = 0;
   const firstName = 'Kamil';
   const lastName = 'Nowak';
@@ -12,12 +10,7 @@ const RecipientInfo = ({ onClick }: { onClick: () => void }) => {
 
   return (
     <div className={classes['recipient-info-wrapper']}>
-      <div className={classes['info-wrapper']}>
-        <div className={classes['avatar-wrapper']}>
-          <Avatar userColor={userColor} imageUrl={serverURL + imageUrl} firstName={firstName} />
-        </div>
-        <NameField firstName={firstName} lastName={lastName} />
-      </div>
+      <UserItem imageURL={imageUrl} lastName={lastName} firstName={firstName} userColor={userColor} />
       <button onClick={onClick} className={classes['svg']}>
         <XIconSVG />
       </button>

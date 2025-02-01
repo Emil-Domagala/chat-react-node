@@ -6,10 +6,10 @@ import classes from './MessageBar.module.css';
 import AddEmojiSVG from '../../../assets/Icons/AddEmojiSVG';
 import AddAttachment from '../../../assets/Icons/AddAttachment';
 import EmojiPicker from 'emoji-picker-react';
-import { useUser } from '../../../store/userContext';
+import { useColorMode } from '../../../store/colorModeContext';
 
 const MessaggeBar = () => {
-  const { mode } = useUser();
+  const { mode } = useColorMode();
   const [messageValue, setMessageValue] = useState<string>('');
   const [emojiPickerOpen, setEmojiPickerOpen] = useState<boolean>(false);
 

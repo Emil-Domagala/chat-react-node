@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router';
 const ProfileForm = () => {
   const navigate = useNavigate();
   const serverURL = import.meta.env.VITE_SERVER_URL;
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const [firstName, setFirstName] = useState(user?.firstName || '');
   const [firstNameWasTouched, setFirstNameWasTouched] = useState(false);
 
@@ -42,7 +42,8 @@ const ProfileForm = () => {
     if (image) formData.append('image', image);
 
     if (!formIsValid) return;
-    await updateProfileHandler(formData);
+    const resData = await updateProfileHandler(formData);
+    setUser(resData.user);
     navigate('/chat');
   };
 

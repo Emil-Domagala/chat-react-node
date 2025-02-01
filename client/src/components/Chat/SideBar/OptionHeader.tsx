@@ -3,15 +3,15 @@ import classes from './OptionHeader.module.css';
 
 const OptionHeader = ({
   children,
-  onClick,
+  turnOn,
 }: {
   children: React.ReactNode;
-  onClick: React.MouseEventHandler<HTMLElement>;
+  turnOn: React.MouseEventHandler<HTMLElement>;
 }) => {
   return (
     <div className={`${classes['option-header']}`}>
       <h2>{children}</h2>
-      <div className={`${classes['svg']}`} onClick={onClick}>
+      <div className={`${classes['svg']}`} onClick={turnOn}>
         <PlusIconSVG />
       </div>
     </div>

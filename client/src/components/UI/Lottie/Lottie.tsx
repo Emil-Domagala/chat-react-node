@@ -3,7 +3,7 @@ import animationData from '../../../assets/lottie-json.json';
 
 import Lottie from 'react-lottie';
 
-function LottieComp() {
+function LottieComp({ size = 150 }: { size?: number }) {
   useEffect(() => {
     const imageElement = document.querySelector('#container-lottie-1 svg g g image');
     const colorMode = localStorage.getItem('color-mode');
@@ -17,7 +17,7 @@ function LottieComp() {
 
   return (
     <div id="container-lottie-1" className="lottie-container">
-      <Lottie isClickToPauseDisabled height={150} width={150} options={animationDEfaultOprions} />
+      <Lottie isClickToPauseDisabled height={size} width={size} options={animationDEfaultOprions} />
     </div>
   );
 }

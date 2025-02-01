@@ -6,9 +6,10 @@ type AvatarType = {
   imageUrl?: string;
   email?: string;
   firstName?: string;
+  fontSize: number;
 };
 
-const Avatar = ({ email, firstName, imageUrl, userColor }: AvatarType) => {
+const Avatar = ({ email, firstName, imageUrl, userColor, fontSize }: AvatarType) => {
   return (
     <div className={classes['avatar']} style={{ ...colors[userColor || 0] }}>
       {imageUrl ? (
@@ -19,9 +20,9 @@ const Avatar = ({ email, firstName, imageUrl, userColor }: AvatarType) => {
           }}
         />
       ) : firstName !== '' ? (
-        <p>{firstName?.charAt(0)}</p>
+        <p style={{ fontSize: fontSize + 'rem' }}>{firstName?.charAt(0)}</p>
       ) : (
-        <p>{email?.charAt(0)}</p>
+        <p style={{ fontSize: fontSize + 'rem' }}>{email?.charAt(0)}</p>
       )}
     </div>
   );

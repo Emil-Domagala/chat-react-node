@@ -9,7 +9,6 @@ export const logoutHandler = async () => {
   const response = await fetch(LOGOUT_ROUTE, {
     method: 'POST',
     credentials: 'include',
-
   });
   const resData = await response.json();
 
@@ -60,27 +59,8 @@ export const signupHandler = async (email: string, password: string, confirmPass
   return resData;
 };
 
-// export const fetchUserInfo = async () => {
-//   try {
-//     const response = await fetch(FETCH_USER_URL, {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       credentials: 'include',
-//     });
-//     const user = await response.json();
-//     return user;
-//   } catch (err) {
-//     return false;
-//   }
-// };
 
 export const updateProfileHandler = async (formData: FormData) => {
-  console.log(PUT_PROFILE_URL);
-
-  console.log(formData);
-
   const response = await fetch(PUT_PROFILE_URL, {
     method: 'PUT',
     credentials: 'include',
