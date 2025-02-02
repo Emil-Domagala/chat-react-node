@@ -17,8 +17,14 @@
   }
 }
 
-@media screen and (min-width: 648px) {
+@media (min-width: 992px) {
   .chat-container {
     display: flex;
+    width: 65%;
+  }
+}
+@media (min-width: 1200px) {
+  .chat-container {
+    width: 100%;
   }
 }

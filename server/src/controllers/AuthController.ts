@@ -152,7 +152,7 @@ export const login: ControllerFunctionType = async (req, res, next) => {
 
 export const getProfileSetup: ControllerFunctionType = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId).populate('contacts', 'firstName lastName image color');
+    const user = await User.findById(req.userId);
 
     if (!user) return res.status(404).send({ message: 'User with the given id not found' });
 

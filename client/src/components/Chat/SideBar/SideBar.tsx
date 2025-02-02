@@ -25,18 +25,21 @@ const SideBar = () => {
         <Logo />
         <OptionHeader turnOn={turnOnSearchModal}>Direct Messages</OptionHeader>
         {showSearchContactsModal && <SearchContactsModal turnOff={turnOffSearchModal} />}
-        {user?.contacts.map((contact) => {
-          return (
-            <Contact
-              key={contact._id}
-              _id={contact._id}
-              imageUrl={contact.image}
-              firstName={contact.firstName}
-              lastName={contact.lastName}
-              userColor={+contact.userColor}
-            />
-          );
-        })}
+
+        <ul className={classes['contacts-list']}>
+          {user?.contacts!.map((contact) => {
+            return (
+              <Contact
+                key={contact._id}
+                _id={contact._id}
+                image={contact.image}
+                firstName={contact.firstName}
+                lastName={contact.lastName}
+                color={+contact.color!}
+              />
+            );
+          })}
+        </ul>
 
         <OptionHeader turnOn={handleOpenGroups}>Group Chats</OptionHeader>
       </div>

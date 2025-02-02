@@ -3,20 +3,15 @@ import { useUser } from '../../../../store/userContext';
 import { deleteContactHandler } from '../../../../utils/httpContact';
 import UserItem from '../../../UI/Chat/UserItem';
 import classes from './Contact.module.css';
+import type { Contact, User } from '../../../../store/userContext';
 
 const Contact = ({
-  imageUrl,
+  image,
   lastName,
   firstName,
-  userColor,
+  color,
   _id,
-}: {
-  imageUrl: string;
-  lastName: string;
-  firstName: string;
-  userColor: number;
-  _id: string;
-}) => {
+}: Contact) => {
   const { user, setUser } = useUser();
 
   const handleDeleteContact = async () => {
@@ -25,9 +20,9 @@ const Contact = ({
       console.log(resData);
       if (resData.deletedUserId) {
         console.log('object');
-        const updatedContacts = user!.contacts!.filter((contact) => contact._id !== resData.deletedUserId);
+        const updatedContacts = user!.contacts!.filter((contact) => (contact as Contact)._id !== resData.deletedUserId);
         const updatedUser = { ...user, contacts: updatedContacts };
-        setUser(updatedUser);
+        setUser(updatedUser as User);
       }
     } catch (err) {
       console.log(err);
@@ -35,12 +30,12 @@ const Contact = ({
   };
 
   return (
-    <div className={`${classes['contact']}`}>
-      <UserItem imageURL={imageUrl} lastName={lastName} firstName={firstName} userColor={userColor} />
+    <li className={`${classes['contact']}`}>
+      <UserItem imageURL={image} lastName={lastName} firstName={firstName} userColor={+color!} />
       <div className={`${classes['svg']}`} onClick={handleDeleteContact}>
         <XIconSVG />
       </div>
-    </div>
+    </li>
   );
 };
 

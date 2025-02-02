@@ -2,19 +2,30 @@ import ChatComp from './ChatComp/ChatComp';
 import EmptyChat from './EmptyChat/EmptyChat';
 import SideBar from './SideBar/SideBar';
 import classes from './Chat.module.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useChatContext } from '../../store/chatContext';
 
 const Chat = () => {
-  const [showEmpty, setShowEmpty] = useState<boolean>(false);
+  const { currentContactId } = useChatContext();
+  const [windowWidth, setWindowWidth] = useState(0);
 
-  const handleShowEmpty = () => {
-    setShowEmpty((prev): boolean => !prev);
-  };
+  useEffect(() => {
+    function updateWindowWidth() {
+      setWindowWidth(window.innerWidth);
+    }
+    window.addEventListener('resize', updateWindowWidth);
+    updateWindowWidth();
+    return () => window.removeEventListener('resize', updateWindowWidth);
+  }, []);
 
   return (
     <div className={classes['chat-page']}>
-      <SideBar />
-      {showEmpty ? <EmptyChat /> : <ChatComp onClick={handleShowEmpty} />}
+      {windowWidth < 992 && (currentContactId ? <ChatComp /> : <SideBar />)}
+      {windowWidth >= 992 && (
+        <>
+          <SideBar /> {currentContactId ? <ChatComp /> : <EmptyChat />}
+        </>
+      )}
     </div>
   );
 };

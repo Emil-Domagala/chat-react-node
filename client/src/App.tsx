@@ -75,6 +75,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const { isLoading } = useUser();
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
   return <RouterProvider router={router} />;
 }
 

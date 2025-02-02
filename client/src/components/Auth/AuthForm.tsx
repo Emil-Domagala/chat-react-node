@@ -101,12 +101,14 @@ const AuthForm: React.FC = () => {
       if (mode === 'signup') {
         const resData = await signupHandler(email, password, confirmPassword);
         setUser(resData.user);
-        navigate('/profile');
+        sessionStorage.setItem('user', JSON.stringify(resData.user));
+        navigate('/profile', { replace: true });
       } else {
         const resData = await loginHandler(email, password);
         setUser(resData.user);
+        sessionStorage.setItem('user', JSON.stringify(resData.user));
         if (resData.user.profileSetup) navigate('/chat');
-        else navigate('/profile');
+        else navigate('/profile', { replace: true });
       }
       clearEmailHandler();
       clearConfirmPasswordHandler();

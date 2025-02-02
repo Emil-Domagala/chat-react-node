@@ -2,7 +2,10 @@ import XIconSVG from '../../../assets/Icons/XIconSVG';
 import UserItem from '../../UI/Chat/UserItem';
 import classes from './RecipientInfo.module.css';
 
-const RecipientInfo = ({ onClick }: { onClick: () => void }) => {
+const RecipientInfo = () => {
+
+  
+
   const userColor = 0;
   const firstName = 'Kamil';
   const lastName = 'Nowak';
@@ -11,7 +14,7 @@ const RecipientInfo = ({ onClick }: { onClick: () => void }) => {
   return (
     <div className={classes['recipient-info-wrapper']}>
       <UserItem imageURL={imageUrl} lastName={lastName} firstName={firstName} userColor={userColor} />
-      <button onClick={onClick} className={classes['svg']}>
+      <button  className={classes['svg']}>
         <XIconSVG />
       </button>
     </div>
