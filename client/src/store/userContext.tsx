@@ -10,6 +10,7 @@ export type Contact = {
 };
 
 export type User = {
+  id: string;
   email: string;
   firstName?: string;
   lastName?: string;
@@ -18,6 +19,7 @@ export type User = {
   profileSetup?: boolean;
   groups?: string[];
   contacts?: Contact[];
+  chats?: string[];
 };
 
 type UserContextType = {

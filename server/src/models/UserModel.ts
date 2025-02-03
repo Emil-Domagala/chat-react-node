@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema({
   },
   contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Group' }],
+  chats: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chat' }],
 });
 
 userSchema.pre('save', async function name(next) {

@@ -4,17 +4,16 @@ import { deleteContactHandler } from '../../../../utils/httpContact';
 import UserItem from '../../../UI/Chat/UserItem';
 import classes from './Contact.module.css';
 import type { Contact, User } from '../../../../store/userContext';
+import { useChatContext } from '../../../../store/chatContext';
 
-const Contact = ({
-  image,
-  lastName,
-  firstName,
-  color,
-  _id,
-}: Contact) => {
+const Contact = ({ image, lastName, firstName, color, _id }: Contact) => {
   const { user, setUser } = useUser();
+  const { setContact } = useChatContext();
 
-  const handleDeleteContact = async () => {
+  const contact = { image, lastName, firstName, color, _id };
+
+  const handleDeleteContact = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     try {
       const resData = await deleteContactHandler(_id);
       console.log(resData);
@@ -29,12 +28,16 @@ const Contact = ({
     }
   };
 
+  const handleChoseCurrentContact = () => {
+    setContact(contact);
+  };
+
   return (
-    <li className={`${classes['contact']}`}>
+    <li onClick={handleChoseCurrentContact} className={`${classes['contact']}`}>
       <UserItem imageURL={image} lastName={lastName} firstName={firstName} userColor={+color!} />
-      <div className={`${classes['svg']}`} onClick={handleDeleteContact}>
+      <button className={`${classes['svg']}`} onClick={handleDeleteContact}>
         <XIconSVG />
-      </div>
+      </button>
     </li>
   );
 };

@@ -1,10 +1,30 @@
 import mongoose from 'mongoose';
 
-const messageSchema = new mongoose.Schema(
+export type IMessage = {
+  sender: mongoose.Types.ObjectId;
+  chatId: mongoose.Types.ObjectId;
+  messageType: 'text' | 'file';
+  content?: string;
+  fileUrl?: string;
+};
+
+const messageSchema = new mongoose.Schema<IMessage>(
   {
-    sender: { senderID: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    chatId: { chatID: mongoose.Schema.Types.ObjectId, ref: 'Chat' },
-    content: { type: String, required: true },
+    sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    chatId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat', required: true },
+    messageType: { type: String, enum: ['text', 'file'], required: true },
+    content: {
+      type: String,
+      required: function () {
+        return this.messageType === 'text';
+      },
+    },
+    fileUrl: {
+      type: String,
+      required: function () {
+        return this.messageType === 'file';
+      },
+    },
   },
   { timestamps: true },
 );

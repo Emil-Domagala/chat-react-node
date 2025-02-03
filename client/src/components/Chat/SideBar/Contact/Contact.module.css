@@ -6,11 +6,15 @@
   color: var(--text);
   text-decoration: none;
   padding: 0.5rem 3rem 0.5rem 4rem;
+
   cursor: pointer;
   transition: background-color 0.4s, color 0.4s;
   .svg {
     display: flex;
     align-items: center;
+    border: none;
+    background-color: transparent;
+    color: var(--text);
     border-radius: 1rem;
     padding: 1.35rem;
     height: 4rem;

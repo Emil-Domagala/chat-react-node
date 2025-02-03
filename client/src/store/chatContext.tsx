@@ -1,30 +1,32 @@
 //i need to have states: isMessage
 
 import { createContext, useContext, useState, ReactNode } from 'react';
+import type { Contact } from './userContext';
 
 type ChatContextType = {
-  currentContactId: string | undefined;
-  setContactId: (contactId: string | undefined) => void;
+  currentContact: Contact | undefined;
+  setContact: (contact: Contact | undefined) => void;
 };
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const ChatContextProvider = ({ children }: { children: ReactNode }) => {
-  const [currentContactId, setCurrentContactId] = useState(() => {
-    return (localStorage.getItem('currentContactId') as string) || undefined;
+  const [currentContact, setCurrentContact] = useState(() => {
+    const storedContact = sessionStorage.getItem('currentContact');
+    return storedContact ? JSON.parse(storedContact) : undefined;
   });
 
-  const setContactId = (contactId: string | undefined) => {
-    if (contactId) {
-      setCurrentContactId(contactId);
-      localStorage.setItem('currentContactId', contactId);
+  const setContact = (contact: Contact | undefined) => {
+    if (contact) {
+      setCurrentContact(contact);
+      sessionStorage.setItem('currentContact', JSON.stringify(contact));
     } else {
-      setCurrentContactId(undefined);
-      localStorage.removeItem('currentContactId');
+      setCurrentContact(undefined);
+      sessionStorage.removeItem('currentContact');
     }
   };
 
-  return <ChatContext.Provider value={{ currentContactId, setContactId }}>{children}</ChatContext.Provider>;
+  return <ChatContext.Provider value={{ currentContact, setContact }}>{children}</ChatContext.Provider>;
 };
 
 export const useChatContext = () => {

@@ -1,20 +1,26 @@
 import XIconSVG from '../../../assets/Icons/XIconSVG';
 import UserItem from '../../UI/Chat/UserItem';
 import classes from './RecipientInfo.module.css';
+import type { Contact } from '../../../store/userContext';
+import { useChatContext } from '../../../store/chatContext';
 
-const RecipientInfo = () => {
+const RecipientInfo = ({ currentContact }: { currentContact: Contact }) => {
+  const { setContact } = useChatContext();
 
-  
-
-  const userColor = 0;
-  const firstName = 'Kamil';
-  const lastName = 'Nowak';
-  const imageUrl = '/uploads/profiles/679948dc8cb24747c3c04333-2025-01-28T22:11:42.346Z.jpg';
+  const handleEndConv = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setContact(undefined);
+  };
 
   return (
     <div className={classes['recipient-info-wrapper']}>
-      <UserItem imageURL={imageUrl} lastName={lastName} firstName={firstName} userColor={userColor} />
-      <button  className={classes['svg']}>
+      <UserItem
+        imageURL={currentContact.image}
+        lastName={currentContact.lastName}
+        firstName={currentContact.firstName}
+        userColor={+currentContact.color!}
+      />
+      <button className={classes['svg']} onClick={handleEndConv}>
         <XIconSVG />
       </button>
     </div>

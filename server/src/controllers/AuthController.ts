@@ -73,17 +73,8 @@ export const signup: ControllerFunctionType = async (req, res, next) => {
       sameSite: 'none',
     });
 
-    // return res.status(201).json({ message: 'Succes' });
-
     return res.status(200).json({ user: { id: user.id, email: user.email, profileSetup: user.profileSetup } });
 
-    // return res.status(201).json({
-    //   user: {
-    //     id: user.id,
-    //     email: user.email,
-    //     profileSetup: user.profileSetup,
-    //   },
-    // });
   } catch (err) {
     internalError(err, res);
   }
@@ -142,6 +133,7 @@ export const login: ControllerFunctionType = async (req, res, next) => {
         image: foundUser.image,
         color: foundUser.color,
         contacts: foundUser.contacts,
+        chats: foundUser.chats,
         // groups:{foundUser.groups}
       },
     });
@@ -182,6 +174,7 @@ export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
         image: user.image,
         color: user.color,
         contacts: user.contacts,
+        chats: user.chats,
         // groups:{user.groups}
       },
     });
@@ -226,6 +219,7 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
         image: user.image,
         color: user.color,
         contacts: user.contacts,
+        chats: user.chats,
         // groups:{user.groups}
       },
     });

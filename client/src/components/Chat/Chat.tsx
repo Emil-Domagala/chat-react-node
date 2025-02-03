@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useChatContext } from '../../store/chatContext';
 
 const Chat = () => {
-  const { currentContactId } = useChatContext();
+  const { currentContact } = useChatContext();
   const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
@@ -20,10 +20,10 @@ const Chat = () => {
 
   return (
     <div className={classes['chat-page']}>
-      {windowWidth < 992 && (currentContactId ? <ChatComp /> : <SideBar />)}
+      {windowWidth < 992 && (currentContact ? <ChatComp /> : <SideBar />)}
       {windowWidth >= 992 && (
         <>
-          <SideBar /> {currentContactId ? <ChatComp /> : <EmptyChat />}
+          <SideBar /> {currentContact ? <ChatComp /> : <EmptyChat />}
         </>
       )}
     </div>

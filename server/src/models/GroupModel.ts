@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const chatSchema = new mongoose.Schema(
+const groupSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
@@ -9,6 +9,6 @@ const chatSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const Message = mongoose.model('Chat', chatSchema);
+const Group = mongoose.model('Group', groupSchema);
 
-export default Message;
+export default Group;

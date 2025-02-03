@@ -7,8 +7,17 @@ export const searchContacts: ControllerFunctionType = async (req, res, next) => 
     if (!searchTerm) return res.status(400).send({ message: 'Serch Trem is required' });
     const sanitizedSearchTerm = searchTerm.replace(/[#-.]|[[-^]|[?|{}]/g, '\\$&');
     const regex = new RegExp(sanitizedSearchTerm, 'i');
+
+    const currentUser = await User.findById(req.userId).select('contacts');
+
+    if (!currentUser) return res.status(404).send({ message: 'User not found' });
+
     const users = await User.find({
-      $and: [{ _id: { $ne: req.userId } }, { $or: [{ firstName: regex }, { lastName: regex }, { email: regex }] }],
+      $and: [
+        { _id: { $ne: req.userId } },
+        { _id: { $nin: currentUser.contacts } },
+        { $or: [{ firstName: regex }, { lastName: regex }, { email: regex }] },
+      ],
     });
 
     const contacts = users.map((item) => ({
@@ -27,8 +36,6 @@ export const searchContacts: ControllerFunctionType = async (req, res, next) => 
 };
 export const addContact: ControllerFunctionType = async (req, res, next) => {
   try {
-    console.log('addContact');
-
     const { contactId } = req.body;
     if (!contactId) return res.status(400).json({ message: 'Contact ID is required' });
 

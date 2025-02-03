@@ -16,6 +16,8 @@
   bottom: 0;
   left: 0;
   right: 0;
+  width: calc(100% - 6rem);
+  max-width: 450px;
   margin: auto;
   display: flex;
   flex-direction: column;

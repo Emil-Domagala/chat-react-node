@@ -12,6 +12,7 @@
   text-decoration: none;
   transition: background-color 0.4s;
   border-radius: 1rem;
+  cursor: pointer;
 }
 
 .chat-link:hover {
