@@ -30,12 +30,13 @@ const SideBar = () => {
           {user?.contacts!.map((contact) => {
             return (
               <Contact
-                key={contact._id}
-                _id={contact._id}
-                image={contact.image}
-                firstName={contact.firstName}
-                lastName={contact.lastName}
-                color={+contact.color!}
+                chatId={contact.chatId}
+                key={contact.contactId._id}
+                _id={contact.contactId._id}
+                image={contact.contactId.image}
+                firstName={contact.contactId.firstName}
+                lastName={contact.contactId.lastName}
+                color={+contact.contactId.color!}
               />
             );
           })}

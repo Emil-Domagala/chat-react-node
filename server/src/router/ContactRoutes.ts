@@ -7,6 +7,6 @@ const contactRoutes = Router();
 
 contactRoutes.post('/search-contacts', verifyWebToken, ContactController.searchContacts);
 contactRoutes.post('/add-contact', verifyWebToken, ContactController.addContact);
-contactRoutes.post('/delete-contact', verifyWebToken, ContactController.deleteContact);
+contactRoutes.delete('/delete-contact', verifyWebToken, ContactController.deleteContact);
 
 export default contactRoutes;

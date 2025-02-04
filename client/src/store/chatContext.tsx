@@ -1,11 +1,12 @@
 //i need to have states: isMessage
 
 import { createContext, useContext, useState, ReactNode } from 'react';
-import type { Contact } from './userContext';
+import type { ContactDetail } from './userContext';
 
 type ChatContextType = {
-  currentContact: Contact | undefined;
-  setContact: (contact: Contact | undefined) => void;
+  currentContact: ContactDetail | undefined;
+  currentChatId: string | undefined;
+  setContact: (contact: ContactDetail | undefined, currentChatId: string | undefined) => void;
 };
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -15,18 +16,27 @@ export const ChatContextProvider = ({ children }: { children: ReactNode }) => {
     const storedContact = sessionStorage.getItem('currentContact');
     return storedContact ? JSON.parse(storedContact) : undefined;
   });
+  const [currentChatId, setCurrentChatId] = useState(() => {
+    const storedChatId = sessionStorage.getItem('currentChatId');
+    return storedChatId ? JSON.parse(storedChatId) : undefined;
+  });
 
-  const setContact = (contact: Contact | undefined) => {
-    if (contact) {
+  const setContact = (contact: ContactDetail | undefined, chatId: string | undefined) => {
+    if (contact && chatId) {
+      console.log(chatId);
       setCurrentContact(contact);
       sessionStorage.setItem('currentContact', JSON.stringify(contact));
+      setCurrentChatId(chatId);
+      sessionStorage.setItem('currentChatId', chatId);
     } else {
       setCurrentContact(undefined);
       sessionStorage.removeItem('currentContact');
+      setCurrentChatId(undefined);
+      sessionStorage.removeItem('currentChatId');
     }
   };
 
-  return <ChatContext.Provider value={{ currentContact, setContact }}>{children}</ChatContext.Provider>;
+  return <ChatContext.Provider value={{ currentContact, setContact, currentChatId }}>{children}</ChatContext.Provider>;
 };
 
 export const useChatContext = () => {

@@ -3,10 +3,19 @@ import { useUser } from '../../../../store/userContext';
 import { deleteContactHandler } from '../../../../utils/httpContact';
 import UserItem from '../../../UI/Chat/UserItem';
 import classes from './Contact.module.css';
-import type { Contact, User } from '../../../../store/userContext';
+import type { ContactDetail, User } from '../../../../store/userContext';
 import { useChatContext } from '../../../../store/chatContext';
 
-const Contact = ({ image, lastName, firstName, color, _id }: Contact) => {
+type handleContactInfo = {
+  chatId: string;
+  image: string;
+  lastName: string;
+  firstName: string;
+  color: number;
+  _id: string;
+};
+
+const Contact = ({ chatId, image, lastName, firstName, color, _id }: handleContactInfo) => {
   const { user, setUser } = useUser();
   const { setContact } = useChatContext();
 
@@ -15,11 +24,13 @@ const Contact = ({ image, lastName, firstName, color, _id }: Contact) => {
   const handleDeleteContact = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     try {
-      const resData = await deleteContactHandler(_id);
-      console.log(resData);
+      const resData = await deleteContactHandler(_id, chatId);
       if (resData.deletedUserId) {
-        console.log('object');
-        const updatedContacts = user!.contacts!.filter((contact) => (contact as Contact)._id !== resData.deletedUserId);
+        const isContactDetail = (contactId: string | ContactDetail): contactId is ContactDetail =>
+          typeof contactId !== 'string';
+        const updatedContacts = user!.contacts!.filter(
+          (contact) => isContactDetail(contact.contactId) && contact.contactId._id !== resData.deletedUserId,
+        );
         const updatedUser = { ...user, contacts: updatedContacts };
         setUser(updatedUser as User);
       }
@@ -29,7 +40,7 @@ const Contact = ({ image, lastName, firstName, color, _id }: Contact) => {
   };
 
   const handleChoseCurrentContact = () => {
-    setContact(contact);
+    setContact(contact, chatId);
   };
 
   return (

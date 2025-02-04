@@ -1,12 +1,17 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
-export type Contact = {
+export type ContactDetail = {
   _id: string;
   email?: string | undefined;
-  firstName?: string;
-  lastName?: string;
-  image?: string;
-  color?: number;
+  firstName: string;
+  lastName: string;
+  image: string;
+  color: number;
+};
+
+export type Contact = {
+  contactId: string | ContactDetail;
+  chatId: string;
 };
 
 export type User = {

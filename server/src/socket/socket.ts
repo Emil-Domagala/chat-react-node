@@ -28,7 +28,7 @@ const setupSocket = (server: Server) => {
 
   const sendMessage = async (message: IMessage) => {
     try {
-      const senderSocketId = userSocketMap.get(message.sender);
+      // const senderSocketId = userSocketMap.get(message.sender);
 
       const chat = await Chat.findById(message.chatId).populate('participants');
 
@@ -48,10 +48,7 @@ const setupSocket = (server: Server) => {
         const recipientSocketId = userSocketMap.get(participant._id.toString());
 
         if (recipientSocketId) {
-          io.to(recipientSocketId).emit('receiveMessage', messageData);
-        }
-        if (senderSocketId) {
-          io.to(senderSocketId).emit('recivedMessage', messageData);
+          io.to(recipientSocketId).emit('receiveMessage', {messageData});
         }
       });
     } catch (error) {

@@ -7,7 +7,6 @@ export type IMessage = {
   content?: string;
   fileUrl?: string;
 };
-
 const messageSchema = new mongoose.Schema<IMessage>(
   {
     sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -28,7 +27,5 @@ const messageSchema = new mongoose.Schema<IMessage>(
   },
   { timestamps: true },
 );
-
 const Message = mongoose.model('Message', messageSchema);
-
 export default Message;

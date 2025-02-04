@@ -2,6 +2,15 @@ import { createContext, useContext, useEffect, ReactNode, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useUser } from './userContext';
 
+export type IMessage = {
+  _id: string;
+  sender: string
+  chatId: string;
+  messageType: 'text' | 'file';
+  content?: string;
+  fileUrl?: string;
+};
+
 type SocketContextType = {
   socket: Socket | null;
 };
@@ -10,8 +19,6 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socket = useRef<Socket | null>(null);
-  //   const [socket, setSocket] = useState<Socket | null>(null);
-  //   const [isConnected, setIsConnected] = useState(false);
   const { user } = useUser();
 
   useEffect(() => {
@@ -25,10 +32,18 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         console.log('Connected to socket server from socketContext');
       });
 
-      const handleReciveMessage = () => {};
-
       socket.current.on('disconnect', () => {
         console.log('Disconnected from socket server');
+      });
+
+      socket.current.on('reciveMessage', (message: IMessage) => {
+        console.log(`Recived new message: ${message}`);
+
+        const chatId = message.chatId;
+        const storedMessages = JSON.parse(sessionStorage.getItem(`messages_${chatId}`) || '[]');
+
+        storedMessages.push(message);
+        sessionStorage.setItem(`messages_${chatId}`, JSON.stringify(storedMessages));
       });
     }
     return () => {
@@ -36,6 +51,12 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.current = null;
     };
   }, [user]);
+
+  const sendMessage = (message: IMessage) => {
+    if (socket.current) {
+      socket.current.emit('sendMessage', message);
+    }
+  };
 
   return <SocketContext.Provider value={{ socket: socket.current }}>{children}</SocketContext.Provider>;
 };

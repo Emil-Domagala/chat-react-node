@@ -14,12 +14,10 @@ const tokenExpiration = 60 * 60 * 1000 * 2;
 const createToken = (email: string, userId: string) => {
   return jswt.sign({ email, userId }, process.env.JWT_KEY!, { expiresIn: tokenExpiration });
 };
-
 const deleteOldImage = (oldFilePath: string) => {
   const filePath = path.join(__dirname, '..', '..', oldFilePath);
   fs.unlink(filePath, (err) => console.log(err));
 };
-
 export const signup: ControllerFunctionType = async (req, res, next) => {
   try {
     let { email, password, confirmPassword } = req.body;
@@ -74,7 +72,6 @@ export const signup: ControllerFunctionType = async (req, res, next) => {
     });
 
     return res.status(200).json({ user: { id: user.id, email: user.email, profileSetup: user.profileSetup } });
-
   } catch (err) {
     internalError(err, res);
   }
@@ -101,7 +98,7 @@ export const login: ControllerFunctionType = async (req, res, next) => {
 
     if (isError) return res.status(error.status).send({ error });
 
-    const foundUser = await User.findOne({ email }).populate('contacts', 'firstName lastName image color');
+    const foundUser = await User.findOne({ email }).populate('contacts.contactId', 'firstName lastName image color');
 
     if (!foundUser) {
       isError = true;
@@ -133,7 +130,6 @@ export const login: ControllerFunctionType = async (req, res, next) => {
         image: foundUser.image,
         color: foundUser.color,
         contacts: foundUser.contacts,
-        chats: foundUser.chats,
         // groups:{foundUser.groups}
       },
     });
@@ -160,7 +156,7 @@ export const getProfileSetup: ControllerFunctionType = async (req, res, next) =>
 
 export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId).populate('contacts', 'firstName lastName image color');
+    const user = await User.findById(req.userId).populate('contacts.contactId', 'firstName lastName image color');
 
     if (!user) return res.status(404).send({ message: 'User with the given id not found' });
 
@@ -174,7 +170,6 @@ export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
         image: user.image,
         color: user.color,
         contacts: user.contacts,
-        chats: user.chats,
         // groups:{user.groups}
       },
     });
@@ -194,7 +189,7 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
     if (!firstName || !lastName || !color)
       return res.status(400).send({ message: 'First Name, Last Name, and Color are required' });
 
-    const user = await User.findById(userId).populate('contacts', 'firstName lastName image color');
+    const user = await User.findById(userId).populate('contacts.contactId', 'firstName lastName image color');
 
     if (!user) return res.status(404).send({ message: 'User not found' });
 
@@ -219,7 +214,6 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
         image: user.image,
         color: user.color,
         contacts: user.contacts,
-        chats: user.chats,
         // groups:{user.groups}
       },
     });

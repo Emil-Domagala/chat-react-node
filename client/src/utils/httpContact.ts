@@ -42,13 +42,13 @@ export const addContactHandler = async (contactId: string) => {
   return resData;
 };
 
-export const deleteContactHandler = async (deleteContactId: string) => {
+export const deleteContactHandler = async (deleteContactId: string,chatId:string) => {
   const response = await fetch(DELETE_CONTACT_ROUTE, {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ deleteContactId }),
+    body: JSON.stringify({ deleteContactId, chatId }),
     credentials: 'include',
   });
   const resData = await response.json();

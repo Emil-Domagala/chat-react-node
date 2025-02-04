@@ -7,11 +7,13 @@ import { Link, useNavigate } from 'react-router';
 import { logoutHandler } from '../../../utils/httpAuth';
 import UserItem from '../../UI/Chat/UserItem';
 import { useColorMode } from '../../../store/colorModeContext';
+import { useChatContext } from '../../../store/chatContext';
 
 const UserMenuBar = () => {
   const navigate = useNavigate();
   const { mode, setLightColorMode, setDarkColorMode } = useColorMode();
   const { user, setUser } = useUser();
+  const { setContact } = useChatContext();
   const userColor = user?.color || 0;
 
   const toggleChangeColorMode = () => {
@@ -22,7 +24,7 @@ const UserMenuBar = () => {
   const handleLogout = async () => {
     try {
       const resData = await logoutHandler();
-      if (resData) return navigate('/'), setUser(undefined);
+      if (resData) return navigate('/'), setUser(undefined), setContact(undefined, undefined);
     } catch (err) {
       console.log(err);
     }
