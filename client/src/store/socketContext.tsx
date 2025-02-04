@@ -3,8 +3,8 @@ import { io, Socket } from 'socket.io-client';
 import { useUser } from './userContext';
 
 export type IMessage = {
-  _id: string;
-  sender: string
+  _id?: string;
+  sender: string;
   chatId: string;
   messageType: 'text' | 'file';
   content?: string;
@@ -13,6 +13,7 @@ export type IMessage = {
 
 type SocketContextType = {
   socket: Socket | null;
+  sendMessage: any;
 };
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -36,10 +37,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         console.log('Disconnected from socket server');
       });
 
-      socket.current.on('reciveMessage', (message: IMessage) => {
-        console.log(`Recived new message: ${message}`);
-
-        const chatId = message.chatId;
+      socket.current.on('receivedMessage', (message) => {
+        const chatId = message.messageData.chatId;
         const storedMessages = JSON.parse(sessionStorage.getItem(`messages_${chatId}`) || '[]');
 
         storedMessages.push(message);
@@ -53,12 +52,14 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
 
   const sendMessage = (message: IMessage) => {
+    console.log('context socket send message');
+    console.log(message);
     if (socket.current) {
       socket.current.emit('sendMessage', message);
     }
   };
 
-  return <SocketContext.Provider value={{ socket: socket.current }}>{children}</SocketContext.Provider>;
+  return <SocketContext.Provider value={{ socket: socket.current, sendMessage }}>{children}</SocketContext.Provider>;
 };
 
 export const useSocket = () => {

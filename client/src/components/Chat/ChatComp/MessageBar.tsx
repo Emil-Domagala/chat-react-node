@@ -7,11 +7,17 @@ import AddEmojiSVG from '../../../assets/Icons/AddEmojiSVG';
 import AddAttachment from '../../../assets/Icons/AddAttachment';
 import EmojiPicker from 'emoji-picker-react';
 import { useColorMode } from '../../../store/colorModeContext';
+import { useSocket } from '../../../store/socketContext';
+import { useChatContext } from '../../../store/chatContext';
+import { useUser } from '../../../store/userContext';
 
 const MessaggeBar = () => {
   const { mode } = useColorMode();
   const [messageValue, setMessageValue] = useState<string>('');
   const [emojiPickerOpen, setEmojiPickerOpen] = useState<boolean>(false);
+  const { sendMessage } = useSocket();
+  const { currentChatId } = useChatContext();
+  const { user } = useUser();
 
   const toggleEmojiPicker = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -21,6 +27,17 @@ const MessaggeBar = () => {
   const closeEmojiPicker = () => {
     if (!emojiPickerOpen) return;
     setEmojiPickerOpen(false);
+  };
+
+  const handleSendMessage = () => {
+    const message = {
+      sender: user?.id,
+      chatId: currentChatId,
+      messageType: 'text',
+      content: messageValue,
+    };
+
+    sendMessage(message);
   };
 
   return (
@@ -52,7 +69,7 @@ const MessaggeBar = () => {
           open={emojiPickerOpen}
           onEmojiClick={(emoji) => setMessageValue((prev) => prev + emoji.emoji)}
         />
-        <button className={classes['send-button']}>
+        <button onClick={handleSendMessage} className={classes['send-button']}>
           <div className={classes['svg']}>
             <SendIconSVG />
           </div>

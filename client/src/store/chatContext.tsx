@@ -18,7 +18,7 @@ export const ChatContextProvider = ({ children }: { children: ReactNode }) => {
   });
   const [currentChatId, setCurrentChatId] = useState(() => {
     const storedChatId = sessionStorage.getItem('currentChatId');
-    return storedChatId ? JSON.parse(storedChatId) : undefined;
+    return storedChatId ? storedChatId : undefined;
   });
 
   const setContact = (contact: ContactDetail | undefined, chatId: string | undefined) => {
