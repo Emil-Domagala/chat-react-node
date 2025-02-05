@@ -5,14 +5,17 @@ import { ColorModeProvider } from './store/colorModeContext.tsx';
 import './index.css';
 import App from './App.tsx';
 import { SocketProvider } from './store/socketContext.tsx';
+import { ChatContextProvider } from './store/chatContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <UserProvider>
       <ColorModeProvider>
-        <SocketProvider>
-          <App />
-        </SocketProvider>
+        <ChatContextProvider>
+          <SocketProvider>
+            <App />
+          </SocketProvider>
+        </ChatContextProvider>
       </ColorModeProvider>
     </UserProvider>
   </StrictMode>,

@@ -3,6 +3,7 @@ import User from '../models/UserModel.ts';
 import Chat from '../models/ChatModel.ts';
 import { internalError } from '../utils/InternalError.ts';
 import Message from '../models/MessageModel.ts';
+import { notifyContactDeletion, notifyContactAdded } from '../socket/socket.ts';
 
 export const searchContacts: ControllerFunctionType = async (req, res, next) => {
   try {
@@ -65,9 +66,23 @@ export const addContact: ControllerFunctionType = async (req, res, next) => {
       email: contact.email,
       chatId: chat._id,
       color: contact.color,
+      image: contact.image,
     };
 
     await Promise.all([user.save(), contact.save()]);
+
+    notifyContactAdded(
+      {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        chatId: chat._id,
+        color: user.color,
+        image: user.image,
+      },
+      contact._id.toString(),
+    );
 
     return res.status(200).json({
       newContact,
@@ -99,6 +114,8 @@ export const deleteContact: ControllerFunctionType = async (req, res, next) => {
       user.updateOne({ $pull: { contacts: { contactId: deleteContactId, chatId } } }),
       contact.updateOne({ $pull: { contacts: { contactId: user._id, chatId } } }),
     ]);
+
+    notifyContactDeletion(user._id.toString(), deleteContactId.toString(), chat._id.toHexString());
 
     return res.status(200).json({ message: 'Success', deletedUserId: contact._id });
   } catch (err) {

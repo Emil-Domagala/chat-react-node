@@ -6,7 +6,7 @@ import authRoutes from './src/router/AuthRoutes.ts';
 import contactRoutes from './src/router/ContactRoutes.ts';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import setupSocket from './src/socket/socket.ts';
+import { setupSocket } from './src/socket/socket.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

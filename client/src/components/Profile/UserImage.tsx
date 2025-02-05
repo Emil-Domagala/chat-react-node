@@ -8,7 +8,7 @@ interface UserImageProps {
   email: string;
   selectedColor: number;
   imagePath: string | undefined;
-  previewImage: string | null; // Preview URL for selected image
+  previewImage: string | null; 
   handleAddImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

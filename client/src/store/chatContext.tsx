@@ -23,7 +23,6 @@ export const ChatContextProvider = ({ children }: { children: ReactNode }) => {
 
   const setContact = (contact: ContactDetail | undefined, chatId: string | undefined) => {
     if (contact && chatId) {
-      console.log(chatId);
       setCurrentContact(contact);
       sessionStorage.setItem('currentContact', JSON.stringify(contact));
       setCurrentChatId(chatId);

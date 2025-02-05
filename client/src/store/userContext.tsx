@@ -52,6 +52,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // const deleteContactCash =()=>{
+
+  // }
+
   useEffect(() => {
     fetchUser();
   }, []);

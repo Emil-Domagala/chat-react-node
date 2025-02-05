@@ -38,13 +38,12 @@ const SearchContactsModal = ({ turnOff }: { turnOff: React.MouseEventHandler<HTM
       }
       const existingContacts = Array.isArray(user?.contacts) ? user.contacts : [];
 
-      console.log(addedContact.newContact);
-
       const contactId = {
         _id: addedContact.newContact._id,
         color: addedContact.newContact.color,
         firstName: addedContact.newContact.firstName,
         lastName: addedContact.newContact.lastName,
+        image: addedContact.newContact.image,
       };
 
       const updatedUser = {

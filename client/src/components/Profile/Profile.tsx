@@ -6,7 +6,6 @@ import { Link } from 'react-router';
 
 const Profile = () => {
   const { user } = useUser();
-  // console.log(user);
   return (
     <div className={`${classes['card']}`}>
       {user?.profileSetup === true ? (

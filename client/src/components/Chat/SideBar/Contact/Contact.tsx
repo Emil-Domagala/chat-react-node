@@ -17,7 +17,7 @@ type handleContactInfo = {
 
 const Contact = ({ chatId, image, lastName, firstName, color, _id }: handleContactInfo) => {
   const { user, setUser } = useUser();
-  const { setContact } = useChatContext();
+  const { currentChatId, setContact } = useChatContext();
 
   const contact = { image, lastName, firstName, color, _id };
 
@@ -33,6 +33,10 @@ const Contact = ({ chatId, image, lastName, firstName, color, _id }: handleConta
         );
         const updatedUser = { ...user, contacts: updatedContacts };
         setUser(updatedUser as User);
+        sessionStorage.removeItem(`messages_${chatId}`);
+        if (currentChatId === chatId) {
+          setContact(undefined, undefined);
+        }
       }
     } catch (err) {
       console.log(err);

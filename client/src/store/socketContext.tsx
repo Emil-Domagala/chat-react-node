@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, ReactNode, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useUser } from './userContext';
+import type { ContactDetail, User } from './userContext';
+import { useChatContext } from './chatContext';
 
 export type IMessage = {
   _id?: string;
@@ -13,14 +15,15 @@ export type IMessage = {
 
 type SocketContextType = {
   socket: Socket | null;
-  sendMessage: any;
+  sendMessage: (message: IMessage) => void;
 };
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socket = useRef<Socket | null>(null);
-  const { user } = useUser();
+  const { user, setUser } = useUser();
+  const { setContact } = useChatContext();
 
   useEffect(() => {
     if (user && !socket.current) {
@@ -37,11 +40,14 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         console.log('Disconnected from socket server');
       });
 
+      socket.current.on('contactDeleted', deleteContact);
+      socket.current.on('contactAdded', addContact);
+
       socket.current.on('receivedMessage', (message) => {
         const chatId = message.messageData.chatId;
         const storedMessages = JSON.parse(sessionStorage.getItem(`messages_${chatId}`) || '[]');
 
-        storedMessages.push(message);
+        storedMessages.push(message.messageData);
         sessionStorage.setItem(`messages_${chatId}`, JSON.stringify(storedMessages));
       });
     }
@@ -51,9 +57,46 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [user]);
 
+  const deleteContact = ({ deletedUserId, chatId }: { deletedUserId: string; chatId: string }) => {
+    const currentChatId = sessionStorage.getItem('currentChatId');
+    sessionStorage.removeItem(`messages_${chatId}`);
+    const updatedContacts = user!.contacts!.filter(
+      (contact) => contact.contactId && contact.contactId._id !== deletedUserId,
+    );
+    const updatedUser = { ...user, contacts: updatedContacts };
+    setUser(updatedUser as User);
+
+    if (currentChatId === chatId) {
+      setContact(undefined, undefined);
+    }
+  };
+
+  const addContact = ({ newContact }) => {
+    console.log(newContact);
+    const existingContacts = Array.isArray(user?.contacts) ? user.contacts : [];
+
+    const contactId = {
+      _id: newContact._id,
+      color: newContact.color,
+      firstName: newContact.firstName,
+      lastName: newContact.lastName,
+      image: newContact.image,
+    };
+
+    const updatedUser = {
+      ...user,
+      contacts: [
+        ...existingContacts,
+        {
+          contactId,
+          chatId: newContact.chatId,
+        },
+      ],
+    };
+    setUser(updatedUser as User);
+  };
+
   const sendMessage = (message: IMessage) => {
-    console.log('context socket send message');
-    console.log(message);
     if (socket.current) {
       socket.current.emit('sendMessage', message);
     }

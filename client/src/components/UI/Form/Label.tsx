@@ -1,23 +1,16 @@
 import MoreInfoSvg from '../../../assets/Icons/MoreInfoSVG';
 import classes from './Label.module.css';
-import classNames from 'classnames';
 
 type LabelType = {
   moreInfo?: string;
   htmlFor: string;
-  size?: 'small' | 'medium' | 'big';
   children: React.ReactNode;
-  className?: string;
 };
 
-function Label({ moreInfo, htmlFor, children, size, className }: LabelType) {
-  const labelClasses = classNames(classes.label, className, {
-    [classes.small]: size === 'small',
-  });
-
+function Label({ moreInfo, htmlFor, children }: LabelType) {
   return (
     <div className={classes['label-container']}>
-      <label htmlFor={htmlFor} className={labelClasses}>
+      <label htmlFor={htmlFor} className={classes.label}>
         {children}
       </label>
       {moreInfo && (
