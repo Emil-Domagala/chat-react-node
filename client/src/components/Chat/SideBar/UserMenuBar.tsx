@@ -4,7 +4,7 @@ import SunSVG from '../../../assets/Icons/SunSVG';
 import TurnOffSVG from '../../../assets/Icons/TurnOffSVG';
 import classes from './UserMenuBar.module.css';
 import { Link, useNavigate } from 'react-router';
-import { logoutHandler } from '../../../utils/httpAuth';
+import { logoutHTTP } from '../../../utils/httpAuth';
 import UserItem from '../../UI/Chat/UserItem';
 import { useColorMode } from '../../../store/colorModeContext';
 import { useChatContext } from '../../../store/chatContext';
@@ -23,7 +23,7 @@ const UserMenuBar = () => {
 
   const handleLogout = async () => {
     try {
-      const resData = await logoutHandler();
+      const resData = await logoutHTTP();
       if (resData) return navigate('/'), setUser(undefined), setContact(undefined, undefined);
     } catch (err) {
       console.log(err);

@@ -14,6 +14,8 @@ export type Contact = {
   chatId: string;
 };
 
+export type ContactDetailWithChatId = ContactDetail & { chatId: string };
+
 export type User = {
   id: string;
   email: string;
@@ -32,6 +34,8 @@ type UserContextType = {
   setUser: (user: User | undefined) => void;
   fetchUser: () => Promise<void>;
   isLoading: boolean;
+  saveUserOnContactDeletion: (deletedUserId: string, chatId: string) => void;
+  saveUserOnContactAdd: (newContact: ContactDetailWithChatId) => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -52,9 +56,43 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // const deleteContactCash =()=>{
+  const saveUserOnContactDeletion = (deletedUserId: string, chatId: string) => {
+    const updatedContacts = user!.contacts!.filter(
+      (contact) => contact.contactId && contact.contactId._id !== deletedUserId,
+    );
+    setUser({ ...user, contacts: updatedContacts } as User);
+    sessionStorage.removeItem(`messages_${chatId}`);
+  };
 
-  // }
+  const saveUserOnContactAdd = (newContact: ContactDetailWithChatId) => {
+    if (!user || !newContact) {
+      console.log('Failed to add contact');
+      return;
+    }
+
+    const existingContacts = Array.isArray(user.contacts) ? user.contacts : [];
+
+    const contactId = {
+      _id: newContact._id,
+      color: newContact.color,
+      firstName: newContact.firstName,
+      lastName: newContact.lastName,
+      image: newContact.image,
+    } as ContactDetail;
+
+    const updatedUser = {
+      ...user,
+      contacts: [
+        ...existingContacts,
+        {
+          contactId,
+          chatId: newContact.chatId,
+        },
+      ],
+    };
+
+    setUser(updatedUser as User);
+  };
 
   useEffect(() => {
     fetchUser();
@@ -90,7 +128,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  return <UserContext.Provider value={{ user, setUser, fetchUser, isLoading }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider
+      value={{ user, setUser, fetchUser, isLoading, saveUserOnContactDeletion, saveUserOnContactAdd }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 // Custom hook for using the context

@@ -4,7 +4,7 @@ const ADD_CONTACT_ROUTE = serverUrl + contactPath + '/add-contact';
 const SEARCH_CONTACTS_ROUTE = serverUrl + contactPath + '/search-contacts';
 const DELETE_CONTACT_ROUTE = serverUrl + contactPath + '/delete-contact';
 
-export const searchContactHandler = async (searchTerm: string) => {
+export const searchContactHTTP = async (searchTerm: string) => {
   const response = await fetch(SEARCH_CONTACTS_ROUTE, {
     method: 'POST',
     headers: {
@@ -23,7 +23,7 @@ export const searchContactHandler = async (searchTerm: string) => {
   return resData;
 };
 
-export const addContactHandler = async (contactId: string) => {
+export const addContactHTTP = async (contactId: string) => {
   const response = await fetch(ADD_CONTACT_ROUTE, {
     method: 'POST',
     headers: {
@@ -42,7 +42,7 @@ export const addContactHandler = async (contactId: string) => {
   return resData;
 };
 
-export const deleteContactHandler = async (deleteContactId: string,chatId:string) => {
+export const deleteContactHTTP = async (deleteContactId: string, chatId: string) => {
   const response = await fetch(DELETE_CONTACT_ROUTE, {
     method: 'DELETE',
     headers: {

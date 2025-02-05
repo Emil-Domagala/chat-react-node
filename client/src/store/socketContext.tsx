@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, ReactNode, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useUser } from './userContext';
-import type { ContactDetail, User } from './userContext';
+import type { ContactDetailWithChatId } from './userContext';
 import { useChatContext } from './chatContext';
 
 export type IMessage = {
@@ -22,7 +22,7 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socket = useRef<Socket | null>(null);
-  const { user, setUser } = useUser();
+  const { user, saveUserOnContactDeletion, saveUserOnContactAdd } = useUser();
   const { setContact } = useChatContext();
 
   useEffect(() => {
@@ -59,41 +59,15 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
   const deleteContact = ({ deletedUserId, chatId }: { deletedUserId: string; chatId: string }) => {
     const currentChatId = sessionStorage.getItem('currentChatId');
-    sessionStorage.removeItem(`messages_${chatId}`);
-    const updatedContacts = user!.contacts!.filter(
-      (contact) => contact.contactId && contact.contactId._id !== deletedUserId,
-    );
-    const updatedUser = { ...user, contacts: updatedContacts };
-    setUser(updatedUser as User);
+    saveUserOnContactDeletion(deletedUserId, chatId);
 
     if (currentChatId === chatId) {
       setContact(undefined, undefined);
     }
   };
 
-  const addContact = ({ newContact }) => {
-    console.log(newContact);
-    const existingContacts = Array.isArray(user?.contacts) ? user.contacts : [];
-
-    const contactId = {
-      _id: newContact._id,
-      color: newContact.color,
-      firstName: newContact.firstName,
-      lastName: newContact.lastName,
-      image: newContact.image,
-    };
-
-    const updatedUser = {
-      ...user,
-      contacts: [
-        ...existingContacts,
-        {
-          contactId,
-          chatId: newContact.chatId,
-        },
-      ],
-    };
-    setUser(updatedUser as User);
+  const addContact = ({ newContact }: { newContact: ContactDetailWithChatId }) => {
+    saveUserOnContactAdd(newContact);
   };
 
   const sendMessage = (message: IMessage) => {

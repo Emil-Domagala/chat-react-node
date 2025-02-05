@@ -7,7 +7,7 @@ import { useActionState } from 'react';
 import useInputValidation from '../../hooks/UseInputValidation';
 import ErrorText from '../UI/Form/ErrorText';
 import { useNavigate } from 'react-router';
-import { loginHandler, signupHandler } from '../../utils/httpAuth';
+import { loginHTTP, signupHTTP } from '../../utils/httpAuth';
 import { useUser } from '../../store/userContext';
 
 interface CustomError extends Error {
@@ -99,12 +99,12 @@ const AuthForm: React.FC = () => {
 
     try {
       if (mode === 'signup') {
-        const resData = await signupHandler(email, password, confirmPassword);
+        const resData = await signupHTTP(email, password, confirmPassword);
         setUser(resData.user);
         sessionStorage.setItem('user', JSON.stringify(resData.user));
         navigate('/profile', { replace: true });
       } else {
-        const resData = await loginHandler(email, password);
+        const resData = await loginHTTP(email, password);
         setUser(resData.user);
         sessionStorage.setItem('user', JSON.stringify(resData.user));
         if (resData.user.profileSetup) navigate('/chat');

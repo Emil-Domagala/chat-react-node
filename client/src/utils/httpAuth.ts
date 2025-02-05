@@ -5,7 +5,7 @@ const LOGIN_ROUTE = serverUrl + authPath + '/login';
 const LOGOUT_ROUTE = serverUrl + authPath + '/logout';
 const PUT_PROFILE_URL = serverUrl + authPath + '/update-profile';
 
-export const logoutHandler = async () => {
+export const logoutHTTP = async () => {
   const response = await fetch(LOGOUT_ROUTE, {
     method: 'POST',
     credentials: 'include',
@@ -20,7 +20,7 @@ export const logoutHandler = async () => {
   return resData;
 };
 
-export const loginHandler = async (email: string, password: string) => {
+export const loginHTTP = async (email: string, password: string) => {
   const response = await fetch(LOGIN_ROUTE, {
     method: 'POST',
     headers: {
@@ -39,7 +39,7 @@ export const loginHandler = async (email: string, password: string) => {
   return resData;
 };
 
-export const signupHandler = async (email: string, password: string, confirmPassword: string) => {
+export const signupHTTP = async (email: string, password: string, confirmPassword: string) => {
   const response = await fetch(SIGNUP_ROUTE, {
     method: 'POST',
     headers: {
@@ -58,7 +58,6 @@ export const signupHandler = async (email: string, password: string, confirmPass
   }
   return resData;
 };
-
 
 export const updateProfileHandler = async (formData: FormData) => {
   const response = await fetch(PUT_PROFILE_URL, {

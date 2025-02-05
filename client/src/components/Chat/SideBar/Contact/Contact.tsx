@@ -1,6 +1,6 @@
 import XIconSVG from '../../../../assets/Icons/XIconSVG';
 import { useUser } from '../../../../store/userContext';
-import { deleteContactHandler } from '../../../../utils/httpContact';
+import { deleteContactHTTP } from '../../../../utils/httpContact';
 import UserItem from '../../../UI/Chat/UserItem';
 import classes from './Contact.module.css';
 import type { ContactDetail, User } from '../../../../store/userContext';
@@ -16,7 +16,7 @@ type handleContactInfo = {
 };
 
 const Contact = ({ chatId, image, lastName, firstName, color, _id }: handleContactInfo) => {
-  const { user, setUser } = useUser();
+  const { saveUserOnContactDeletion } = useUser();
   const { currentChatId, setContact } = useChatContext();
 
   const contact = { image, lastName, firstName, color, _id };
@@ -24,16 +24,9 @@ const Contact = ({ chatId, image, lastName, firstName, color, _id }: handleConta
   const handleDeleteContact = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     try {
-      const resData = await deleteContactHandler(_id, chatId);
+      const resData = await deleteContactHTTP(_id, chatId);
       if (resData.deletedUserId) {
-        const isContactDetail = (contactId: string | ContactDetail): contactId is ContactDetail =>
-          typeof contactId !== 'string';
-        const updatedContacts = user!.contacts!.filter(
-          (contact) => isContactDetail(contact.contactId) && contact.contactId._id !== resData.deletedUserId,
-        );
-        const updatedUser = { ...user, contacts: updatedContacts };
-        setUser(updatedUser as User);
-        sessionStorage.removeItem(`messages_${chatId}`);
+        saveUserOnContactDeletion(resData.deletedUserId, chatId);
         if (currentChatId === chatId) {
           setContact(undefined, undefined);
         }
