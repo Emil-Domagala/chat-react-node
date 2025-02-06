@@ -60,3 +60,4 @@ export const deleteContactHTTP = async (deleteContactId: string, chatId: string)
   }
   return resData;
 };
+

@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import authRoutes from './src/router/AuthRoutes.ts';
 import contactRoutes from './src/router/ContactRoutes.ts';
+import messageRoutes from './src/router/MessageRoutes.ts';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setupSocket } from './src/socket/socket.ts';
@@ -28,6 +29,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/contacts', contactRoutes);
+app.use('/api/message', messageRoutes);
 
 const server = app.listen(PORT, () => {
   console.log(`SERVER RUN ON PORT: ${PORT}`);

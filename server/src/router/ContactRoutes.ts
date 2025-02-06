@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import * as ContactController from '../controllers/ContactController.ts';
 import { verifyWebToken } from '../middlewares/AuthMiddleware.ts';
-// import uploadMiddleware from '../middlewares/multer.ts';
 
 const contactRoutes = Router();
 

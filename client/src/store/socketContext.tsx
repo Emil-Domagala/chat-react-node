@@ -45,8 +45,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
       socket.current.on('receivedMessage', (message) => {
         const chatId = message.messageData.chatId;
-        const storedMessages = JSON.parse(sessionStorage.getItem(`messages_${chatId}`) || '[]');
 
+        const storedMessages = JSON.parse(sessionStorage.getItem(`messages_${chatId}`) || '[]');
         storedMessages.push(message.messageData);
         sessionStorage.setItem(`messages_${chatId}`, JSON.stringify(storedMessages));
       });
