@@ -30,6 +30,7 @@ const MessaggeBar = () => {
   };
 
   const handleSendMessage = () => {
+    if (messageValue.trim() === '') return;
     const message = {
       sender: user?.id,
       chatId: currentChatId,
@@ -38,6 +39,13 @@ const MessaggeBar = () => {
     };
 
     sendMessage(message);
+    setMessageValue('');
+  };
+
+  const handleKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      handleSendMessage();
+    }
   };
 
   return (
@@ -46,6 +54,7 @@ const MessaggeBar = () => {
       <div className={classes['message-bar--wrapper']}>
         <div className={classes['textarea-wrapper']}>
           <ReactTextareaAutosize
+            onKeyUp={handleKeyUp}
             onChange={(e) => setMessageValue(() => e.target.value)}
             placeholder="Enter your message"
             minRows={1}

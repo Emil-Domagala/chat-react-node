@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, ReactNode, useRef } from 'react';
+import { createContext, useContext, useEffect, ReactNode, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useUser } from './userContext';
 import type { ContactDetailWithChatId } from './userContext';
@@ -15,47 +15,55 @@ export type IMessage = {
 
 type SocketContextType = {
   socket: Socket | null;
+  fetchMessages: (currentChatId: string, page: number) => Promise<void>;
   sendMessage: (message: IMessage) => void;
+  messages: IMessage[];
 };
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
+  const serverUrl = import.meta.env.VITE_SERVER_URL;
+  const messagePath = import.meta.env.VITE_MESSAGE_BASE_PATH;
+  const FETCH_MESSAGE_ROUTE = serverUrl + messagePath + '/fetch-messages';
+
   const socket = useRef<Socket | null>(null);
   const { user, saveUserOnContactDeletion, saveUserOnContactAdd } = useUser();
   const { setContact } = useChatContext();
 
-  useEffect(() => {
-    if (user && !socket.current) {
-      socket.current = io(import.meta.env.VITE_SERVER_URL, {
-        withCredentials: true,
-        query: { userId: user.id },
+  //
+  const [messagesAreLoading, setMessagesAreLoading] = useState(true);
+  const [messages, setMessagesState] = useState<IMessage[]>(() => {
+    const chatId = sessionStorage.getItem('currentChatId');
+    const storedMessages = chatId ? sessionStorage.getItem(`messages_${chatId}`) : null;
+    return storedMessages ? JSON.parse(storedMessages) : [];
+  });
+  //
+
+  const fetchMessages = async (currentChatId: string, page: number) => {
+    if (!currentChatId) return;
+    if (!page) page = 1;
+    setMessagesAreLoading(true);
+    try {
+      const response = await fetch(`${FETCH_MESSAGE_ROUTE}?chatId=${currentChatId}&page=${page}&limit=50`, {
+        method: 'GET',
+        credentials: 'include',
       });
+      const resData = await response.json();
 
-      socket.current.on('connect', () => {
-        console.log('Connected to socket server from socketContext');
-      });
+      if (!response.ok) {
+        const error = new Error(resData.message || 'Getting messages failed') as Error & { errorData?: object };
+        error.errorData = resData;
+        throw error;
+      }
 
-      socket.current.on('disconnect', () => {
-        console.log('Disconnected from socket server');
-      });
-
-      socket.current.on('contactDeleted', deleteContact);
-      socket.current.on('contactAdded', addContact);
-
-      socket.current.on('receivedMessage', (message) => {
-        const chatId = message.messageData.chatId;
-
-        const storedMessages = JSON.parse(sessionStorage.getItem(`messages_${chatId}`) || '[]');
-        storedMessages.push(message.messageData);
-        sessionStorage.setItem(`messages_${chatId}`, JSON.stringify(storedMessages));
-      });
+      setMessages(resData.messages);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setMessagesAreLoading(false);
     }
-    return () => {
-      socket.current?.disconnect();
-      socket.current = null;
-    };
-  }, [user]);
+  };
 
   const deleteContact = ({ deletedUserId, chatId }: { deletedUserId: string; chatId: string }) => {
     const currentChatId = sessionStorage.getItem('currentChatId');
@@ -76,7 +84,49 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  return <SocketContext.Provider value={{ socket: socket.current, sendMessage }}>{children}</SocketContext.Provider>;
+  const setMessages = (newMessages: IMessage[]) => {
+    setMessagesState(newMessages);
+    const chatId = sessionStorage.getItem('currentChatId');
+    if (chatId) sessionStorage.setItem(`messages_${chatId}`, JSON.stringify(newMessages));
+  };
+
+  useEffect(() => {
+    if (user && !socket.current) {
+      socket.current = io(import.meta.env.VITE_SERVER_URL, {
+        withCredentials: true,
+        query: { userId: user.id },
+      });
+
+      socket.current.on('connect', () => {
+        console.log('Connected to socket server from socketContext');
+      });
+
+      socket.current.on('disconnect', () => {
+        console.log('Disconnected from socket server');
+      });
+
+      socket.current.on('contactDeleted', deleteContact);
+      socket.current.on('contactAdded', addContact);
+
+      socket.current.on('receivedMessage', (message) => {
+        setMessages((prev) => {
+          const updatedMessages = [message.messageData, ...prev];
+          sessionStorage.setItem(`messages_${message.messageData.chatId}`, JSON.stringify(updatedMessages));
+          return updatedMessages;
+        });
+      });
+    }
+    return () => {
+      socket.current?.disconnect();
+      socket.current = null;
+    };
+  }, [user]);
+
+  return (
+    <SocketContext.Provider value={{ socket: socket.current, sendMessage, fetchMessages, messages }}>
+      {children}
+    </SocketContext.Provider>
+  );
 };
 
 export const useSocket = () => {

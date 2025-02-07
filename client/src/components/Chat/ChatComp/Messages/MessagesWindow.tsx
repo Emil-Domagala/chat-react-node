@@ -1,35 +1,24 @@
 import { useChatContext } from '../../../../store/chatContext';
 import { useUser } from '../../../../store/userContext';
-import { fetchMessagestHTTP } from '../../../../utils/httpMessages';
 import classes from './MessagesWindow.module.css';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Message from './Message';
+import { useSocket } from '../../../../store/socketContext';
 
 const MessagesWindow = (props) => {
   const { currentChatId } = useChatContext();
-  const [messages, setMessages] = useState(() => {
-    const storedMessages = sessionStorage.getItem(`messages_${currentChatId}`);
-    return storedMessages ? JSON.parse(storedMessages) : [];
-  });
+
   const [page, setPage] = useState(1);
   const { user } = useUser();
 
   const topRef = useRef(null);
   const chatBoxRef = useRef(null);
 
-
-  const fetchMessages = async () => {
-    try {
-      const messages = await fetchMessagestHTTP(currentChatId!, page);
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-    }
-  };
-
+  const { messages, fetchMessages } = useSocket();
 
   useEffect(() => {
-    fetchMessages();
-  }, [page]);
+    fetchMessages(currentChatId!, page);
+  }, [currentChatId]);
 
   return (
     <div ref={chatBoxRef} className={classes.all}>
