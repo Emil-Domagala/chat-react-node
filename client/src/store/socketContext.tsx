@@ -3,6 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { useUser } from './userContext';
 import type { ContactDetailWithChatId } from './userContext';
 import { useChatContext } from './chatContext';
+import { useQueryClient } from '@tanstack/react-query';
 
 export type IMessage = {
   _id?: string;
@@ -15,55 +16,17 @@ export type IMessage = {
 
 type SocketContextType = {
   socket: Socket | null;
-  fetchMessages: (currentChatId: string, page: number) => Promise<void>;
   sendMessage: (message: IMessage) => void;
-  messages: IMessage[];
 };
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
-  const serverUrl = import.meta.env.VITE_SERVER_URL;
-  const messagePath = import.meta.env.VITE_MESSAGE_BASE_PATH;
-  const FETCH_MESSAGE_ROUTE = serverUrl + messagePath + '/fetch-messages';
-
   const socket = useRef<Socket | null>(null);
   const { user, saveUserOnContactDeletion, saveUserOnContactAdd } = useUser();
   const { setContact } = useChatContext();
-
-  //
-  const [messagesAreLoading, setMessagesAreLoading] = useState(true);
-  const [messages, setMessagesState] = useState<IMessage[]>(() => {
-    const chatId = sessionStorage.getItem('currentChatId');
-    const storedMessages = chatId ? sessionStorage.getItem(`messages_${chatId}`) : null;
-    return storedMessages ? JSON.parse(storedMessages) : [];
-  });
-  //
-
-  const fetchMessages = async (currentChatId: string, page: number) => {
-    if (!currentChatId) return;
-    if (!page) page = 1;
-    setMessagesAreLoading(true);
-    try {
-      const response = await fetch(`${FETCH_MESSAGE_ROUTE}?chatId=${currentChatId}&page=${page}&limit=50`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      const resData = await response.json();
-
-      if (!response.ok) {
-        const error = new Error(resData.message || 'Getting messages failed') as Error & { errorData?: object };
-        error.errorData = resData;
-        throw error;
-      }
-
-      setMessages(resData.messages);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setMessagesAreLoading(false);
-    }
-  };
+  const queryClient = useQueryClient();
+  console.log(queryClient);
 
   const deleteContact = ({ deletedUserId, chatId }: { deletedUserId: string; chatId: string }) => {
     const currentChatId = sessionStorage.getItem('currentChatId');
@@ -84,12 +47,6 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const setMessages = (newMessages: IMessage[]) => {
-    setMessagesState(newMessages);
-    const chatId = sessionStorage.getItem('currentChatId');
-    if (chatId) sessionStorage.setItem(`messages_${chatId}`, JSON.stringify(newMessages));
-  };
-
   useEffect(() => {
     if (user && !socket.current) {
       socket.current = io(import.meta.env.VITE_SERVER_URL, {
@@ -98,32 +55,46 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       });
 
       socket.current.on('connect', () => {
-        console.log('Connected to socket server from socketContext');
+        // console.log('Connected to socket server from socketContext');
       });
 
       socket.current.on('disconnect', () => {
-        console.log('Disconnected from socket server');
+        // console.log('Disconnected from socket server');
       });
 
       socket.current.on('contactDeleted', deleteContact);
       socket.current.on('contactAdded', addContact);
 
       socket.current.on('receivedMessage', (message) => {
-        setMessages((prev) => {
-          const updatedMessages = [message.messageData, ...prev];
-          sessionStorage.setItem(`messages_${message.messageData.chatId}`, JSON.stringify(updatedMessages));
-          return updatedMessages;
+        queryClient.setQueryData(['messages', message.messageData.chatId], (oldData: any) => {
+          if (!oldData) {
+            return { pages: [{ messages: [message.messageData] }], pageParams: [] };
+          }
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page, index: number) =>
+              index === 0 ? { ...page, messages: [message.messageData, ...page.messages] } : page,
+            ),
+          };
         });
       });
     }
     return () => {
+      socket.current?.off('receivedMessage');
+      socket.current?.off('contactDeleted');
+      socket.current?.off('contactAdded');
       socket.current?.disconnect();
       socket.current = null;
     };
-  }, [user]);
+  }, [user, queryClient]);
 
   return (
-    <SocketContext.Provider value={{ socket: socket.current, sendMessage, fetchMessages, messages }}>
+    <SocketContext.Provider
+      value={{
+        socket: socket.current,
+        sendMessage,
+      }}>
       {children}
     </SocketContext.Provider>
   );

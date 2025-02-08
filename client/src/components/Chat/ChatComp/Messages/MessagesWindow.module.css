@@ -8,3 +8,15 @@
   /* background-color: red; */
   flex: 1;
 }
+
+.ref {
+  padding: 2rem;
+  width: 100%;
+  text-align: center;
+  color: var(--text);
+  .hidden {
+    opacity: 0;
+  }
+}
+
+

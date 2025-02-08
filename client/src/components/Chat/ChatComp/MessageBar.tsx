@@ -10,6 +10,8 @@ import { useColorMode } from '../../../store/colorModeContext';
 import { useSocket } from '../../../store/socketContext';
 import { useChatContext } from '../../../store/chatContext';
 import { useUser } from '../../../store/userContext';
+// import { useMutation, useQueryClient } from '@tanstack/react-query';
+// import useSendMessage from '../../../hooks/UseSendMessage';
 
 const MessaggeBar = () => {
   const { mode } = useColorMode();
@@ -42,7 +44,7 @@ const MessaggeBar = () => {
     setMessageValue('');
   };
 
-  const handleKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       handleSendMessage();
     }
@@ -54,7 +56,7 @@ const MessaggeBar = () => {
       <div className={classes['message-bar--wrapper']}>
         <div className={classes['textarea-wrapper']}>
           <ReactTextareaAutosize
-            onKeyUp={handleKeyUp}
+            onKeyUpCapture={handleKeyDown}
             onChange={(e) => setMessageValue(() => e.target.value)}
             placeholder="Enter your message"
             minRows={1}

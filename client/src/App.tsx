@@ -4,6 +4,7 @@ import { RouterProvider, createBrowserRouter, redirect } from 'react-router';
 import ProfilePage from './pages/ProfilePage';
 import { useUser } from './store/userContext';
 import ChatPage from './pages/ChatPage';
+import Loading from './components/UI/Loading/Loading';
 
 const PrivateRoute = async () => {
   const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -78,7 +79,7 @@ function App() {
   const { isLoading } = useUser();
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   return <RouterProvider router={router} />;

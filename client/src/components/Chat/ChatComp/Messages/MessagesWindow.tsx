@@ -1,36 +1,54 @@
 import { useChatContext } from '../../../../store/chatContext';
-import { useUser } from '../../../../store/userContext';
 import classes from './MessagesWindow.module.css';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import Message from './Message';
-import { useSocket } from '../../../../store/socketContext';
+import Loading from '../../../UI/Loading/Loading';
+import { useChatMessages } from '../../../../hooks/useChatMessages';
+import { useInView } from 'react-intersection-observer';
 
 const MessagesWindow = (props) => {
   const { currentChatId } = useChatContext();
-
-  const [page, setPage] = useState(1);
-  const { user } = useUser();
-
-  const topRef = useRef(null);
-  const chatBoxRef = useRef(null);
-
-  const { messages, fetchMessages } = useSocket();
-
+  const { data, error, status, fetchNextPage, hasNextPage, isFetchingNextPage } = useChatMessages(currentChatId!);
+  const { ref, inView } = useInView();
   useEffect(() => {
-    fetchMessages(currentChatId!, page);
-  }, [currentChatId]);
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, inView]);
 
-  return (
-    <div ref={chatBoxRef} className={classes.all}>
-      {messages.map((msg) => {
-        return (
-          <Message key={msg._id} sender={msg.sender._id}>
-            {msg.content}
-          </Message>
-        );
-      })}
-      <div id="topRefObserver" ref={topRef} style={{ height: '10px', width: '20px', background: 'red' }}>
-        HERE
+  const renderMessages = () => {
+    const messages = data!.pages.flatMap((page) => page.messages); 
+    return messages.map((msg, index) => {
+      const formattedDate = new Date(msg.createdAt).toLocaleDateString('en-GB'); 
+      const nextMsgDate = messages[index + 1]?.createdAt
+        ? new Date(messages[index + 1].createdAt).toLocaleDateString('en-GB')
+        : null;
+
+      const isLastMessageOfDay = formattedDate !== nextMsgDate;
+
+      return (
+        <Message
+          key={msg._id}
+          isFirstMessageOfDay={isLastMessageOfDay}
+          formattedDate={formattedDate}
+          sender={msg.sender._id}>
+          {msg.content}
+        </Message>
+      );
+    });
+  };
+
+  return status === 'pending' ? (
+    <Loading />
+  ) : status === 'error' ? (
+    <p>{error.message}</p>
+  ) : (
+    <div className={classes.all}>
+      {renderMessages()}
+      <div ref={ref} className={classes.ref}>
+        {isFetchingNextPage && <p>Loading more messages...</p>}
+        {!hasNextPage && !data && <p>Start converastion</p>}
+        {!hasNextPage && data && <p>There is no more messages</p>}
       </div>
     </div>
   );

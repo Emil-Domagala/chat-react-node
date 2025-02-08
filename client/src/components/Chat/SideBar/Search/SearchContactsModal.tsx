@@ -4,7 +4,7 @@ import Input from '../../../UI/Form/Input';
 import { addContactHTTP, searchContactHTTP } from '../../../../utils/httpContact';
 import { useState } from 'react';
 import UserItem from '../../../UI/Chat/UserItem';
-import LottieComp from '../../../UI/Lottie/Lottie';
+import Lottie from '../../../UI/Lottie/Lottie';
 import { useUser } from '../../../../store/userContext';
 import type { ContactDetail } from '../../../../store/userContext';
 
@@ -57,7 +57,7 @@ const SearchContactsModal = ({ turnOff }: { turnOff: React.MouseEventHandler<HTM
             ))
           ) : (
             <div className={classes['empty']}>
-              <LottieComp size={100} />
+              <Lottie size={100} />
             </div>
           )}
         </div>

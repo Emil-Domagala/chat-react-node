@@ -2,7 +2,7 @@ import { useUser } from '../../../../store/userContext';
 import { colors } from '../../../../utils/getColors';
 import classes from './Message.module.css';
 
-const Message = ({ children, sender }) => {
+const Message = ({ children, sender, isFirstMessageOfDay, formattedDate }) => {
   const { user } = useUser();
   const userColor = user?.color;
 
@@ -10,9 +10,12 @@ const Message = ({ children, sender }) => {
   const messageColor = user?.id === sender ? null : colors[userColor || 0];
 
   return (
-    <div style={{ ...messageColor, alignSelf: messageSide }} className={classes.message}>
-      {children}
-    </div>
+    <>
+      <div style={{ ...messageColor, alignSelf: messageSide }} className={classes.message}>
+        {children}
+      </div>
+      {isFirstMessageOfDay && <p className={classes.date}>{formattedDate}</p>}
+    </>
   );
 };
 

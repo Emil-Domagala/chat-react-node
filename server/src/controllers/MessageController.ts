@@ -6,7 +6,6 @@ import Message from '../models/MessageModel.ts';
 export const getMessages: ControllerFunctionType = async (req, res, next) => {
   try {
     const { chatId, page = 1, limit = 50 } = req.query;
-    console.log(limit);
     if (!chatId) return res.status(400).json({ message: 'Chat ID is required' });
 
     const pageNumber = parseInt(page as string, 10);
@@ -17,8 +16,17 @@ export const getMessages: ControllerFunctionType = async (req, res, next) => {
       .skip((pageNumber - 1) * limitNumber)
       .limit(limitNumber)
       .populate('sender', 'id firstName lastName color image');
+    let nextPage: number | null = 1;
 
-    return res.json({ messages });
+    if (messages.length < limit) {
+      nextPage = null;
+    } else {
+      nextPage += 1;
+    }
+    console.log(chatId);
+    console.log(nextPage);
+
+    return res.json({ messages, nextPage });
   } catch (err) {
     internalError(err, res);
   }

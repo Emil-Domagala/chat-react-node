@@ -4,7 +4,7 @@ import Label from '../UI/Form/Label';
 import Input from '../UI/Form/Input';
 import classes from './AuthForm.module.css';
 import { useActionState } from 'react';
-import useInputValidation from '../../hooks/UseInputValidation';
+import useInputValidation from '../../hooks/useInputValidation';
 import ErrorText from '../UI/Form/ErrorText';
 import { useNavigate } from 'react-router';
 import { loginHTTP, signupHTTP } from '../../utils/httpAuth';
