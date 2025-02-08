@@ -11,10 +11,10 @@ const Message = ({ children, sender, isFirstMessageOfDay, formattedDate }) => {
 
   return (
     <>
+      {isFirstMessageOfDay && <p className={classes.date}>{formattedDate}</p>}
       <div style={{ ...messageColor, alignSelf: messageSide }} className={classes.message}>
         {children}
       </div>
-      {isFirstMessageOfDay && <p className={classes.date}>{formattedDate}</p>}
     </>
   );
 };

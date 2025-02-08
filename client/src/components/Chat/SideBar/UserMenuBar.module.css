@@ -21,7 +21,10 @@
   border-radius: 1rem;
   padding: 0.5rem 1rem;
   transition: background-color 0.4s, color 0.4s;
-  color: var(--text);
+  p {
+    color: var(--text);
+    transition: color 0.4s;
+  }
   .avatar-wrapper {
     flex-grow: 0;
     width: var(--size);
@@ -32,6 +35,9 @@
 .profile-link:hover {
   color: var(--white);
   background-color: var(--primary);
+  p {
+    color: var(--white);
+  }
 }
 
 .buttons {

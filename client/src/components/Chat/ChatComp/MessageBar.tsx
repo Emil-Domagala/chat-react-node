@@ -10,8 +10,6 @@ import { useColorMode } from '../../../store/colorModeContext';
 import { useSocket } from '../../../store/socketContext';
 import { useChatContext } from '../../../store/chatContext';
 import { useUser } from '../../../store/userContext';
-// import { useMutation, useQueryClient } from '@tanstack/react-query';
-// import useSendMessage from '../../../hooks/UseSendMessage';
 
 const MessaggeBar = () => {
   const { mode } = useColorMode();
@@ -53,6 +51,7 @@ const MessaggeBar = () => {
   return (
     <>
       {emojiPickerOpen && <div onClick={closeEmojiPicker} className={classes['background']} />}
+
       <div className={classes['message-bar--wrapper']}>
         <div className={classes['textarea-wrapper']}>
           <ReactTextareaAutosize

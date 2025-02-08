@@ -20,9 +20,9 @@ const Avatar = ({ email, firstName, imageUrl, userColor, fontSize }: AvatarType)
           }}
         />
       ) : firstName !== '' ? (
-        <p style={{ fontSize: fontSize + 'rem' }}>{firstName?.charAt(0)}</p>
+        <h6 style={{ fontSize: fontSize + 'rem' }}>{firstName?.charAt(0)}</h6>
       ) : (
-        <p style={{ fontSize: fontSize + 'rem' }}>{email?.charAt(0)}</p>
+        <h6 style={{ fontSize: fontSize + 'rem' }}>{email?.charAt(0)}</h6>
       )}
     </div>
   );

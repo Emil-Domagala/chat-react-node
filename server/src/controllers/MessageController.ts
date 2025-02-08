@@ -18,13 +18,11 @@ export const getMessages: ControllerFunctionType = async (req, res, next) => {
       .populate('sender', 'id firstName lastName color image');
     let nextPage: number | null = 1;
 
-    if (messages.length < limit) {
+    if (messages.length < +limit) {
       nextPage = null;
     } else {
       nextPage += 1;
     }
-    console.log(chatId);
-    console.log(nextPage);
 
     return res.json({ messages, nextPage });
   } catch (err) {

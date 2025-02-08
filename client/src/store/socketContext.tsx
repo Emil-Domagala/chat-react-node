@@ -26,7 +26,6 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const { user, saveUserOnContactDeletion, saveUserOnContactAdd } = useUser();
   const { setContact } = useChatContext();
   const queryClient = useQueryClient();
-  console.log(queryClient);
 
   const deleteContact = ({ deletedUserId, chatId }: { deletedUserId: string; chatId: string }) => {
     const currentChatId = sessionStorage.getItem('currentChatId');

@@ -16,10 +16,12 @@ export const searchContacts: ControllerFunctionType = async (req, res, next) => 
 
     if (!currentUser) return res.status(404).send({ message: 'User not found' });
 
+    const userContacts = currentUser.contacts?.map((contact) => contact.contactId.toString()) || [];
+
     const users = await User.find({
       $and: [
         { _id: { $ne: req.userId } },
-        { _id: { $nin: currentUser.contacts } },
+        { _id: { $nin: userContacts } },
         { $or: [{ firstName: regex }, { lastName: regex }, { email: regex }] },
       ],
     });
@@ -50,7 +52,7 @@ export const addContact: ControllerFunctionType = async (req, res, next) => {
     const contact = await User.findById(contactId);
     if (!contact) return res.status(404).json({ message: 'Contact user not found' });
 
-    if (user.contacts.some((c) => c._id.toString() === contactId)) {
+    if (user.contacts.some((c) => c.contactId.toString() === contactId)) {
       return res.status(400).json({ message: 'Contact already added' });
     }
 

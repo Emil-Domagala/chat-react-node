@@ -15,9 +15,10 @@
     background-position: center;
     background-repeat: no-repeat;
   }
-  p {
+  h6 {
     text-align: center;
     text-transform: uppercase;
     color: inherit;
+    font-weight: normal;
   }
 }
