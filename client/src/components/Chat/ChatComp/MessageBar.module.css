@@ -18,6 +18,11 @@
   gap: 20px;
 }
 
+.error-text-wrapper {
+  position: absolute;
+  width: 100%;
+  top: -1.5rem;
+}
 
 .textarea-wrapper {
   position: relative;

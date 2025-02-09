@@ -27,9 +27,9 @@ const ProfileForm = () => {
   if (user?.image) imagePath = `${serverURL}${user?.image}`;
 
   let formIsValid = false;
-  const firstNameIsValid = firstName.trim() !== '';
+  const firstNameIsValid = firstName.trim() !== '' && firstName.trim().length < 30;
   const firstNameHasError = !firstNameIsValid && firstNameWasTouched;
-  const lastNameIsValid = lastName.trim() !== '';
+  const lastNameIsValid = lastName.trim() !== '' && lastName.trim().length < 30;
   const lastNameHasError = !lastNameIsValid && lastNameWasTouched;
 
   if (lastNameIsValid && firstNameIsValid && selectedColor != null) formIsValid = true;
@@ -86,7 +86,10 @@ const ProfileForm = () => {
                 required
               />
               <div className={classes['error-message-container']}>
-                <ErrorText errorMessage="This input cannot be empty" hasErrors={firstNameHasError} />
+                <ErrorText
+                  errorMessage="This input cannot be empty and must be below 30 characters"
+                  hasErrors={firstNameHasError}
+                />
               </div>
             </div>
             <div className={`${classes['input-wrapper']}`}>
@@ -101,7 +104,10 @@ const ProfileForm = () => {
                 required
               />
               <div className={classes['error-message-container']}>
-                <ErrorText errorMessage="This input cannot be empty" hasErrors={lastNameHasError} />
+                <ErrorText
+                  errorMessage="This input cannot be empty and must be below 30 characters"
+                  hasErrors={lastNameHasError}
+                />
               </div>
             </div>
             <div className={`${classes['input-wrapper-flex']}`}>

@@ -1,4 +1,3 @@
-import './App.css';
 import AuthPage from './pages/AuthPage';
 import { RouterProvider, createBrowserRouter, redirect } from 'react-router';
 import ProfilePage from './pages/ProfilePage';

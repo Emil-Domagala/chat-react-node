@@ -3,12 +3,10 @@ import { useUser } from '../../../../store/userContext';
 import { deleteContactHTTP } from '../../../../utils/httpContact';
 import UserItem from '../../../UI/Chat/UserItem';
 import classes from './Contact.module.css';
-import type { ContactDetail, User } from '../../../../store/userContext';
 import { useChatContext } from '../../../../store/chatContext';
-import { useEffect } from 'react';
 
 type handleContactInfo = {
-  lastMessage: string;
+  lastMessage?: string;
   chatId: string;
   image: string;
   lastName: string;
@@ -42,11 +40,6 @@ const Contact = ({ lastMessage, chatId, image, lastName, firstName, color, _id }
   const handleChoseCurrentContact = () => {
     setContact(contact, chatId);
   };
-
-  useEffect(() => {
-    console.log('lastMessage: ' + lastMessage);
-    console.log(user);
-  }, [user]);
 
   return (
     <li onClick={handleChoseCurrentContact} className={`${classes['contact']}`}>

@@ -6,11 +6,13 @@ import Loading from '../../../UI/Loading/Loading';
 import { useChatMessages } from '../../../../hooks/useChatMessages';
 import { useInView } from 'react-intersection-observer';
 import ArrowBackSVG from '../../../../assets/Icons/ArrowBackSVG';
+import { useUser } from '../../../../store/userContext';
 
 const MessagesWindow = () => {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const { currentChatId } = useChatContext();
+  const { user } = useUser();
   const { data, error, status, fetchNextPage, hasNextPage, isFetchingNextPage } = useChatMessages(currentChatId!);
   const { ref, inView } = useInView();
   const [blockScrollingDown, setBlockScrollingDown] = useState(false);
@@ -47,14 +49,30 @@ const MessagesWindow = () => {
 
   const renderMessages = () => {
     let lastDate: string | null = null;
+    let prevSender: string | null = null;
     const messages = data!.pages.flatMap((page) => page.messages).reverse();
     return messages.map((msg, index) => {
       const formattedDate = new Date(msg.createdAt).toLocaleDateString('en-GB');
+      const formattedTime = new Date(msg.createdAt).toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+      const showSender = prevSender != msg.sender._id && msg.sender._id != user.id;
       const showDate = formattedDate != lastDate;
       lastDate = formattedDate;
+      prevSender = msg.sender._id;
+      const senderName = `${msg.sender.firstName} ${msg.sender.lastName}`;
 
       return (
-        <Message key={msg._id} isFirstMessageOfDay={showDate} formattedDate={formattedDate} sender={msg.sender._id}>
+        <Message
+          time={formattedTime}
+          key={msg._id}
+          isFirstMessageOfDay={showDate}
+          formattedDate={formattedDate}
+          showSender={showSender}
+          senderId={msg.sender._id}
+          senderName={senderName}>
           {msg.content}
         </Message>
       );

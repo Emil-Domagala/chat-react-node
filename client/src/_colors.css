@@ -4,6 +4,7 @@
   --primary: #952eb4;
   --primary-val: 149, 46, 180;
   --text: #333;
+  --text-val: 51, 51, 51;
   --text-reverse: #fff;
   --text-reverse-val: 254, 254, 254;
   --color-1: rgb(232, 240, 254);
@@ -13,6 +14,7 @@
 
 [color-mode='dark'] {
   --text: #fff;
+  --text-val: 254, 254, 254;
   --text-reverse: #000;
   --text-reverse-val: 0, 0, 0;
   --color-1: #343434;

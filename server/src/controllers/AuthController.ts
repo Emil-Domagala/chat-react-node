@@ -98,7 +98,9 @@ export const login: ControllerFunctionType = async (req, res, next) => {
 
     if (isError) return res.status(error.status).send({ error });
 
-    const foundUser = await User.findOne({ email }).populate('contacts.contactId', 'firstName lastName image color');
+    const foundUser = await User.findOne({ email })
+      .populate('contacts.contactId', 'firstName lastName image color')
+      .populate('contacts.chatId', 'lastMessage');
 
     if (!foundUser) {
       isError = true;
@@ -190,11 +192,15 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
 
     if (!firstName || !lastName || !color)
       return res.status(400).send({ message: 'First Name, Last Name, and Color are required' });
-
+    firstName.trim();
+    lastName.trim();
+    if (color == 1 || color == 2 || color == 3 || color == 4)
+      return res.status(400).send({ message: 'Color value is not valid' });
+    if (lastName.length > 30) return res.status(400).send({ message: 'Last name must be below 30 characters' });
+    if (firstName.length > 30) return res.status(400).send({ message: 'First name must be below 30 characters' });
     const user = await User.findById(userId)
       .populate('contacts.contactId', 'firstName lastName image color')
       .populate('contacts.chatId', 'lastMessage');
-
 
     if (!user) return res.status(404).send({ message: 'User not found' });
 

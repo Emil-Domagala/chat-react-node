@@ -28,10 +28,11 @@ export const setupSocket = (server: Server) => {
   };
 
   const sendMessage = async (message: IMessage) => {
-    console.log('send Message in socket');
     try {
       const chat = await Chat.findById(message.chatId).populate('participants');
       if (!chat) return console.log('Chat not found');
+
+      if (message.content.trim().length > 600 || message.content.trim() == '') return;
 
       const createMessage = await Message.create(message);
 

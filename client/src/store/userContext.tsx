@@ -16,7 +16,7 @@ export type ChatDetail = {
 
 export type Contact = {
   contactId: string | ContactDetail;
-  chatId: string | ChatDetail;
+  chatId: ChatDetail;
 };
 
 export type ContactDetailWithChatId = ContactDetail & { chatId: string };

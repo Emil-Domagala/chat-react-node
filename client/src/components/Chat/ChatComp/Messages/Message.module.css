@@ -1,5 +1,7 @@
 .message {
-  padding: 1rem;
+  --padding: 1.5rem;
+  position: relative;
+  padding: var(--padding) var(--padding) 2rem;
   min-width: 20rem;
   max-width: 40vw;
   margin: 0.5rem 1rem;
@@ -8,8 +10,32 @@
   color: var(--text);
 }
 
+.content {
+  color: inherit;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 .date {
   width: 100%;
   text-align: center;
   color: var(--color-3);
+}
+
+.name,
+.time {
+  position: absolute;
+  color: rgba(var(--text-val), 0.5);
+}
+
+.name {
+  left: 10px;
+  top: calc(-1 * (var(--padding) + 5px));
+  font-size: var(--fz-s);
+}
+
+.time {
+  right: 10px;
+  font-size: var(--fz-xs);
 }

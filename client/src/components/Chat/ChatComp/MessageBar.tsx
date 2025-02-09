@@ -10,6 +10,7 @@ import { useColorMode } from '../../../store/colorModeContext';
 import { useSocket } from '../../../store/socketContext';
 import { useChatContext } from '../../../store/chatContext';
 import { useUser } from '../../../store/userContext';
+import ErrorText from '../../UI/Form/ErrorText';
 
 const MessaggeBar = () => {
   const { mode } = useColorMode();
@@ -18,6 +19,7 @@ const MessaggeBar = () => {
   const { sendMessage } = useSocket();
   const { currentChatId } = useChatContext();
   const { user } = useUser();
+  const [hasError, setHasError] = useState(false);
 
   const toggleEmojiPicker = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -31,13 +33,14 @@ const MessaggeBar = () => {
 
   const handleSendMessage = () => {
     if (messageValue.trim() === '') return;
+    if (messageValue.trim().length > 600) return setHasError(true);
     const message = {
       sender: user?.id,
       chatId: currentChatId,
       messageType: 'text',
-      content: messageValue,
+      content: messageValue.trim(),
     };
-
+    setHasError(false);
     sendMessage(message);
     setMessageValue('');
   };
@@ -53,6 +56,9 @@ const MessaggeBar = () => {
       {emojiPickerOpen && <div onClick={closeEmojiPicker} className={classes['background']} />}
 
       <div className={classes['message-bar--wrapper']}>
+        <div className={classes['error-text-wrapper']}>
+          <ErrorText errorMessage="Message must be below 600 characters" hasErrors={hasError} />
+        </div>
         <div className={classes['textarea-wrapper']}>
           <ReactTextareaAutosize
             onKeyUpCapture={handleKeyDown}
