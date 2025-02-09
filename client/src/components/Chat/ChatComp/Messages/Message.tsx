@@ -2,7 +2,27 @@ import { useUser } from '../../../../store/userContext';
 import { colors } from '../../../../utils/getColors';
 import classes from './Message.module.css';
 
-const Message = ({ time, children, senderId, showSender, senderName, isFirstMessageOfDay, formattedDate }) => {
+type MessageCompType = {
+  addMargin: boolean;
+  time: string;
+  children: string;
+  senderId: string;
+  showSender: boolean;
+  senderName: string;
+  isFirstMessageOfDay: boolean;
+  formattedDate: string;
+};
+
+const Message = ({
+  addMargin,
+  time,
+  children,
+  senderId,
+  showSender,
+  senderName,
+  isFirstMessageOfDay,
+  formattedDate,
+}: MessageCompType) => {
   const { user } = useUser();
   const userColor = user?.color;
 
@@ -12,7 +32,9 @@ const Message = ({ time, children, senderId, showSender, senderName, isFirstMess
   return (
     <>
       {isFirstMessageOfDay && <p className={classes.date}>{formattedDate}</p>}
-      <div style={{ ...messageColor, alignSelf: messageSide }} className={classes.message}>
+      <div
+        style={{ ...messageColor, alignSelf: messageSide }}
+        className={`${classes.message} ${addMargin ? classes.margin : ''}`}>
         {showSender && <p className={classes.name}>{senderName}</p>}
         <p className={classes.content}>{children}</p>
         <p className={classes.time}>{time}</p>

@@ -5,7 +5,6 @@ import Message from './Message';
 import Loading from '../../../UI/Loading/Loading';
 import { useChatMessages } from '../../../../hooks/useChatMessages';
 import { useInView } from 'react-intersection-observer';
-import ArrowBackSVG from '../../../../assets/Icons/ArrowBackSVG';
 import { useUser } from '../../../../store/userContext';
 
 const MessagesWindow = () => {
@@ -51,21 +50,23 @@ const MessagesWindow = () => {
     let lastDate: string | null = null;
     let prevSender: string | null = null;
     const messages = data!.pages.flatMap((page) => page.messages).reverse();
-    return messages.map((msg, index) => {
+    return messages.map((msg) => {
       const formattedDate = new Date(msg.createdAt).toLocaleDateString('en-GB');
       const formattedTime = new Date(msg.createdAt).toLocaleTimeString('en-GB', {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false,
       });
-      const showSender = prevSender != msg.sender._id && msg.sender._id != user.id;
+      const showSender = prevSender != msg.sender._id && msg.sender._id != user!.id;
       const showDate = formattedDate != lastDate;
+      const addMargin = prevSender != msg.sender._id;
       lastDate = formattedDate;
       prevSender = msg.sender._id;
       const senderName = `${msg.sender.firstName} ${msg.sender.lastName}`;
 
       return (
         <Message
+          addMargin={addMargin}
           time={formattedTime}
           key={msg._id}
           isFirstMessageOfDay={showDate}
@@ -91,7 +92,6 @@ const MessagesWindow = () => {
         {!hasNextPage && data && <p>There is no more messages</p>}
       </div>
       {renderMessages()}
-
       <div ref={messagesEndRef}></div>
     </div>
   );

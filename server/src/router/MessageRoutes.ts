@@ -6,7 +6,7 @@ import uploadMiddleware from '../middlewares/multer.ts';
 const messageRoutes = Router();
 
 
-messageRoutes.post('/upload-file', verifyWebToken, uploadMiddleware('files'), MessageController.uploadFile);
+// messageRoutes.post('/upload-file', verifyWebToken, uploadMiddleware('files'), MessageController.uploadFile);
 messageRoutes.get('/fetch-messages', verifyWebToken, MessageController.getMessages);
 
 export default messageRoutes;

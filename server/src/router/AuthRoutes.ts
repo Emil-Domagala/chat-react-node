@@ -10,6 +10,6 @@ authRoutes.post('/login', AuthController.login);
 authRoutes.post('/logout', AuthController.logout);
 authRoutes.get('/user-info', verifyWebToken, AuthController.getUserInfo);
 authRoutes.get('/profile-setup', verifyWebToken, AuthController.getProfileSetup);
-authRoutes.put('/update-profile', verifyWebToken, uploadMiddleware('profiles'), AuthController.updateUserProfil);
+authRoutes.put('/update-profile', verifyWebToken, uploadMiddleware, AuthController.updateUserProfil);
 
 export default authRoutes;

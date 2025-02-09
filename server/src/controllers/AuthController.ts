@@ -6,6 +6,7 @@ import { validateEmailPassword } from '../utils/validateEmailPassword.ts';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
+import { saveResizedImage } from '../utils/sharp.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -185,27 +186,26 @@ export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
 export const updateUserProfil: ControllerFunctionType = async (req, res, next) => {
   try {
     const { userId } = req;
-    const { firstName, lastName, color } = req.body;
+    let { firstName, lastName, color } = req.body;
     const image = req.file;
     let relativeFilePath;
-    if (image) relativeFilePath = path.join('/uploads/profiles', image.filename);
 
-    if (!firstName || !lastName || !color)
+    if (!firstName.trim() || !lastName.trim() || !color)
       return res.status(400).send({ message: 'First Name, Last Name, and Color are required' });
-    firstName.trim();
-    lastName.trim();
-    if (color == 1 || color == 2 || color == 3 || color == 4)
-      return res.status(400).send({ message: 'Color value is not valid' });
+    firstName = firstName.trim();
+    lastName = lastName.trim();
+    if ([1, 2, 3, 4].includes(Number(color))) return res.status(400).send({ message: 'Color value is not valid' });
     if (lastName.length > 30) return res.status(400).send({ message: 'Last name must be below 30 characters' });
     if (firstName.length > 30) return res.status(400).send({ message: 'First name must be below 30 characters' });
     const user = await User.findById(userId)
       .populate('contacts.contactId', 'firstName lastName image color')
       .populate('contacts.chatId', 'lastMessage');
-
     if (!user) return res.status(404).send({ message: 'User not found' });
-
-    // Delete old image if a new one is uploaded
     if (image && user.image) deleteOldImage(user.image);
+
+    if (image) {
+      relativeFilePath = await saveResizedImage(image, userId, 'profiles', 120, 120);
+    }
 
     user.firstName = firstName;
     user.lastName = lastName;
