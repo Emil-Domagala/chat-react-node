@@ -58,8 +58,10 @@ export const addContact: ControllerFunctionType = async (req, res, next) => {
 
     const chat = await createPrivateChat(req.userId, contactId);
 
-    user.contacts.push({ contactId: contact._id, chatId: chat._id });
-    contact.contacts.push({ contactId: user._id, chatId: chat._id });
+    await Promise.all([
+      user.updateOne({ $push: { contacts: { contactId: contact._id, chatId: chat._id } } }),
+      contact.updateOne({ $push: { contacts: { contactId: user._id, chatId: chat._id } } }),
+    ]);
 
     const newContact = {
       _id: contact._id,
@@ -70,8 +72,6 @@ export const addContact: ControllerFunctionType = async (req, res, next) => {
       color: contact.color,
       image: contact.image,
     };
-
-    await Promise.all([user.save(), contact.save()]);
 
     notifyContactAdded(
       {
@@ -103,9 +103,7 @@ export const deleteContact: ControllerFunctionType = async (req, res, next) => {
     const contact = await User.findById(deleteContactId);
     if (!contact) return res.status(400).send({ message: 'Could not not find contact user' });
     const chat = await Chat.findByIdAndDelete(chatId);
-    if (!chat) {
-      console.log('Chat not found');
-    }
+    if (!chat) return res.status(400).send({ message: 'Chat not found' });
 
     const contactData = user.contacts.find((c) => c.contactId.toString() === deleteContactId.toString());
     if (!contactData) return res.status(400).json({ message: 'Contact relationship not found' });

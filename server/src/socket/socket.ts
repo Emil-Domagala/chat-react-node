@@ -34,10 +34,13 @@ export const setupSocket = (server: Server) => {
       if (!chat) return console.log('Chat not found');
 
       const createMessage = await Message.create(message);
+
       const messageData = await Message.findById(createMessage._id).populate(
         'sender',
         'id firstName lastName color image',
       );
+
+      await chat.updateOne({ lastMessage: messageData.sender._id });
 
       chat.participants.forEach((participant) => {
         const recipientSocketId = userSocketMap.get(participant._id.toString());
@@ -77,8 +80,6 @@ export const notifyContactDeletion = (deletedUserId: string, recipientId: string
 
 export const notifyContactAdded = (newContact: {}, recipientId: string) => {
   const recipientSocketId = userSocketMap.get(recipientId);
-
-  console.log(newContact);
 
   if (recipientSocketId && io) {
     console.log(`Notifying ${recipientId} about contact add`);

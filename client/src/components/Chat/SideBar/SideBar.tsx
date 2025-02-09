@@ -30,7 +30,8 @@ const SideBar = () => {
           {user?.contacts!.map((contact) => {
             return (
               <Contact
-                chatId={contact.chatId}
+                lastMessage={contact.chatId.lastMessage}
+                chatId={contact.chatId._id}
                 key={contact.contactId._id}
                 _id={contact.contactId._id}
                 image={contact.contactId.image}

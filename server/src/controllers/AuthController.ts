@@ -156,7 +156,9 @@ export const getProfileSetup: ControllerFunctionType = async (req, res, next) =>
 
 export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId).populate('contacts.contactId', 'firstName lastName image color');
+    const user = await User.findById(req.userId)
+      .populate('contacts.contactId', 'firstName lastName image color')
+      .populate('contacts.chatId', 'lastMessage');
 
     if (!user) return res.status(404).send({ message: 'User with the given id not found' });
 
@@ -189,7 +191,10 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
     if (!firstName || !lastName || !color)
       return res.status(400).send({ message: 'First Name, Last Name, and Color are required' });
 
-    const user = await User.findById(userId).populate('contacts.contactId', 'firstName lastName image color');
+    const user = await User.findById(userId)
+      .populate('contacts.contactId', 'firstName lastName image color')
+      .populate('contacts.chatId', 'lastMessage');
+
 
     if (!user) return res.status(404).send({ message: 'User not found' });
 

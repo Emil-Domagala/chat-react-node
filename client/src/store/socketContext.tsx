@@ -23,7 +23,7 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socket = useRef<Socket | null>(null);
-  const { user, saveUserOnContactDeletion, saveUserOnContactAdd } = useUser();
+  const { user, saveUserOnContactDeletion, saveUserOnContactAdd, saveUserOnNewMessage } = useUser();
   const { setContact } = useChatContext();
   const queryClient = useQueryClient();
 
@@ -65,6 +65,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.current.on('contactAdded', addContact);
 
       socket.current.on('receivedMessage', (message) => {
+        saveUserOnNewMessage(message.messageData.chatId, message.messageData.sender._id);
+
         queryClient.setQueryData(['messages', message.messageData.chatId], (oldData: any) => {
           if (!oldData) {
             return { pages: [{ messages: [message.messageData] }], pageParams: [] };

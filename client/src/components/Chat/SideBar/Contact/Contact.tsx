@@ -5,8 +5,10 @@ import UserItem from '../../../UI/Chat/UserItem';
 import classes from './Contact.module.css';
 import type { ContactDetail, User } from '../../../../store/userContext';
 import { useChatContext } from '../../../../store/chatContext';
+import { useEffect } from 'react';
 
 type handleContactInfo = {
+  lastMessage: string;
   chatId: string;
   image: string;
   lastName: string;
@@ -15,9 +17,10 @@ type handleContactInfo = {
   _id: string;
 };
 
-const Contact = ({ chatId, image, lastName, firstName, color, _id }: handleContactInfo) => {
+const Contact = ({ lastMessage, chatId, image, lastName, firstName, color, _id }: handleContactInfo) => {
   const { saveUserOnContactDeletion } = useUser();
   const { currentChatId, setContact } = useChatContext();
+  const { user } = useUser();
 
   const contact = { image, lastName, firstName, color, _id };
 
@@ -40,8 +43,14 @@ const Contact = ({ chatId, image, lastName, firstName, color, _id }: handleConta
     setContact(contact, chatId);
   };
 
+  useEffect(() => {
+    console.log('lastMessage: ' + lastMessage);
+    console.log(user);
+  }, [user]);
+
   return (
     <li onClick={handleChoseCurrentContact} className={`${classes['contact']}`}>
+      {lastMessage !== user!.id && lastMessage !== null && <div className={classes['new-message']} />}
       <UserItem imageURL={image} lastName={lastName} firstName={firstName} userColor={+color!} />
       <button className={`${classes['svg']}`} onClick={handleDeleteContact}>
         <XIconSVG />

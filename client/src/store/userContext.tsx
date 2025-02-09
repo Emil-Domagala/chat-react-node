@@ -9,9 +9,14 @@ export type ContactDetail = {
   color: number;
 };
 
+export type ChatDetail = {
+  _id: string;
+  lastMessage: string | null;
+};
+
 export type Contact = {
   contactId: string | ContactDetail;
-  chatId: string;
+  chatId: string | ChatDetail;
 };
 
 export type ContactDetailWithChatId = ContactDetail & { chatId: string };
@@ -36,6 +41,7 @@ type UserContextType = {
   isLoading: boolean;
   saveUserOnContactDeletion: (deletedUserId: string, chatId: string) => void;
   saveUserOnContactAdd: (newContact: ContactDetailWithChatId) => void;
+  saveUserOnNewMessage: (chatId: string, senderId: string) => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -64,6 +70,25 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     sessionStorage.removeItem(`messages_${chatId}`);
   };
 
+  const saveUserOnNewMessage = (chatId: string, senderId: string) => {
+    const contactIndex = user!.contacts!.findIndex((contact) => contact.chatId._id === chatId);
+
+    if (contactIndex === -1) return user;
+
+    const updatedContacts = [...user.contacts];
+
+    updatedContacts[contactIndex] = {
+      ...updatedContacts[contactIndex],
+      chatId: {
+        ...updatedContacts[contactIndex].chatId,
+        lastMessage: senderId,
+      },
+    };
+    const newUser = { ...user, contacts: updatedContacts };
+
+    setUser(newUser as User);
+  };
+
   const saveUserOnContactAdd = (newContact: ContactDetailWithChatId) => {
     if (!user || !newContact) {
       console.log('Failed to add contact');
@@ -86,7 +111,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         ...existingContacts,
         {
           contactId,
-          chatId: newContact.chatId,
+          chatId: { _id: newContact.chatId, lastMessage: null },
         },
       ],
     };
@@ -130,7 +155,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, fetchUser, isLoading, saveUserOnContactDeletion, saveUserOnContactAdd }}>
+      value={{
+        user,
+        setUser,
+        fetchUser,
+        isLoading,
+        saveUserOnContactDeletion,
+        saveUserOnContactAdd,
+        saveUserOnNewMessage,
+      }}>
       {children}
     </UserContext.Provider>
   );
