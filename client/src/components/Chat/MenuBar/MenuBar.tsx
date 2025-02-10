@@ -1,13 +1,13 @@
 import Logo from './Logo';
 import OptionHeader from './OptionHeader';
 import ProfileBar from './UserMenuBar';
-import classes from './SideBar.module.css';
-import SearchContactsModal from './Search/SearchContactsModal.tsx';
+import classes from './MenuBar.module.css';
+import SearchContactsModal from './SearchContactModal/SearchContactsModal';
 import { useState } from 'react';
-import { useUser } from '../../../store/userContext.tsx';
-import Contact from './Contact/Contact.tsx';
+import { useUser } from '../../../store/userContext';
+import Contact from './ContactItem/Contact';
 
-const SideBar = () => {
+const MenuBar = () => {
   const { user } = useUser();
   const [showSearchContactsModal, setShowSearchContactsModal] = useState(false);
 
@@ -50,4 +50,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default MenuBar;

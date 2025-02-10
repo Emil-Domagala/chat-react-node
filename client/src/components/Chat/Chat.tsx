@@ -1,6 +1,6 @@
-import ChatComp from './ChatComp/ChatComp';
+import ChatComp from './MainChat/MainChat';
 import EmptyChat from './EmptyChat/EmptyChat';
-import SideBar from './SideBar/SideBar';
+import MenuBar from './MenuBar/MenuBar';
 import classes from './Chat.module.css';
 import { useState, useEffect } from 'react';
 import { useChatContext } from '../../store/chatContext';
@@ -20,10 +20,10 @@ const Chat = () => {
 
   return (
     <div className={classes['chat-page']}>
-      {windowWidth < 992 && (currentChatId ? <ChatComp /> : <SideBar />)}
+      {windowWidth < 992 && (currentChatId ? <ChatComp /> : <MenuBar />)}
       {windowWidth >= 992 && (
         <>
-          <SideBar /> {currentChatId ? <ChatComp /> : <EmptyChat />}
+          <MenuBar /> {currentChatId ? <ChatComp /> : <EmptyChat />}
         </>
       )}
     </div>

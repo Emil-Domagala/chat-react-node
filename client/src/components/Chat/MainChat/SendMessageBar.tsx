@@ -2,7 +2,7 @@ import React from 'react';
 import ReactTextareaAutosize from 'react-textarea-autosize';
 import SendIconSVG from '../../../assets/Icons/SendIconSVG';
 import { useState } from 'react';
-import classes from './MessageBar.module.css';
+import classes from './SendMessageBar.module.css';
 import AddEmojiSVG from '../../../assets/Icons/AddEmojiSVG';
 import AddAttachment from '../../../assets/Icons/AddAttachment';
 import EmojiPicker from 'emoji-picker-react';
@@ -12,7 +12,7 @@ import { useChatContext } from '../../../store/chatContext';
 import { useUser } from '../../../store/userContext';
 import ErrorText from '../../UI/Form/ErrorText';
 
-const MessaggeBar = () => {
+const SendMessaggeBar = () => {
   const { mode } = useColorMode();
   const [messageValue, setMessageValue] = useState<string>('');
   const [emojiPickerOpen, setEmojiPickerOpen] = useState<boolean>(false);
@@ -95,4 +95,4 @@ const MessaggeBar = () => {
   );
 };
 
-export default MessaggeBar;
+export default SendMessaggeBar;

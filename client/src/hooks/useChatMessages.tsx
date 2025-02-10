@@ -15,7 +15,7 @@ const fetchMessages = async ({ pageParam = 1, chatId }: { pageParam: number; cha
   const resData = await response.json();
 
   return {
-    messages: resData.messages || [], // Ensure it's always an array
+    messages: resData.messages || [], 
     nextPage: resData.nextPage ?? null,
   };
 };

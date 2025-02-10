@@ -1,4 +1,4 @@
-.whole-chat {
+.main-chat {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -7,12 +7,12 @@
 }
 
 @media (min-width: 992px) {
-  .whole-chat {
+  .main-chat {
     width: 65%;
   }
 }
 @media (min-width: 1200px) {
-  .whole-chat {
+  .main-chat {
     width: 100%;
   }
 }

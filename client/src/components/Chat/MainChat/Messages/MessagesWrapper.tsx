@@ -1,5 +1,5 @@
 import { useChatContext } from '../../../../store/chatContext';
-import classes from './MessagesWindow.module.css';
+import classes from './MessagesWrapper.module.css';
 import { useEffect, useRef, useState } from 'react';
 import Message from './Message';
 import Loading from '../../../UI/Loading/Loading';
@@ -7,7 +7,7 @@ import { useChatMessages } from '../../../../hooks/useChatMessages';
 import { useInView } from 'react-intersection-observer';
 import { useUser } from '../../../../store/userContext';
 
-const MessagesWindow = () => {
+const MessagesWrapper = () => {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const { currentChatId } = useChatContext();
@@ -97,4 +97,4 @@ const MessagesWindow = () => {
   );
 };
 
-export default MessagesWindow;
+export default MessagesWrapper;

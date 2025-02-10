@@ -1,5 +1,3 @@
-//i need to have states: isMessage
-
 import { createContext, useContext, useState, ReactNode } from 'react';
 import type { ContactDetail } from './userContext';
 
