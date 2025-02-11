@@ -18,22 +18,13 @@ export const searchContacts: ControllerFunctionType = async (req, res, next) => 
 
     const userContacts = currentUser.contacts?.map((contact) => contact.contactId.toString()) || [];
 
-    const users = await User.find({
+    const contacts = await User.find({
       $and: [
         { _id: { $ne: req.userId } },
         { _id: { $nin: userContacts } },
         { $or: [{ firstName: regex }, { lastName: regex }, { email: regex }] },
       ],
-    });
-
-    const contacts = users.map((item) => ({
-      _id: item._id,
-      email: item.email,
-      firstName: item.firstName,
-      lastName: item.lastName,
-      image: item.image,
-      color: item.color,
-    }));
+    }).select('_id email firstName lastName image color');
 
     return res.status(200).json({ contacts });
   } catch (err) {

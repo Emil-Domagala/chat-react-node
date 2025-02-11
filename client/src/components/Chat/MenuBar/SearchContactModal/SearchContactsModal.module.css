@@ -23,14 +23,11 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 250px;
+  max-height: 250px;
   overflow: scroll;
   margin-top: 2rem;
 }
 
-.empty {
-  margin-top: 40px;
-}
 
 /* TO DO BETTER STYLING ON SMARTPHONES  */
 

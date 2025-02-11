@@ -12,3 +12,7 @@
 .input-error-text.error-active {
   display: block;
 }
+
+.position-static{
+position: static;
+}

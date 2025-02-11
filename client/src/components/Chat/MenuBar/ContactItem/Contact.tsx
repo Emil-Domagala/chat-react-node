@@ -6,7 +6,7 @@ import classes from './Contact.module.css';
 import { useChatContext } from '../../../../store/chatContext';
 
 type handleContactInfo = {
-  lastMessage?: string;
+  lastMessage?: string | null;
   chatId: string;
   image: string;
   lastName: string;

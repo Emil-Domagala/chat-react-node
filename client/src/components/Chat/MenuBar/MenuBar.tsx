@@ -6,18 +6,18 @@ import SearchContactsModal from './SearchContactModal/SearchContactsModal';
 import { useState } from 'react';
 import { useUser } from '../../../store/userContext';
 import Contact from './ContactItem/Contact';
+import GroupItem from './Group/GroupItem/GroupItem';
+import EditGroupModal from './Group/EditChanelModal/EditGroupModal';
 
 const MenuBar = () => {
   const { user } = useUser();
   const [showSearchContactsModal, setShowSearchContactsModal] = useState(false);
+  const [showEditGroup, setShowEditGroup] = useState(false);
 
-  const handleOpenGroups = () => {};
-  const turnOnSearchModal = () => {
-    setShowSearchContactsModal(true);
-  };
-  const turnOffSearchModal = () => {
-    setShowSearchContactsModal((prev) => !prev);
-  };
+  const turnOnEditGroup = () => setShowEditGroup(true);
+  const turnOffEditGroup = () => setShowEditGroup(false);
+  const turnOnSearchModal = () => setShowSearchContactsModal(true);
+  const turnOffSearchModal = () => setShowSearchContactsModal(false);
 
   return (
     <div className={classes['side-bar']}>
@@ -43,7 +43,23 @@ const MenuBar = () => {
           })}
         </ul>
 
-        <OptionHeader turnOn={handleOpenGroups}>Group Chats</OptionHeader>
+        <OptionHeader turnOn={turnOnEditGroup}>Group Chats</OptionHeader>
+        {showEditGroup && <EditGroupModal turnOff={turnOffEditGroup} />}
+
+        <ul className={classes['contacts-list']}>
+          {user?.groups!.map((group) => {
+            return (
+              <GroupItem
+                key={group.groupId._id}
+                groupId={group.groupId._id}
+                groupName={group.groupId.name}
+                groupAdminId={group.groupId.admin}
+                lastMessage={group.chatId.lastMessage}
+                chatId={group.chatId._id}
+              />
+            );
+          })}
+        </ul>
       </div>
       <ProfileBar />
     </div>

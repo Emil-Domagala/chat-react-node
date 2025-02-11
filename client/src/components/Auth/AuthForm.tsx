@@ -81,7 +81,6 @@ const AuthForm: React.FC = () => {
     //check if form is valid
 
     const form = document.querySelector('form');
-    console.log(formIsValid);
     if (!formIsValid || !form) return;
 
     const formData = new FormData(form);

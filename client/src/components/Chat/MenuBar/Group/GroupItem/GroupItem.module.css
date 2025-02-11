@@ -1,0 +1,74 @@
+.group {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  padding: 0.5rem 3rem 0.5rem 4rem;
+  cursor: pointer;
+  transition: background-color 0.4s, color 0.4s;
+  p {
+    transition: color 0.4s;
+    color: var(--text);
+  }
+
+  .buttons {
+    display: flex;
+  }
+
+  .delete,
+  .edit {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    color: var(--text);
+    border-radius: 1rem;
+    height: 4rem;
+    width: 4rem;
+    transition: background-color 0.4s, color 0.4s;
+  }
+  .delete {
+    padding: 1.35rem;
+  }
+  .edit {
+    padding: 1.3rem;
+  }
+}
+
+.group:hover {
+  p {
+    color: var(--white);
+  }
+  .delete:hover {
+    color: var(--white);
+    background-color: red;
+  }
+  .edit:hover {
+    background-color: rgba(var(--text-reverse-val), 0.5);
+  }
+  background-color: var(--primary);
+}
+
+.new-message {
+  position: absolute;
+  left: calc(3rem - 10px);
+  width: 10px;
+  height: 10px;
+  background-color: var(--primary);
+  border-radius: 100%;
+  animation: showAndGo 1.5s linear 0s infinite normal;
+}
+
+@keyframes showAndGo {
+  0% {
+    transform: scale(0.7);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.7);
+  }
+}

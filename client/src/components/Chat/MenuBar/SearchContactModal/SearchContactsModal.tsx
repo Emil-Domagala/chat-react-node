@@ -13,7 +13,7 @@ const SearchContactsModal = ({ turnOff }: { turnOff: React.MouseEventHandler<HTM
   const [foundContact, setFoundContact] = useState([]);
 
   const searchContact = async (searchTerm: string) => {
-    if (searchTerm.length <= 0) return;
+    if (searchTerm.length <= 0) return setFoundContact([]);
     try {
       const resData = await searchContactHTTP(searchTerm);
       if (resData.contacts.length < 1) {

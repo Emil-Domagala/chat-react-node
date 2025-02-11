@@ -1,10 +1,24 @@
 import classes from './NameField.module.css';
 
-const NameField = ({ firstName, lastName }: { firstName?: string; lastName?: string }) => {
+const NameField = ({
+  groupName,
+  firstName,
+  lastName,
+}: {
+  groupName?: string;
+  firstName?: string;
+  lastName?: string;
+}) => {
   return (
-    <p className={classes.nameField}>
-      {firstName} {lastName}
-    </p>
+    <>
+      {groupName ? (
+        <p className={classes.nameField}>{groupName}</p>
+      ) : (
+        <p className={classes.nameField}>
+          {firstName} {lastName}
+        </p>
+      )}
+    </>
   );
 };
 

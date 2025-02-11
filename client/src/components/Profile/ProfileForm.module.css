@@ -1,5 +1,3 @@
-
-
 .left {
   display: flex;
   justify-content: center;
@@ -60,6 +58,7 @@ input[type='radio']:hover {
   color: var(--white);
   background-color: var(--primary);
   font-size: var(--fz-m);
+  border-radius: 0.7rem;
 }
 .save-changes:disabled {
   opacity: 0.5;

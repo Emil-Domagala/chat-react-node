@@ -9,13 +9,24 @@ export type ContactDetail = {
   color: number;
 };
 
+export type GroupDetail = {
+  _id: string;
+  name: string;
+  members?: ContactDetail[];
+  admin: string;
+};
 export type ChatDetail = {
   _id: string;
   lastMessage: string | null;
 };
 
+export type Group = {
+  groupId: GroupDetail;
+  chatId: ChatDetail;
+};
+
 export type Contact = {
-  contactId: string | ContactDetail;
+  contactId: ContactDetail;
   chatId: ChatDetail;
 };
 
@@ -29,9 +40,8 @@ export type User = {
   image?: string;
   color?: number;
   profileSetup?: boolean;
-  groups?: string[];
+  groups?: Group[];
   contacts?: Contact[];
-  chats?: string[];
 };
 
 type UserContextType = {
@@ -64,7 +74,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const saveUserOnContactDeletion = (deletedUserId: string, chatId: string) => {
     const updatedContacts = user!.contacts!.filter(
-      (contact) => contact.contactId && contact.contactId._id !== deletedUserId,
+      (contact) => (contact.contactId as ContactDetail)._id !== deletedUserId,
     );
     setUser({ ...user, contacts: updatedContacts } as User);
     sessionStorage.removeItem(`messages_${chatId}`);
@@ -75,7 +85,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     if (contactIndex === -1) return user;
 
-    const updatedContacts = [...user.contacts];
+    const updatedContacts = [...user!.contacts!];
 
     updatedContacts[contactIndex] = {
       ...updatedContacts[contactIndex],

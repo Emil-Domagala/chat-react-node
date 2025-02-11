@@ -101,7 +101,9 @@ export const login: ControllerFunctionType = async (req, res, next) => {
 
     const foundUser = await User.findOne({ email })
       .populate('contacts.contactId', 'firstName lastName image color')
-      .populate('contacts.chatId', 'lastMessage');
+      .populate('contacts.chatId', 'lastMessage')
+      .populate('groups.chatId', 'lastMessage')
+      .populate('groups.groupId', 'name admin');
 
     if (!foundUser) {
       isError = true;
@@ -133,7 +135,7 @@ export const login: ControllerFunctionType = async (req, res, next) => {
         image: foundUser.image,
         color: foundUser.color,
         contacts: foundUser.contacts,
-        // groups:{foundUser.groups}
+        groups: foundUser.groups,
       },
     });
   } catch (err) {
@@ -161,7 +163,9 @@ export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
   try {
     const user = await User.findById(req.userId)
       .populate('contacts.contactId', 'firstName lastName image color')
-      .populate('contacts.chatId', 'lastMessage');
+      .populate('contacts.chatId', 'lastMessage')
+      .populate('groups.chatId', 'lastMessage')
+      .populate('groups.groupId', 'name admin');
 
     if (!user) return res.status(404).send({ message: 'User with the given id not found' });
 
@@ -175,7 +179,7 @@ export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
         image: user.image,
         color: user.color,
         contacts: user.contacts,
-        // groups:{user.groups}
+        groups: user.groups,
       },
     });
   } catch (err) {
@@ -199,7 +203,9 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
     if (firstName.length > 30) return res.status(400).send({ message: 'First name must be below 30 characters' });
     const user = await User.findById(userId)
       .populate('contacts.contactId', 'firstName lastName image color')
-      .populate('contacts.chatId', 'lastMessage');
+      .populate('contacts.chatId', 'lastMessage')
+      .populate('groups.chatId', 'lastMessage')
+      .populate('groups.groupId', 'name admin');
     if (!user) return res.status(404).send({ message: 'User not found' });
     if (image && user.image) deleteOldImage(user.image);
 
@@ -225,7 +231,7 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
         image: user.image,
         color: user.color,
         contacts: user.contacts,
-        // groups:{user.groups}
+        groups: user.groups,
       },
     });
   } catch (err) {

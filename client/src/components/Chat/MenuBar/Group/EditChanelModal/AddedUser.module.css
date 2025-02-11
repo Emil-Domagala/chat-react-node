@@ -1,0 +1,34 @@
+.added-user {
+  --height: 2.5rem;
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  color: var(--white);
+  background-color: var(--primary);
+  padding: 0 1rem;
+  padding-right: calc(var(--height) + 0.7rem);
+  border-radius: 10rem;
+  height: var(--height);
+  overflow: hidden;
+  p {
+    color: inherit;
+    font-size: var(--fz-s);
+  }
+  .delete {
+    position: absolute;
+    right: 0;
+    border: none;
+    background-color: transparent;
+    color: inherit;
+    border-radius: 100%;
+    padding: 0.7rem;
+    height: var(--height);
+  }
+  .delete:hover {
+    background-color: red;
+  }
+}
