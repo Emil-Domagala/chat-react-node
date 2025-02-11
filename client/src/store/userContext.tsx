@@ -31,7 +31,7 @@ export type Contact = {
 };
 
 export type ContactDetailWithChatId = ContactDetail & { chatId: string };
-
+export type GroupDetailWithChatId = GroupDetail & { chatId: string };
 export type User = {
   id: string;
   email: string;
@@ -49,9 +49,11 @@ type UserContextType = {
   setUser: (user: User | undefined) => void;
   fetchUser: () => Promise<void>;
   isLoading: boolean;
-  saveUserOnContactDeletion: (deletedUserId: string, chatId: string) => void;
+  saveUserOnContactDeletion: (deletedUserId: string) => void;
   saveUserOnContactAdd: (newContact: ContactDetailWithChatId) => void;
   saveUserOnNewMessage: (chatId: string, senderId: string) => void;
+  saveUserOnGroupDeletion: (groupId: string) => void;
+  saveUserOnGroupAdd: (createdGroup: GroupDetailWithChatId) => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -72,19 +74,37 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const saveUserOnContactDeletion = (deletedUserId: string, chatId: string) => {
+  const saveUserOnGroupDeletion = (groupId: string) => {
+    console.log(groupId);
+    if (!user) {
+      console.log('Failed to add group');
+      return;
+    }
+    const updatedGroups = user.groups!.filter((group) => group.groupId._id !== groupId);
+    console.log(updatedGroups);
+    setUser({ ...user, groups: updatedGroups } as User);
+  };
+
+  const saveUserOnContactDeletion = (deletedUserId: string) => {
     const updatedContacts = user!.contacts!.filter(
       (contact) => (contact.contactId as ContactDetail)._id !== deletedUserId,
     );
+
     setUser({ ...user, contacts: updatedContacts } as User);
-    sessionStorage.removeItem(`messages_${chatId}`);
   };
 
   const saveUserOnNewMessage = (chatId: string, senderId: string) => {
-    const contactIndex = user!.contacts!.findIndex((contact) => contact.chatId._id === chatId);
+    if (!user) {
+      return;
+    }
+    const contactIndex = user.contacts!.findIndex((contact) => contact.chatId._id === chatId);
+    const groupIndex = user.groups!.findIndex((group) => group.chatId._id === chatId);
 
-    if (contactIndex === -1) return user;
+    if (contactIndex !== -1) return newDM(contactIndex, senderId);
+    if (groupIndex !== -1) return groupMsg(groupIndex, senderId);
+  };
 
+  const newDM = (contactIndex: number, senderId: string) => {
     const updatedContacts = [...user!.contacts!];
 
     updatedContacts[contactIndex] = {
@@ -98,15 +118,27 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     setUser(newUser as User);
   };
+  const groupMsg = (groupIndex: number, senderId: string) => {
+    const updatedGroups = [...user!.groups!];
+
+    updatedGroups[groupIndex] = {
+      ...updatedGroups[groupIndex],
+      chatId: {
+        ...updatedGroups[groupIndex].chatId,
+        lastMessage: senderId,
+      },
+    };
+    const newUser = { ...user, groups: updatedGroups };
+
+    setUser(newUser as User);
+  };
 
   const saveUserOnContactAdd = (newContact: ContactDetailWithChatId) => {
     if (!user || !newContact) {
       console.log('Failed to add contact');
       return;
     }
-
     const existingContacts = Array.isArray(user.contacts) ? user.contacts : [];
-
     const contactId = {
       _id: newContact._id,
       color: newContact.color,
@@ -125,7 +157,24 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         },
       ],
     };
+    setUser(updatedUser as User);
+  };
 
+  const saveUserOnGroupAdd = (createdGroup: GroupDetailWithChatId) => {
+    if (!user) {
+      console.log('Failed to remove group');
+      return;
+    }
+    const existingGroups = Array.isArray(user.groups) ? user.groups : [];
+    const groupId = {
+      _id: createdGroup._id,
+      name: createdGroup.name,
+      admin: createdGroup.admin,
+    };
+    const updatedUser = {
+      ...user,
+      groups: [...existingGroups, { chatId: { _id: createdGroup.chatId, lastMessage: null }, groupId }],
+    };
     setUser(updatedUser as User);
   };
 
@@ -173,6 +222,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         saveUserOnContactDeletion,
         saveUserOnContactAdd,
         saveUserOnNewMessage,
+        saveUserOnGroupDeletion,
+        saveUserOnGroupAdd,
       }}>
       {children}
     </UserContext.Provider>

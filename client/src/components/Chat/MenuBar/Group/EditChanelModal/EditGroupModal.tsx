@@ -2,19 +2,21 @@ import classes from './EditGroupModal.module.css';
 import Modal from '../../../../UI/Modal/Modal';
 import Input from '../../../../UI/Form/Input';
 import { ContactDetail, useUser } from '../../../../../store/userContext';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Lottie from '../../../../UI/Lottie/Lottie';
 import UserItem from '../../../../UI/Chat/UserItem';
 import ErrorText from '../../../../UI/Form/ErrorText';
 import AddedUser from './AddedUser';
 import { createGroupHTTP, searchContactToGroupHTTP } from '../../../../../utils/httpGroup';
+import Loading from '../../../../UI/Loading/Loading';
 
 const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler<HTMLElement>; groupId?: string }) => {
-  const { user } = useUser();
+  const { user, saveUserOnGroupAdd } = useUser();
   const [foundContact, setFoundContact] = useState<ContactDetail[] | []>([]);
   const [selectedMembers, setSelectedMembers] = useState<ContactDetail[] | []>([]);
   const [groupName, setGroupName] = useState<string>('');
   const [groupNameWasTouched, setGroupNameWasTouched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   let formIsValid = false;
   const selectedMembersAreValid = selectedMembers.length >= 2;
@@ -22,23 +24,28 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
   const groupNameHasError = !groupNameIsValid && groupNameWasTouched;
   if (groupNameIsValid && selectedMembersAreValid) formIsValid = true;
 
+
+  useEffect(()=>{
+
+    if(groupId){
+      // const groupData = 
+
+    }
+
+  },[groupId])
+
+
   const searchContact = async (searchTerm: string) => {
     if (searchTerm.length < 1) return setFoundContact([]);
-
     let foundContactIDs: string[] = [];
     if (selectedMembers.length > 0) {
       foundContactIDs = selectedMembers.map((contact) => {
         return contact._id;
       });
     }
-
     try {
       const resData = await searchContactToGroupHTTP(searchTerm, foundContactIDs);
-      console.log(resData);
-      if (resData.possibleContacts.length < 1) {
-        setFoundContact([]);
-        return;
-      }
+      if (resData.possibleContacts.length < 1) return setFoundContact([]);
       setFoundContact(resData.possibleContacts);
     } catch (err) {
       console.log(err);
@@ -58,18 +65,31 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
   const handleSubmitForm = async () => {
     if (!formIsValid) return;
     try {
+      setIsLoading(true);
       if (groupId) {
         //edit group
       } else {
         const selectedMembersIds = selectedMembers.map((member) => member._id);
 
         const resData = await createGroupHTTP(groupName.trim(), selectedMembersIds);
-        console.log(resData);
+        saveUserOnGroupAdd(resData.newGroup);
+        setIsLoading(false);
+        turnOff();
       }
     } catch (err) {
+      setIsLoading(false);
+      turnOff();
       console.log(err);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Modal onClick={turnOff}>
+        <Loading />
+      </Modal>
+    );
+  }
 
   return (
     <Modal onClick={turnOff}>
@@ -79,7 +99,7 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
           <Input
             placeholder="Group Name"
             square
-            onChange={(e) => setGroupName(e.target.value.trim())}
+            onChange={(e) => setGroupName(e.target.value)}
             onBlur={() => setGroupNameWasTouched(true)}
             value={groupName}
           />

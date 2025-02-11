@@ -87,3 +87,22 @@ export const notifyContactAdded = (newContact: {}, recipientId: string) => {
     io.to(recipientSocketId).emit('contactAdded', { newContact });
   }
 };
+
+export const notifyGroupCreation = (createdGroup: {}, membersIDs: string[]) => {
+  membersIDs.forEach((member) => {
+    const memberSocketId = userSocketMap.get(member.toString());
+    if (memberSocketId) {
+      console.log(`Sending message to ${memberSocketId}`);
+      io?.to(memberSocketId).emit('groupCreated', { createdGroup });
+    }
+  });
+};
+export const notifyGroupDeletion = (deletedGroup: {}, membersIDs: string[]) => {
+  membersIDs.forEach((member) => {
+    const memberSocketId = userSocketMap.get(member.toString());
+    if (memberSocketId) {
+      console.log(`Sending message to ${memberSocketId}`);
+      io?.to(memberSocketId).emit('groupDeleted', { deletedGroup });
+    }
+  });
+};

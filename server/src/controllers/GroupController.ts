@@ -4,6 +4,7 @@ import Group from '../models/GroupModel.ts';
 import Chat from '../models/ChatModel.ts';
 import Message from '../models/MessageModel.ts';
 import { createGroupChat } from '../utils/ChatUtils.ts';
+import { notifyGroupCreation, notifyGroupDeletion } from '../socket/socket.ts';
 
 export const searchContacts: ControllerFunctionType = async (req, res, next) => {
   try {
@@ -67,11 +68,15 @@ export const createGroup: ControllerFunctionType = async (req, res, next) => {
     ]);
 
     const newGroup = {
-      groupId: group._id,
+      _id: group._id,
       name: group.name,
       admin: group.admin,
       chatId: chat._id,
     };
+
+    const groupMembersIDs = group.members.map((memberId) => memberId.toString());
+
+    notifyGroupCreation(newGroup, groupMembersIDs);
 
     return res.status(200).json({
       newGroup,
@@ -91,10 +96,9 @@ export const editGroup: ControllerFunctionType = async (req, res, next) => {
 export const deleteGroup: ControllerFunctionType = async (req, res, next) => {
   try {
     const { groupId, chatId } = req.body;
-    console.log(req.body);
     if (!groupId) return res.status(400).send({ message: 'GroupId and chatId is required' });
 
-    const group = await Group.findById(groupId);
+    const group = await Group.findByIdAndDelete(groupId);
     if (!group) return res.status(400).send({ message: 'Couldnt find group' });
     const chat = await Chat.findByIdAndDelete(chatId);
     if (!chat) return res.status(400).send({ message: 'Couldnt find chat' });
@@ -109,7 +113,15 @@ export const deleteGroup: ControllerFunctionType = async (req, res, next) => {
       { $pull: { groups: { groupId: group._id, chatId: chat._id } } },
     );
 
-    return res.status(200).json({ message: 'Success', deletedGroupId: group._id });
+    const groupMembersIDs = group.members.map((memberId) => memberId.toString());
+    const deletedGroup = {
+      groupId: group._id,
+      chatId: chat._id,
+    };
+
+    notifyGroupDeletion(deletedGroup, groupMembersIDs);
+
+    return res.status(200).json({ message: 'Success', deletedGroup: deletedGroup });
   } catch (err) {
     internalError(err, res);
   }

@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect, ReactNode, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, ReactNode, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useUser } from './userContext';
-import type { ContactDetailWithChatId } from './userContext';
+import type { ContactDetailWithChatId, GroupDetailWithChatId } from './userContext';
 import { useChatContext } from './chatContext';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -23,13 +23,21 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socket = useRef<Socket | null>(null);
-  const { user, saveUserOnContactDeletion, saveUserOnContactAdd, saveUserOnNewMessage } = useUser();
-  const { setContact } = useChatContext();
+  const {
+    user,
+    saveUserOnContactDeletion,
+    saveUserOnContactAdd,
+    saveUserOnNewMessage,
+    saveUserOnGroupDeletion,
+    saveUserOnGroupAdd,
+  } = useUser();
+  const { setContact, setGroup } = useChatContext();
   const queryClient = useQueryClient();
 
   const deleteContact = ({ deletedUserId, chatId }: { deletedUserId: string; chatId: string }) => {
     const currentChatId = sessionStorage.getItem('currentChatId');
-    saveUserOnContactDeletion(deletedUserId, chatId);
+    saveUserOnContactDeletion(deletedUserId);
+    queryClient.removeQueries({ queryKey: ['messages', chatId] });
 
     if (currentChatId === chatId) {
       setContact(undefined, undefined);
@@ -43,6 +51,20 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const sendMessage = (message: IMessage) => {
     if (socket.current) {
       socket.current.emit('sendMessage', message);
+    }
+  };
+
+  const createGroup = ({ createdGroup }: { createdGroup: GroupDetailWithChatId }) => {
+    saveUserOnGroupAdd(createdGroup);
+  };
+
+  const deleteGroup = ({ deletedGroup }: { deletedGroup: { chatId: string; groupId: string } }) => {
+    const currentChatId = sessionStorage.getItem('currentChatId');
+    saveUserOnGroupDeletion(deletedGroup.groupId);
+    queryClient.removeQueries({ queryKey: ['messages', deletedGroup.chatId] });
+
+    if (currentChatId === deletedGroup.chatId) {
+      setGroup(undefined, undefined);
     }
   };
 
@@ -63,6 +85,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
       socket.current.on('contactDeleted', deleteContact);
       socket.current.on('contactAdded', addContact);
+      socket.current.on('groupCreated', createGroup);
+      socket.current.on('groupDeleted', deleteGroup);
 
       socket.current.on('receivedMessage', (message) => {
         saveUserOnNewMessage(message.messageData.chatId, message.messageData.sender._id);
@@ -85,6 +109,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.current?.off('receivedMessage');
       socket.current?.off('contactDeleted');
       socket.current?.off('contactAdded');
+      socket.current?.off('groupCreated');
+      socket.current?.off('groupDeleted');
       socket.current?.disconnect();
       socket.current = null;
     };

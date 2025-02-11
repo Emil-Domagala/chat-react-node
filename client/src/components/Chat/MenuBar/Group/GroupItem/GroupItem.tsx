@@ -15,7 +15,7 @@ type GroupItemProps = {
 };
 
 const GroupItem = ({ groupId, groupName, lastMessage, groupAdminId, chatId }: GroupItemProps) => {
-  const { user } = useUser();
+  const { user, saveUserOnGroupDeletion } = useUser();
   const { currentChatId, setGroup } = useChatContext();
   const isAdmin = groupAdminId === user!.id;
   const group = { _id: groupId, admin: groupAdminId, name: groupName };
@@ -23,11 +23,12 @@ const GroupItem = ({ groupId, groupName, lastMessage, groupAdminId, chatId }: Gr
   const handleChoseCurrentGroup = () => {
     setGroup(group, chatId);
   };
-  const handleDeleteGroup = async () => {
+  const handleDeleteGroup = async (event) => {
+    event?.stopPropagation();
     try {
       if (isAdmin) {
         const resData = await deleteGroupHTTP(groupId, chatId);
-        console.log(resData);
+        saveUserOnGroupDeletion(resData.deletedGroup.groupId);
         return;
       }
       if (!isAdmin) return;
@@ -47,7 +48,11 @@ const GroupItem = ({ groupId, groupName, lastMessage, groupAdminId, chatId }: Gr
             <EditSVG onClick={() => handleEditModal(groupId)} />
           </button>
         )}
-        <button className={`${classes['delete']}`} onClick={handleDeleteGroup}>
+        <button
+          className={`${classes['delete']}`}
+          onClick={(event) => {
+            handleDeleteGroup(event);
+          }}>
           <XIconSVG />
         </button>
       </span>
