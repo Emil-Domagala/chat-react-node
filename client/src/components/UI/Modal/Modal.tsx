@@ -7,7 +7,7 @@ const Modal = ({
   onClick,
 }: {
   children: React.JSX.Element;
-  onClick?: React.MouseEventHandler<HTMLElement>;
+  onClick?: React.MouseEventHandler<HTMLElement>
 }) => {
   const modalEl = document.getElementById('modal') as HTMLDivElement;
 

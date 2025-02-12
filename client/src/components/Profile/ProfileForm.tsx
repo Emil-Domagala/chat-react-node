@@ -40,9 +40,9 @@ const ProfileForm = () => {
     formData.append('lastName', lastName);
     formData.append('color', selectedColor.toString());
     if (image) formData.append('image', image);
-
     if (!formIsValid) return;
     const resData = await updateProfileHandler(formData);
+
     setUser(resData.user);
     navigate('/chat');
   };

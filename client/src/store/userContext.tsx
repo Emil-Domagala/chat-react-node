@@ -31,7 +31,7 @@ export type Contact = {
 };
 
 export type ContactDetailWithChatId = ContactDetail & { chatId: string };
-export type GroupDetailWithChatId = GroupDetail & { chatId: string };
+export type GroupDetailWithChatId = GroupDetail & { chatId: string; lastMessage: string };
 export type User = {
   id: string;
   email: string;
@@ -54,6 +54,7 @@ type UserContextType = {
   saveUserOnNewMessage: (chatId: string, senderId: string) => void;
   saveUserOnGroupDeletion: (groupId: string) => void;
   saveUserOnGroupAdd: (createdGroup: GroupDetailWithChatId) => void;
+  saveUserOnGroupNameChange: (groupId: string, name: string) => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -75,7 +76,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const saveUserOnGroupDeletion = (groupId: string) => {
-    console.log(groupId);
     if (!user) {
       console.log('Failed to add group');
       return;
@@ -91,6 +91,26 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     );
 
     setUser({ ...user, contacts: updatedContacts } as User);
+  };
+
+  const saveUserOnGroupNameChange = (groupId: string, name: string) => {
+    console.log(groupId);
+    console.log(name);
+    if (!user || !groupId) {
+      console.log('Failed to add group');
+      return;
+    }
+    const updatedGroupIndex = user.groups!.findIndex((group) => group.groupId._id === groupId);
+
+    const updatedGroups = [...user.groups!];
+    updatedGroups[updatedGroupIndex].groupId.name = name;
+
+    const newUser = {
+      ...user,
+      groups: [...updatedGroups],
+    };
+
+    setUser(newUser as User);
   };
 
   const saveUserOnNewMessage = (chatId: string, senderId: string) => {
@@ -166,6 +186,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     const existingGroups = Array.isArray(user.groups) ? user.groups : [];
+     const isGroupAlreadyAdded = existingGroups.some(
+       (group) => group.groupId._id.toString() === createdGroup._id.toString(),
+     );
+
+     if (isGroupAlreadyAdded) {
+       console.log('Group is already added');
+       return;
+     }
+
     const groupId = {
       _id: createdGroup._id,
       name: createdGroup.name,
@@ -173,8 +202,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     };
     const updatedUser = {
       ...user,
-      groups: [...existingGroups, { chatId: { _id: createdGroup.chatId, lastMessage: null }, groupId }],
+      groups: [
+        ...existingGroups,
+        { chatId: { _id: createdGroup.chatId, lastMessage: createdGroup.lastMessage }, groupId },
+      ],
     };
+
     setUser(updatedUser as User);
   };
 
@@ -224,6 +257,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         saveUserOnNewMessage,
         saveUserOnGroupDeletion,
         saveUserOnGroupAdd,
+        saveUserOnGroupNameChange,
       }}>
       {children}
     </UserContext.Provider>

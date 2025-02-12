@@ -30,6 +30,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     saveUserOnNewMessage,
     saveUserOnGroupDeletion,
     saveUserOnGroupAdd,
+    saveUserOnGroupNameChange,
   } = useUser();
   const { setContact, setGroup } = useChatContext();
   const queryClient = useQueryClient();
@@ -54,7 +55,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createGroup = ({ createdGroup }: { createdGroup: GroupDetailWithChatId }) => {
+  const createGroup = async ({ createdGroup }: { createdGroup: GroupDetailWithChatId }) => {
     saveUserOnGroupAdd(createdGroup);
   };
 
@@ -66,6 +67,9 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     if (currentChatId === deletedGroup.chatId) {
       setGroup(undefined, undefined);
     }
+  };
+  const groupChangedName = ({ newName, groupId }: { newName: string; groupId: string }) => {
+    saveUserOnGroupNameChange(groupId, newName);
   };
 
   useEffect(() => {
@@ -87,6 +91,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.current.on('contactAdded', addContact);
       socket.current.on('groupCreated', createGroup);
       socket.current.on('groupDeleted', deleteGroup);
+      socket.current.on('groupChangedName', groupChangedName);
 
       socket.current.on('receivedMessage', (message) => {
         saveUserOnNewMessage(message.messageData.chatId, message.messageData.sender._id);
@@ -111,6 +116,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.current?.off('contactAdded');
       socket.current?.off('groupCreated');
       socket.current?.off('groupDeleted');
+      socket.current?.off('groupChangedName');
       socket.current?.disconnect();
       socket.current = null;
     };

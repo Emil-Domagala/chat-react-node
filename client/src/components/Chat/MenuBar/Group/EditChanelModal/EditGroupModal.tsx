@@ -7,16 +7,22 @@ import Lottie from '../../../../UI/Lottie/Lottie';
 import UserItem from '../../../../UI/Chat/UserItem';
 import ErrorText from '../../../../UI/Form/ErrorText';
 import AddedUser from './AddedUser';
-import { createGroupHTTP, searchContactToGroupHTTP } from '../../../../../utils/httpGroup';
+import {
+  createGroupHTTP,
+  getGroupDataHTTP,
+  searchContactToGroupHTTP,
+  editGroupHTTP,
+} from '../../../../../utils/httpGroup';
 import Loading from '../../../../UI/Loading/Loading';
 
 const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler<HTMLElement>; groupId?: string }) => {
-  const { user, saveUserOnGroupAdd } = useUser();
+  const { user, saveUserOnGroupAdd, saveUserOnGroupNameChange } = useUser();
   const [foundContact, setFoundContact] = useState<ContactDetail[] | []>([]);
   const [selectedMembers, setSelectedMembers] = useState<ContactDetail[] | []>([]);
   const [groupName, setGroupName] = useState<string>('');
   const [groupNameWasTouched, setGroupNameWasTouched] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [groupAdminId, setGroupAdminId] = useState<string | null>(null);
 
   let formIsValid = false;
   const selectedMembersAreValid = selectedMembers.length >= 2;
@@ -24,19 +30,29 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
   const groupNameHasError = !groupNameIsValid && groupNameWasTouched;
   if (groupNameIsValid && selectedMembersAreValid) formIsValid = true;
 
+  useEffect(() => {
+    const fetchGroupData = async () => {
+      try {
+        setIsLoading(true);
+        const groupData = await getGroupDataHTTP(groupId!);
+        setSelectedMembers([...groupData.members]);
+        setGroupName(groupData.name);
+        setGroupAdminId(groupData.admin);
+        setIsLoading(false);
+      } catch (err) {
+        setIsLoading(false);
+        console.log(err);
+      }
+    };
 
-  useEffect(()=>{
-
-    if(groupId){
-      // const groupData = 
-
+    if (groupId) {
+      fetchGroupData();
     }
-
-  },[groupId])
-
+    setIsLoading(false);
+  }, [groupId]);
 
   const searchContact = async (searchTerm: string) => {
-    if (searchTerm.length < 1) return setFoundContact([]);
+    if (searchTerm.trim().length < 1) return setFoundContact([]);
     let foundContactIDs: string[] = [];
     if (selectedMembers.length > 0) {
       foundContactIDs = selectedMembers.map((contact) => {
@@ -44,7 +60,7 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
       });
     }
     try {
-      const resData = await searchContactToGroupHTTP(searchTerm, foundContactIDs);
+      const resData = await searchContactToGroupHTTP(searchTerm.trim(), foundContactIDs);
       if (resData.possibleContacts.length < 1) return setFoundContact([]);
       setFoundContact(resData.possibleContacts);
     } catch (err) {
@@ -66,20 +82,19 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
     if (!formIsValid) return;
     try {
       setIsLoading(true);
-      if (groupId) {
-        //edit group
-      } else {
-        const selectedMembersIds = selectedMembers.map((member) => member._id);
-
-        const resData = await createGroupHTTP(groupName.trim(), selectedMembersIds);
+      const selectedMembersIds = selectedMembers.map((member) => member._id);
+      if (groupId && groupAdminId == user?.id) {
+        const resData = await editGroupHTTP(groupName, selectedMembersIds, groupId);
+        saveUserOnGroupNameChange(resData._id, resData.name);
+      } else if (!groupId) {
+        const resData = await createGroupHTTP(groupName, selectedMembersIds);
         saveUserOnGroupAdd(resData.newGroup);
-        setIsLoading(false);
-        turnOff();
       }
     } catch (err) {
+      console.log(err);
+    } finally {
       setIsLoading(false);
       turnOff();
-      console.log(err);
     }
   };
 
@@ -114,7 +129,7 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
             return <AddedUser contact={contact} key={contact._id} onClick={handleUnselectContact} />;
           })}
         </ul>
-        <Input placeholder="Search contacts" square onChange={(e) => searchContact(e.target.value.trim())} />
+        <Input placeholder="Search contacts" square onChange={(e) => searchContact(e.target.value)} />
         <div className={classes['founded-contacts--wrapper']}>
           {foundContact.length > 0 ? (
             foundContact.map((item) => (

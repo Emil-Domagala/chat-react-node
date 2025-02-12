@@ -103,7 +103,7 @@ export const login: ControllerFunctionType = async (req, res, next) => {
       .populate('contacts.contactId', 'firstName lastName image color')
       .populate('contacts.chatId', 'lastMessage')
       .populate('groups.chatId', 'lastMessage')
-      .populate('groups.groupId', 'name admin');
+      .populate('groups.groupId', '_id name admin');
 
     if (!foundUser) {
       isError = true;
@@ -165,7 +165,9 @@ export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
       .populate('contacts.contactId', 'firstName lastName image color')
       .populate('contacts.chatId', 'lastMessage')
       .populate('groups.chatId', 'lastMessage')
-      .populate('groups.groupId', 'name admin');
+      .populate('groups.groupId', '_id name admin');
+
+    console.log(user);
 
     if (!user) return res.status(404).send({ message: 'User with the given id not found' });
 
@@ -193,12 +195,16 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
     let { firstName, lastName, color } = req.body;
     const image = req.file;
     let relativeFilePath;
-
-    if (!firstName.trim() || !lastName.trim() || !color)
-      return res.status(400).send({ message: 'First Name, Last Name, and Color are required' });
     firstName = firstName.trim();
     lastName = lastName.trim();
-    if ([1, 2, 3, 4].includes(Number(color))) return res.status(400).send({ message: 'Color value is not valid' });
+    color = Number(color) || 0;
+
+    if (!firstName || !lastName || Number.isNaN(color))
+      return res.status(400).send({ message: 'First Name, Last Name, and Color are required' });
+
+    if (![0, 1, 2, 3].includes(color)) {
+      return res.status(400).send({ message: 'Color value is not valid' });
+    }
     if (lastName.length > 30) return res.status(400).send({ message: 'Last name must be below 30 characters' });
     if (firstName.length > 30) return res.status(400).send({ message: 'First name must be below 30 characters' });
     const user = await User.findById(userId)

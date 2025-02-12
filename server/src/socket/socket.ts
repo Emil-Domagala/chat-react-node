@@ -4,6 +4,7 @@ import { Server } from 'http';
 import Chat from '../models/ChatModel.ts';
 import Message from '../models/MessageModel.ts';
 import type { IMessage } from '../models/MessageModel.ts';
+import type { Types } from 'mongoose';
 
 let io: SocketIOServer | null = null;
 const userSocketMap = new Map();
@@ -92,7 +93,7 @@ export const notifyGroupCreation = (createdGroup: {}, membersIDs: string[]) => {
   membersIDs.forEach((member) => {
     const memberSocketId = userSocketMap.get(member.toString());
     if (memberSocketId) {
-      console.log(`Sending message to ${memberSocketId}`);
+      console.log(`Sending group creation to ${memberSocketId}`);
       io?.to(memberSocketId).emit('groupCreated', { createdGroup });
     }
   });
@@ -103,6 +104,15 @@ export const notifyGroupDeletion = (deletedGroup: {}, membersIDs: string[]) => {
     if (memberSocketId) {
       console.log(`Sending message to ${memberSocketId}`);
       io?.to(memberSocketId).emit('groupDeleted', { deletedGroup });
+    }
+  });
+};
+export const notifyGroupChangedName = (membersIDs: Types.ObjectId[], newName: string, groupId: string) => {
+  membersIDs.forEach((member) => {
+    const memberSocketId = userSocketMap.get(member.toString());
+    if (memberSocketId) {
+      console.log(`Sending group name change to ${memberSocketId}`);
+      io?.to(memberSocketId).emit('groupChangedName', { newName, groupId });
     }
   });
 };
