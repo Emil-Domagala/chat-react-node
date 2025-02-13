@@ -2,13 +2,16 @@
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "target": "ES2022",
-    "lib": ["ES2023"],
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM"],
+    "jsx": "react-jsx",
     "module": "ESNext",
     "skipLibCheck": true,
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
+    /* Ensure correct module resolution */
+    "moduleResolution": "node",
+
+    /* Enable isolated modules for better bundling */
     "isolatedModules": true,
     "moduleDetection": "force",
 
@@ -16,7 +19,10 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Ensure compiled files go into dist */
+    "outDir": "./dist"
   },
   "include": ["vite.config.ts", "src/**/*.ts", "src/**/*.tsx"]
 }

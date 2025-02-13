@@ -1,11 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { UserProvider } from './store/userContext.tsx';
-import { ColorModeProvider } from './store/colorModeContext.tsx';
+import { UserProvider } from './store/userContext';
+import { ColorModeProvider } from './store/colorModeContext';
 import './index.css';
-import App from './App.tsx';
-import { SocketProvider } from './store/socketContext.tsx';
-import { ChatContextProvider } from './store/chatContext.tsx';
+import App from './App';
+import { SocketProvider } from './store/socketContext';
+import { ChatContextProvider } from './store/chatContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();

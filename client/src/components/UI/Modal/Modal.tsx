@@ -1,6 +1,5 @@
 import classes from './Modal.module.css';
 import { createPortal } from 'react-dom';
-import React from 'react';
 
 const Modal = ({
   children,

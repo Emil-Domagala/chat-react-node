@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Form from '../UI/Form/Form';
 import Label from '../UI/Form/Label';
 import Input from '../UI/Form/Input';

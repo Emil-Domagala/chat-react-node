@@ -2,6 +2,7 @@
   "files": [],
   "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
   "compilerOptions": {
+    "target": "ES2023",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
@@ -10,12 +11,15 @@
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": false,
-    "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "noEmit": false,
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "*": ["node_modules/*", "src/types/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

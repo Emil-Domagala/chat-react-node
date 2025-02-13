@@ -1,4 +1,4 @@
-import React from 'react';
+
 import ReactTextareaAutosize from 'react-textarea-autosize';
 import SendIconSVG from '../../../assets/Icons/SendIconSVG';
 import { useState } from 'react';

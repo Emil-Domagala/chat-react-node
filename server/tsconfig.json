@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
     "typeRoots": ["./node_modules/@types", "./types/types.d.ts"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "baseUrl": "./src",
-    "outDir": "dist",
+    "outDir": "./dist",
     "sourceMap": true,
     "noImplicitAny": true,
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
   },
   "include": ["src/**/*", "types/types.d.ts", "app.ts"]
 }
