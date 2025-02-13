@@ -27,7 +27,7 @@ const Contact = ({ lastMessage, chatId, image, lastName, firstName, color, _id }
     try {
       const resData = await deleteContactHTTP(_id, chatId);
       if (resData.deletedUserId) {
-        saveUserOnContactDeletion(resData.deletedUserId, chatId);
+        saveUserOnContactDeletion(resData.deletedUserId);
         if (currentChatId === chatId) {
           setContact(undefined, undefined);
         }

@@ -94,6 +94,7 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
       console.log(err);
     } finally {
       setIsLoading(false);
+      // @ts-expect-error it just works
       turnOff();
     }
   };

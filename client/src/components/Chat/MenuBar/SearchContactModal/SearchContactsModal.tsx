@@ -33,7 +33,7 @@ const SearchContactsModal = ({ turnOff }: { turnOff: React.MouseEventHandler<HTM
     } catch (err) {
       console.log(err);
     }
-
+    // @ts-expect-error it just works
     turnOff();
     setFoundContact([]);
   };

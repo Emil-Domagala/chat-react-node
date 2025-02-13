@@ -7,10 +7,11 @@ import AddEmojiSVG from '../../../assets/Icons/AddEmojiSVG';
 // import AddAttachment from '../../../assets/Icons/AddAttachment';
 import EmojiPicker from 'emoji-picker-react';
 import { useColorMode } from '../../../store/colorModeContext';
-import { useSocket } from '../../../store/socketContext';
+import { IMessage, useSocket } from '../../../store/socketContext';
 import { useChatContext } from '../../../store/chatContext';
 import { useUser } from '../../../store/userContext';
 import ErrorText from '../../UI/Form/ErrorText';
+import { Theme } from 'emoji-picker-react';
 
 const SendMessaggeBar = () => {
   const { mode } = useColorMode();
@@ -41,7 +42,7 @@ const SendMessaggeBar = () => {
       content: messageValue.trim(),
     };
     setHasError(false);
-    sendMessage(message);
+    sendMessage(message as IMessage);
     setMessageValue('');
   };
 
@@ -80,7 +81,7 @@ const SendMessaggeBar = () => {
         </div>
         <EmojiPicker
           autoFocusSearch={false}
-          theme={mode}
+          theme={mode as Theme}
           lazyLoadEmojis={true}
           className={classes['emoji-picker']}
           open={emojiPickerOpen}

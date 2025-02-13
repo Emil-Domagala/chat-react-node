@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { IMessage } from '../store/socketContext';
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 const messagePath = import.meta.env.VITE_MESSAGE_BASE_PATH;
@@ -32,7 +33,7 @@ export const useChatMessages = (currentChatId: string) => {
       return {
         pages: data.pages.map((page) => ({
           ...page,
-          messages: page.messages.filter((msg) => {
+          messages: page.messages.filter((msg: IMessage) => {
             if (seen.has(msg._id)) return false;
             seen.add(msg._id);
             return true;

@@ -96,14 +96,14 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.current.on('receivedMessage', (message) => {
         saveUserOnNewMessage(message.messageData.chatId, message.messageData.sender._id);
 
-        queryClient.setQueryData(['messages', message.messageData.chatId], (oldData: any) => {
+        queryClient.setQueryData(['messages', message.messageData.chatId], (oldData:any) => {
           if (!oldData) {
             return { pages: [{ messages: [message.messageData] }], pageParams: [] };
           }
 
           return {
             ...oldData,
-            pages: oldData.pages.map((page, index: number) =>
+            pages: oldData.pages!.map((page:any, index: number) =>
               index === 0 ? { ...page, messages: [message.messageData, ...page.messages] } : page,
             ),
           };

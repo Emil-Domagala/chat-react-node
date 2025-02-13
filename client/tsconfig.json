@@ -7,6 +7,12 @@
     "esModuleInterop": true,
     "strict": true,
     "baseUrl": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "noEmit": false,
     "paths": {
       "*": ["node_modules/*", "src/types/*"]
     }
