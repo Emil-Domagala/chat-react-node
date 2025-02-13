@@ -33,7 +33,7 @@ export const setupSocket = (server: Server) => {
       const chat = await Chat.findById(message.chatId).populate('participants');
       if (!chat) return console.log('Chat not found');
 
-      if (message.content.trim().length > 600 || message.content.trim() == '') return;
+      if (!message.content || message.content.trim().length > 600 || message.content.trim() == '') return;
 
       const createMessage = await Message.create(message);
 
@@ -42,7 +42,7 @@ export const setupSocket = (server: Server) => {
         'id firstName lastName color image',
       );
 
-      await chat.updateOne({ lastMessage: messageData.sender._id });
+      await chat.updateOne({ lastMessage: messageData!.sender._id });
 
       chat.participants.forEach((participant) => {
         const recipientSocketId = userSocketMap.get(participant._id.toString());

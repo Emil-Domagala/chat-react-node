@@ -47,7 +47,7 @@ export const addContact: ControllerFunctionType = async (req, res, next) => {
       return res.status(400).json({ message: 'Contact already added' });
     }
 
-    const chat = await createPrivateChat(req.userId, contactId);
+    const chat = await createPrivateChat(req.userId!, contactId);
 
     await Promise.all([
       user.updateOne({ $push: { contacts: { contactId: contact._id, chatId: chat._id } } }),

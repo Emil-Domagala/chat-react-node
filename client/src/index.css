@@ -119,3 +119,21 @@ h6 {
     max-width: 1400px;
   }
 }
+
+.error-500-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: auto;
+  text-align: center;
+  h1 {
+    color: red;
+    font-size: 6rem;
+  }
+  h2 {
+    font-size: 3rem;
+  }
+}
+
+.error-404-page {
+}

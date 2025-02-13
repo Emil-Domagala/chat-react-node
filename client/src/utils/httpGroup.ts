@@ -1,5 +1,3 @@
-import { ContactDetail } from '../store/userContext';
-
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 const groupPath = import.meta.env.VITE_GROUP_BASE_PATH;
 const SEARCH_CONTACTS_ROUTE = serverUrl + groupPath + '/search-contacts';

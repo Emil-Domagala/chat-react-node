@@ -1,0 +1,39 @@
+.page-404 {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  text-align: center;
+  transform: translateY(-20%);
+
+  h1 {
+    font-size: calc(8rem + 5.5vw);
+    font-weight: bold;
+    background: url('../assets/Universe.jpg');
+    background-position: 50%;
+    background-size: cover;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  h2 {
+    text-transform: uppercase;
+    padding: 2rem 0 1rem;
+  }
+  p {
+    padding-bottom: 2rem;
+  }
+  a {
+    line-height: 1;
+    text-decoration: none;
+    border-radius: 0.7rem;
+    padding: 1.5rem 3rem;
+    font-weight: 600;
+    color: var(--white);
+    background-color: var(--primary);
+    margin: auto;
+    cursor: pointer;
+    transition: background-color 0.4s;
+  }
+  a:hover {
+    background-color: rgba(var(--primary-val), 0.5);
+  }
+}

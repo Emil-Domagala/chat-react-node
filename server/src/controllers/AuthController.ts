@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import { saveResizedImage } from '../utils/sharp.ts';
+import '../../types/types.d.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,7 +53,7 @@ export const signup: ControllerFunctionType = async (req, res, next) => {
       error.confirmPassword = 'Password and confirm password must match';
     }
 
-    if (isError) return res.status(error.status).send({ error });
+    if (isError) return res.status(error.status!).send({ error });
 
     const foundUser = await User.findOne({ email });
 
@@ -62,7 +63,7 @@ export const signup: ControllerFunctionType = async (req, res, next) => {
       error.email = 'Email is already in use';
     }
 
-    if (isError) return res.status(error.status).send({ error });
+    if (isError) return res.status(error.status!).send({ error });
 
     const user = await User.create({ email, password });
 
@@ -97,7 +98,7 @@ export const login: ControllerFunctionType = async (req, res, next) => {
       Object.assign(error, isValidationSucces);
     }
 
-    if (isError) return res.status(error.status).send({ error });
+    if (isError) return res.status(error.status!).send({ error });
 
     const foundUser = await User.findOne({ email })
       .populate('contacts.contactId', 'firstName lastName image color')
@@ -111,15 +112,16 @@ export const login: ControllerFunctionType = async (req, res, next) => {
       error.email = 'User not found';
     }
 
-    if (isError) return res.status(error.status).send({ error });
+    if (isError) return res.status(error.status!).send({ error });
 
-    const auth = await bcrypt.compare(password, foundUser.password);
+    const auth = await bcrypt.compare(password, foundUser!.password);
+
     if (!auth) {
       isError = true;
       error.status = 400;
       error.email = 'Wrong password';
     }
-    res.cookie('jwt', createToken(email, foundUser.id), {
+    res.cookie('jwt', createToken(email, foundUser!.id), {
       maxAge: tokenExpiration,
       secure: true,
       sameSite: 'none',
@@ -127,15 +129,15 @@ export const login: ControllerFunctionType = async (req, res, next) => {
 
     return res.status(200).json({
       user: {
-        id: foundUser.id,
-        email: foundUser.email,
-        profileSetup: foundUser.profileSetup,
-        firstName: foundUser.firstName,
-        lastName: foundUser.lastName,
-        image: foundUser.image,
-        color: foundUser.color,
-        contacts: foundUser.contacts,
-        groups: foundUser.groups,
+        id: foundUser!.id,
+        email: foundUser!.email,
+        profileSetup: foundUser!.profileSetup,
+        firstName: foundUser!.firstName,
+        lastName: foundUser!.lastName,
+        image: foundUser!.image,
+        color: foundUser!.color,
+        contacts: foundUser!.contacts,
+        groups: foundUser!.groups,
       },
     });
   } catch (err) {
@@ -216,7 +218,7 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
     if (image && user.image) deleteOldImage(user.image);
 
     if (image) {
-      relativeFilePath = await saveResizedImage(image, userId, 'profiles', 120, 120);
+      relativeFilePath = await saveResizedImage(image, userId!, 'profiles', 120, 120);
     }
 
     user.firstName = firstName;
@@ -247,6 +249,7 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
 
 export const logout: ControllerFunctionType = async (req, res, next) => {
   try {
+    console.log('object');
     res.cookie('jwt', '', { maxAge: 1, secure: true, sameSite: 'none' });
     res.status(200).send({ message: 'Logout was successfull' });
   } catch (err) {

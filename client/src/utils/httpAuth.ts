@@ -68,8 +68,6 @@ export const updateProfileHandler = async (formData: FormData) => {
 
   const resData = await response.json();
 
-  console.log(resData);
-
   if (!response.ok) {
     const error = new Error(resData.message || 'Failed to update profile') as Error & { errorData?: object };
     error.errorData = resData;

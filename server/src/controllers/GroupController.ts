@@ -37,10 +37,10 @@ export const createGroup: ControllerFunctionType = async (req, res, next) => {
   try {
     const { selectedMembersIds, name } = req.body;
 
-    const { error, existingUsers, currentUser } = await validateGroupCreation(req.userId, selectedMembersIds, name);
+    const { error, existingUsers, currentUser } = await validateGroupCreation(req.userId!, selectedMembersIds, name);
     if (error !== null) return res.status(400).send({ message: error });
 
-    const { chat, group } = await createGroupChat(selectedMembersIds, req!.userId, name);
+    const { chat, group } = await createGroupChat(selectedMembersIds, req.userId!, name);
 
     await Promise.all([
       ...existingUsers.map((user) => user.updateOne({ $push: { groups: { groupId: group._id, chatId: chat._id } } })),
@@ -73,11 +73,11 @@ export const editGroup: ControllerFunctionType = async (req, res, next) => {
     const group = await Group.findById(groupId);
     if (!group) return res.status(404).send({ message: 'Group not found' });
 
-    if (group.admin.toString() !== req.userId.toString()) {
+    if (group.admin.toString() !== req.userId!.toString()) {
       return res.status(401).send({ message: 'Group can be edited only by Admin' });
     }
 
-    const { error, existingUsers, currentUser } = await validateGroupCreation(req.userId, selectedMembersIds, name);
+    const { error, existingUsers, currentUser } = await validateGroupCreation(req.userId!, selectedMembersIds, name);
     if (error !== null) return res.status(400).send({ message: error });
 
     const chatId = currentUser.groups.find((g) => g.groupId.toString() === groupId)?.chatId || null;
@@ -107,7 +107,7 @@ export const editGroup: ControllerFunctionType = async (req, res, next) => {
     if (name && name !== group.name) {
       newName = name;
       await group.updateOne({ name });
-      notifyGroupChangedName(updatedGroupMembers.members, newName, groupId);
+      notifyGroupChangedName(updatedGroupMembers!.members, newName, groupId);
     }
 
     const newGroup = {
@@ -156,7 +156,7 @@ export const deleteGroup: ControllerFunctionType = async (req, res, next) => {
     const chat = await Chat.findById(chatId);
     if (!chat) return res.status(404).send({ message: 'Couldnt find chat' });
 
-    if (group.admin.toString() !== req.userId.toString())
+    if (group.admin.toString() !== req.userId!.toString())
       return res.status(401).send({ message: 'Group can be deleted only by Admin' });
 
     const user = await User.findById(req.userId);
@@ -164,7 +164,7 @@ export const deleteGroup: ControllerFunctionType = async (req, res, next) => {
 
     const foundChatId = user.groups.find((group) => group.groupId.toString() === groupId)?.chatId || null;
 
-    if (chatId.toString() !== foundChatId.toString()) return res.status(400).send({ message: 'Wrong chat Id' });
+    if (chatId.toString() !== foundChatId!.toString()) return res.status(400).send({ message: 'Wrong chat Id' });
     await group.deleteOne();
     await chat.deleteOne();
 
@@ -205,7 +205,7 @@ export const leaveGroup: ControllerFunctionType = async (req, res, next) => {
     const chat = await Chat.findById(chatId);
     if (!chat) return res.status(404).send({ message: 'Couldn’t find chat' });
 
-    const isUserInGroup = group.members.some((memberId) => memberId.toString() === req.userId.toString());
+    const isUserInGroup = group.members.some((memberId) => memberId.toString() === req.userId!.toString());
 
     if (!isUserInGroup) return res.status(400).send({ message: 'User is not in the group already' });
 

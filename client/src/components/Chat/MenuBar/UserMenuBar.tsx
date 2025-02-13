@@ -13,7 +13,7 @@ const UserMenuBar = () => {
   const navigate = useNavigate();
   const { mode, setLightColorMode, setDarkColorMode } = useColorMode();
   const { user, setUser } = useUser();
-  const { setContact } = useChatContext();
+  const { setContact, setGroup } = useChatContext();
   const userColor = user?.color || 0;
 
   const toggleChangeColorMode = () => {
@@ -24,7 +24,8 @@ const UserMenuBar = () => {
   const handleLogout = async () => {
     try {
       const resData = await logoutHTTP();
-      if (resData) return navigate('/'), setUser(undefined), setContact(undefined, undefined);
+      if (resData)
+        return navigate('/'), setUser(undefined), setContact(undefined, undefined), setGroup(undefined, undefined);
     } catch (err) {
       console.log(err);
     }

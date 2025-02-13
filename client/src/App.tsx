@@ -4,6 +4,8 @@ import ProfilePage from './pages/ProfilePage';
 import { useUser } from './store/userContext';
 import ChatPage from './pages/ChatPage';
 import Loading from './components/UI/Loading/Loading';
+import ErrorPage from './pages/ErrorPage';
+import Error404 from './pages/Error404';
 
 const PrivateRoute = async () => {
   const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -59,19 +61,14 @@ const AuthRoute = async () => {
 const router = createBrowserRouter([
   {
     path: '/',
-    // errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <AuthPage />, loader: AuthRoute },
       { path: '/profile', element: <ProfilePage />, loader: PrivateRoute },
       { path: '/chat', element: <ChatPage />, loader: ChatRoute },
+      { path: '/*', element: <Error404 /> },
     ],
   },
-  // { path: '/error', element: <ErrorPage /> },
-  // {
-  //   path: 'auth',
-  //   element: <AuthPage />,
-  //   loader: checkAuthLoader,
-  // },
 ]);
 
 function App() {

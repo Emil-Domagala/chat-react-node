@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from 'express';
+import type { Response } from 'express';
 
 export const internalError = (err: unknown, res: Response) => {
   console.log(err);
