@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch --env-file=.env app.ts",
-    "start": "node --env-file=.env app.js"
+    "start": "node --env-file=.env dist/app.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

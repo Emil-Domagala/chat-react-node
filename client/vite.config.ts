@@ -6,16 +6,14 @@ import json from '@rollup/plugin-json';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), json()],
-  //   build: {
-  //     outDir: 'dist', // Ensure this is set
-  //     sourcemap: false, // No need for sourcemaps in production
-  //     minify: 'esbuild', // Uses esbuild for fast minification
-  //     rollupOptions: {
-  //       output: {
-  //         entryFileNames: 'assets/[name].[hash].js',
-  //         chunkFileNames: 'assets/[name].[hash].js',
-  //         assetFileNames: 'assets/[name].[hash].[ext]',
-  //       },
-  //     },
-  //   },
+  json: {
+    namedExports: true,
+    stringify: true, // Ensures JSON files are handled as strings
+  },
+    build: {
+      outDir: 'dist', // Ensure this is set
+      sourcemap: true, // No need for sourcemaps in production
+      minify: 'esbuild', // Uses esbuild for fast minification
+   
+    },
 });
