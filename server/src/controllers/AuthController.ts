@@ -20,7 +20,7 @@ const deleteOldImage = (oldFilePath: string) => {
   const filePath = path.join(__dirname, '..', '..', oldFilePath);
   fs.unlink(filePath, (err) => console.log(err));
 };
-export const signup: ControllerFunctionType = async (req, res, next) => {
+export const signup: ControllerFunctionType = async (req, res, _next) => {
   try {
     let { email, password, confirmPassword } = req.body;
     email = email.trim().toLowerCase();
@@ -79,7 +79,7 @@ export const signup: ControllerFunctionType = async (req, res, next) => {
   }
 };
 
-export const login: ControllerFunctionType = async (req, res, next) => {
+export const login: ControllerFunctionType = async (req, res, _next) => {
   try {
     let { email, password } = req.body;
     email = email.trim().toLowerCase();
@@ -145,7 +145,7 @@ export const login: ControllerFunctionType = async (req, res, next) => {
   }
 };
 
-export const getProfileSetup: ControllerFunctionType = async (req, res, next) => {
+export const getProfileSetup: ControllerFunctionType = async (req, res, _next) => {
   try {
     const user = await User.findById(req.userId);
 
@@ -161,7 +161,7 @@ export const getProfileSetup: ControllerFunctionType = async (req, res, next) =>
   }
 };
 
-export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
+export const getUserInfo: ControllerFunctionType = async (req, res, _next) => {
   try {
     const user = await User.findById(req.userId)
       .populate('contacts.contactId', 'firstName lastName image color')
@@ -191,7 +191,7 @@ export const getUserInfo: ControllerFunctionType = async (req, res, next) => {
   }
 };
 
-export const updateUserProfil: ControllerFunctionType = async (req, res, next) => {
+export const updateUserProfil: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { userId } = req;
     let { firstName, lastName, color } = req.body;
@@ -247,7 +247,7 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, next) =
   }
 };
 
-export const logout: ControllerFunctionType = async (req, res, next) => {
+export const logout: ControllerFunctionType = async (_req, res, _next) => {
   try {
     console.log('object');
     res.cookie('jwt', '', { maxAge: 1, secure: true, sameSite: 'none' });

@@ -2,13 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
-import authRoutes from './src/router/AuthRoutes.ts';
-import contactRoutes from './src/router/ContactRoutes.ts';
-import messageRoutes from './src/router/MessageRoutes.ts';
+import authRoutes from './router/AuthRoutes.ts';
+import contactRoutes from './router/ContactRoutes.ts';
+import messageRoutes from './router/MessageRoutes.ts';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { setupSocket } from './src/socket/socket.ts';
-import groupRoutes from './src/router/GroupRoutes.ts';
+import { setupSocket } from './socket/socket.ts';
+import groupRoutes from './router/GroupRoutes.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

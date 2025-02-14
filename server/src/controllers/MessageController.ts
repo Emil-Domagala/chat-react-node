@@ -3,7 +3,7 @@
 import { internalError } from '../utils/InternalError.ts';
 import Message from '../models/MessageModel.ts';
 
-export const getMessages: ControllerFunctionType = async (req, res, next) => {
+export const getMessages: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { chatId, page = 1, limit = 50 } = req.query;
     if (!chatId) return res.status(400).json({ message: 'Chat ID is required' });
@@ -29,7 +29,7 @@ export const getMessages: ControllerFunctionType = async (req, res, next) => {
     internalError(err, res);
   }
 };
-export const uploadFile: ControllerFunctionType = async (req, res, next) => {
+export const uploadFile: ControllerFunctionType = async (_req, res, _next) => {
   try {
     // if()
 

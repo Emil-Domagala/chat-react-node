@@ -10,16 +10,16 @@
     "noImplicitAny": false,
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "rootDir": "src",             // Keep TypeScript files in 'src'
-    "strict": true,               // Enable strict type checking
-    "esModuleInterop": true,      // Fix compatibility issues with CommonJS modules
-    "forceConsistentCasingInFileNames": true,  
-    "skipLibCheck": true,         // Speeds up build time
-    "resolveJsonModule": true,    // Allow importing JSON files
-    "noUnusedLocals": true,       // Warn about unused variables
-    "noUnusedParameters": true,   // Warn about unused function parameters
-    "noFallthroughCasesInSwitch": true 
+    "rootDir": "src", // Keep TypeScript files in 'src'
+    "strict": true, // Enable strict type checking
+    "esModuleInterop": true, // Fix compatibility issues with CommonJS modules
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true, // Speeds up build time
+    "resolveJsonModule": true, // Allow importing JSON files
+    "noUnusedLocals": false, // Warn about unused variables
+    "noUnusedParameters": true, // Warn about unused function parameters
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*", "types/types.d.ts", "app.ts"],
+  "include": ["src/**/*", "types/types.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

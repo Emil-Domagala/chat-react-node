@@ -5,7 +5,7 @@ import { internalError } from '../utils/InternalError.ts';
 import Message from '../models/MessageModel.ts';
 import { notifyContactDeletion, notifyContactAdded } from '../socket/socket.ts';
 
-export const searchContacts: ControllerFunctionType = async (req, res, next) => {
+export const searchContacts: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { searchTerm } = req.body;
     if (!searchTerm) return res.status(400).send({ message: 'Serch Trem is required' });
@@ -32,7 +32,7 @@ export const searchContacts: ControllerFunctionType = async (req, res, next) => 
   }
 };
 
-export const addContact: ControllerFunctionType = async (req, res, next) => {
+export const addContact: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { contactId } = req.body;
     if (!contactId) return res.status(400).json({ message: 'Contact ID is required' });
@@ -85,7 +85,7 @@ export const addContact: ControllerFunctionType = async (req, res, next) => {
   }
 };
 
-export const deleteContact: ControllerFunctionType = async (req, res, next) => {
+export const deleteContact: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { deleteContactId, chatId } = req.body;
     if (!deleteContactId || !chatId) return res.status(400).send({ message: 'ContactID and chatId is required' });

@@ -7,7 +7,7 @@ import { createGroupChat } from '../utils/ChatUtils.ts';
 import { notifyGroupCreation, notifyGroupDeletion, notifyGroupChangedName } from '../socket/socket.ts';
 import { validateGroupCreation } from '../utils/GroupUtils.ts';
 
-export const searchContacts: ControllerFunctionType = async (req, res, next) => {
+export const searchContacts: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { searchTerm, alredySelectedIds } = req.body;
 
@@ -33,7 +33,7 @@ export const searchContacts: ControllerFunctionType = async (req, res, next) => 
   }
 };
 
-export const createGroup: ControllerFunctionType = async (req, res, next) => {
+export const createGroup: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { selectedMembersIds, name } = req.body;
 
@@ -67,7 +67,7 @@ export const createGroup: ControllerFunctionType = async (req, res, next) => {
   }
 };
 
-export const editGroup: ControllerFunctionType = async (req, res, next) => {
+export const editGroup: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { selectedMembersIds, name, groupId } = req.body;
     const group = await Group.findById(groupId);
@@ -77,7 +77,7 @@ export const editGroup: ControllerFunctionType = async (req, res, next) => {
       return res.status(401).send({ message: 'Group can be edited only by Admin' });
     }
 
-    const { error, existingUsers, currentUser } = await validateGroupCreation(req.userId!, selectedMembersIds, name);
+    const { error, currentUser } = await validateGroupCreation(req.userId!, selectedMembersIds, name);
     if (error !== null) return res.status(400).send({ message: error });
 
     const chatId = currentUser.groups.find((g) => g.groupId.toString() === groupId)?.chatId || null;
@@ -130,22 +130,22 @@ export const editGroup: ControllerFunctionType = async (req, res, next) => {
   }
 };
 
-export const fetchGroupData: ControllerFunctionType = async (req, res, next) => {
+export const fetchGroupData: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { groupId } = req.params;
 
     const group = await Group.findById(groupId).populate('members', '_id firstName lastName image color');
     if (!group) return res.status(404).send({ message: 'Group not found' });
 
-    const filtredMembers = group.members.filter((member) => member._id.toString() !== req.userId.toString());
+    const filtredMembers = group.members.filter((member) => member._id.toString() !== req.userId!.toString());
 
-    return res.status(200).json({ ...group._doc, members: filtredMembers });
+    return res.status(200).json({ ...group.toObject(), members: filtredMembers });
   } catch (err) {
     internalError(err, res);
   }
 };
 
-export const deleteGroup: ControllerFunctionType = async (req, res, next) => {
+export const deleteGroup: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { groupId, chatId } = req.body;
 
@@ -189,7 +189,7 @@ export const deleteGroup: ControllerFunctionType = async (req, res, next) => {
   }
 };
 
-export const leaveGroup: ControllerFunctionType = async (req, res, next) => {
+export const leaveGroup: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { groupId } = req.body;
 
