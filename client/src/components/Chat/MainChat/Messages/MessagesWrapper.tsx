@@ -89,7 +89,7 @@ const MessagesWrapper = () => {
       <div ref={ref} className={classes.ref}>
         {isFetchingNextPage && <p>Loading more messages...</p>}
         {!hasNextPage && !data && <p>Start converastion</p>}
-        {!hasNextPage && data && <p>There is no more messages</p>}
+        {!hasNextPage && data && <p>There are no more messages</p>}
       </div>
       {renderMessages()}
       <div ref={messagesEndRef}></div>

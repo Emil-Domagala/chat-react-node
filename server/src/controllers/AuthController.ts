@@ -3,23 +3,15 @@ import jswt from 'jsonwebtoken';
 import User from '../models/UserModel.ts';
 import bcrypt from 'bcryptjs';
 import { validateEmailPassword } from '../utils/validateEmailPassword.ts';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import fs from 'node:fs';
 import { saveResizedImage } from '../utils/sharp.ts';
 import '../../types/types.d.ts';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import cloudinary from '../cloudinary.ts';
 
 const tokenExpiration = 60 * 60 * 1000 * 2;
 const createToken = (email: string, userId: string) => {
   return jswt.sign({ email, userId }, process.env.JWT_KEY!, { expiresIn: tokenExpiration });
 };
-const deleteOldImage = (oldFilePath: string) => {
-  const filePath = path.join(__dirname, '..', '..', oldFilePath);
-  fs.unlink(filePath, (err) => console.log(err));
-};
+
 export const signup: ControllerFunctionType = async (req, res, _next) => {
   try {
     let { email, password, confirmPassword } = req.body;
@@ -196,7 +188,7 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, _next) 
     const { userId } = req;
     let { firstName, lastName, color } = req.body;
     const image = req.file;
-    let relativeFilePath;
+    let imagePath;
     firstName = firstName.trim();
     lastName = lastName.trim();
     color = Number(color) || 0;
@@ -215,16 +207,21 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, _next) 
       .populate('groups.chatId', 'lastMessage')
       .populate('groups.groupId', 'name admin');
     if (!user) return res.status(404).send({ message: 'User not found' });
-    if (image && user.image) deleteOldImage(user.image);
+
+    if (image && user.image) {
+      const fileNameWithExt = user.image.split('/').pop();
+      const publicId = fileNameWithExt?.replace(/\.[^/.]+$/, '');
+      await cloudinary.uploader.destroy(`uploads/${publicId}`);
+    }
 
     if (image) {
-      relativeFilePath = await saveResizedImage(image, userId!, 'profiles', 120, 120);
+      imagePath = await saveResizedImage(image, userId!, 120, 120);
     }
 
     user.firstName = firstName;
     user.lastName = lastName;
     user.color = color;
-    if (image) user.image = relativeFilePath;
+    if (image) user.image = imagePath;
     user.profileSetup = true;
 
     await user.save();

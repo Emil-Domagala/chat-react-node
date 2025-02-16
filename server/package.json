@@ -6,15 +6,17 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch --env-file=.env app.ts",
-    "start": "node --env-file=.env dist/app.js",
+    "dev": "node --watch --env-file=.env src/app.ts",
+    "start": "node --env-file=.env src/app.js",
     "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@cloudinary-util/types": "^1.6.0",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.21.2",

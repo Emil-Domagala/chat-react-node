@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router';
 
 const ProfileForm = () => {
   const navigate = useNavigate();
-  const serverURL = import.meta.env.VITE_SERVER_URL;
   const { user, setUser } = useUser();
   const [firstName, setFirstName] = useState(user?.firstName || '');
   const [firstNameWasTouched, setFirstNameWasTouched] = useState(false);
@@ -22,9 +21,6 @@ const ProfileForm = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [image, setImage] = useState<string | undefined | File>(user?.image || undefined);
   const [selectedColor, setSelectedColor] = useState(user?.color || 0);
-
-  let imagePath = undefined;
-  if (user?.image) imagePath = `${serverURL}${user?.image}`;
 
   let formIsValid = false;
   const firstNameIsValid = firstName.trim() !== '' && firstName.trim().length < 30;
@@ -56,6 +52,7 @@ const ProfileForm = () => {
   };
 
   const [, action, isPending] = useActionState<void>(submitAction, undefined);
+
   return (
     <>
       <Form action={action}>
@@ -65,7 +62,7 @@ const ProfileForm = () => {
               firstName={firstName}
               email={user?.email || ''}
               selectedColor={selectedColor}
-              imagePath={imagePath}
+              imagePath={user?.image}
               previewImage={previewImage}
               handleAddImage={handleAddImage}
             />

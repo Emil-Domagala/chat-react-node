@@ -1,10 +1,8 @@
-
 import ReactTextareaAutosize from 'react-textarea-autosize';
 import SendIconSVG from '../../../assets/Icons/SendIconSVG';
 import { useState } from 'react';
 import classes from './SendMessageBar.module.css';
 import AddEmojiSVG from '../../../assets/Icons/AddEmojiSVG';
-// import AddAttachment from '../../../assets/Icons/AddAttachment';
 import EmojiPicker from 'emoji-picker-react';
 import { useColorMode } from '../../../store/colorModeContext';
 import { IMessage, useSocket } from '../../../store/socketContext';
@@ -12,6 +10,7 @@ import { useChatContext } from '../../../store/chatContext';
 import { useUser } from '../../../store/userContext';
 import ErrorText from '../../UI/Form/ErrorText';
 import { Theme } from 'emoji-picker-react';
+import AddPhotoSVG from '../../../assets/Icons/AddPhotoSVG';
 
 const SendMessaggeBar = () => {
   const { mode } = useColorMode();
@@ -70,10 +69,9 @@ const SendMessaggeBar = () => {
             value={messageValue}
           />
           <div className={classes['textarea-icons']}>
-            {/* maybe i will add it later, now just couldnt find free dile storage system where i dont need to provide my credit card info */}
-            {/* <button className={classes['svg']}>
-              <AddAttachment />
-            </button> */}
+            <button className={classes['svg']}>
+              <AddPhotoSVG />
+            </button>
             <button className={classes['svg']} onClick={toggleEmojiPicker}>
               <AddEmojiSVG />
             </button>
