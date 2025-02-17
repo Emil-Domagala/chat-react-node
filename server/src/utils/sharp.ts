@@ -3,14 +3,23 @@ import cloudinary from '../cloudinary.ts';
 import { Readable } from 'stream';
 import type { Express } from 'express';
 
-export const saveResizedImage = async (image: Express.Multer.File, userId: string, width: number): Promise<string> => {
+export const saveResizedImage = async (
+  image: Express.Multer.File,
+  userId: string,
+  width: number,
+  height?: number,
+): Promise<string> => {
   try {
     const metadata = await sharp(image.buffer).metadata();
 
     let processedImage = sharp(image.buffer).trim().toFormat('jpeg');
 
-    if ((metadata.width && metadata.width > width) || !metadata.width) {
-      processedImage = processedImage.resize({ width, fit: 'inside' });
+    if (
+      (metadata.width && metadata.width > width) ||
+      (height && metadata.height && metadata.height > height) ||
+      !metadata.width
+    ) {
+      processedImage = processedImage.resize({ width, height, fit: 'inside' });
     }
 
     const processedImageBuffer = await processedImage.toBuffer();
