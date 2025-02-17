@@ -25,6 +25,7 @@ const UserImage: React.FC<UserImageProps> = ({
   return (
     <div className={`${classes['avatar--wrapper']}`}>
       <input
+      className={classes['input-file']}
         ref={inputRef}
         onChange={handleAddImage}
         type="file"
