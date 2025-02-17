@@ -111,6 +111,7 @@ const ProfileForm = () => {
               {colors.map((_, index) => {
                 return (
                   <input
+                  className={classes['input-radio']}
                     key={index}
                     style={{ ...colors[index] }}
                     type="radio"
