@@ -7,6 +7,7 @@ import { saveResizedImage } from '../utils/sharp.ts';
 import cloudinary from '../cloudinary.ts';
 
 const tokenExpiration = 60 * 60 * 1000 * 2;
+const cookieConfig = {};
 const createToken = (email: string, userId: string) => {
   return jswt.sign({ email, userId }, process.env.JWT_KEY!, { expiresIn: tokenExpiration });
 };
@@ -63,7 +64,6 @@ export const signup: ControllerFunctionType = async (req, res, _next) => {
       secure: true,
       httpOnly: true,
       sameSite: 'none',
-      domain: '.vercel.app',
     });
 
     return res.status(200).json({ user: { id: user.id, email: user.email, profileSetup: user.profileSetup } });
@@ -119,7 +119,6 @@ export const login: ControllerFunctionType = async (req, res, _next) => {
       secure: true,
       httpOnly: true,
       sameSite: 'none',
-      domain: '.vercel.app',
     });
 
     return res.status(200).json({
@@ -163,8 +162,6 @@ export const getUserInfo: ControllerFunctionType = async (req, res, _next) => {
       .populate('contacts.chatId', 'lastMessage')
       .populate('groups.chatId', 'lastMessage')
       .populate('groups.groupId', '_id name admin');
-
-    console.log(user);
 
     if (!user) return res.status(404).send({ message: 'User with the given id not found' });
 
@@ -250,7 +247,12 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, _next) 
 export const logout: ControllerFunctionType = async (_req, res, _next) => {
   try {
     console.log('object');
-    res.cookie('jwt', '', { maxAge: 1, secure: true, httpOnly: true, sameSite: 'none', domain: '.vercel.app' });
+    res.cookie('jwt', '', {
+      maxAge: 1,
+      secure: true,
+      httpOnly: true,
+      sameSite: 'none',
+    });
     res.status(200).send({ message: 'Logout was successfull' });
   } catch (err) {
     internalError(err, res);
