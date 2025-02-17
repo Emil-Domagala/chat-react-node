@@ -64,7 +64,7 @@ export const signup: ControllerFunctionType = async (req, res, _next) => {
       maxAge: tokenExpiration,
       secure: true,
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       domain: domain,
     });
 
@@ -120,7 +120,7 @@ export const login: ControllerFunctionType = async (req, res, _next) => {
       maxAge: tokenExpiration,
       secure: true,
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       domain: domain,
     });
 
@@ -254,7 +254,7 @@ export const logout: ControllerFunctionType = async (_req, res, _next) => {
       maxAge: 1,
       secure: true,
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       domain: domain,
     });
     res.status(200).send({ message: 'Logout was successfull' });
