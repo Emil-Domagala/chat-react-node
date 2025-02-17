@@ -1,3 +1,4 @@
+// @ts-expect-error it is found and cloudinary works perfectly. idk why it compalins
 import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({

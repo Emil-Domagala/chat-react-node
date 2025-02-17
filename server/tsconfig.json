@@ -3,22 +3,23 @@
     "target": "ESNext",
     "typeRoots": ["./node_modules/@types", "./types/types.d.ts"],
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
     "baseUrl": "./src",
     "outDir": "./dist",
     "sourceMap": true,
     "noImplicitAny": false,
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
-    "rootDir": "src", // Keep TypeScript files in 'src'
-    "strict": true, // Enable strict type checking
-    "esModuleInterop": true, // Fix compatibility issues with CommonJS modules
+    "noEmit": false,
+    "rootDir": "src",
+    "strict": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true, // Speeds up build time
-    "resolveJsonModule": true, // Allow importing JSON files
-    "noUnusedLocals": false, // Warn about unused variables
-    "noUnusedParameters": true, // Warn about unused function parameters
-    "noFallthroughCasesInSwitch": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "verbatimModuleSyntax": true
   },
   "include": ["src/**/*", "types/types.d.ts"],
   "exclude": ["node_modules", "dist"]
