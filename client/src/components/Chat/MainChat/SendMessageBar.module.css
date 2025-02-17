@@ -52,6 +52,17 @@ textarea::-webkit-resizer {
   bottom: 0px;
   display: flex;
   flex-direction: row;
+  .hidden {
+    height: 0;
+    width: 0;
+    opacity: 0;
+  }
+
+  .hidden::-webkit-file-upload-button {
+    width: 0px;
+    height: 0px;
+    cursor: pointer;
+  }
   .svg {
     background: transparent;
     border: none;
@@ -77,18 +88,6 @@ textarea::-webkit-resizer {
   bottom: 8rem;
   margin: 0 3rem;
   width: calc(100% - 6rem) !important;
-}
-
-.hidden {
-  height: 0;
-  width: 0;
-  opacity: 0;
-}
-
-.hidden::-webkit-file-upload-button {
-  width: 0px;
-  height: 0px;
-  cursor: pointer;
 }
 
 .img-wrapper {

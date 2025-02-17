@@ -78,6 +78,10 @@ h6 {
   margin: 0 auto;
 }
 
+.container-text {
+  text-align: center;
+}
+
 .center {
   display: flex;
   flex-direction: column;
@@ -134,4 +138,3 @@ h6 {
     font-size: 3rem;
   }
 }
-

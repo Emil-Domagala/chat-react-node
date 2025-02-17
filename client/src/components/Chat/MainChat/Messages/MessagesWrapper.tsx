@@ -84,7 +84,7 @@ const MessagesWrapper = () => {
   return status === 'pending' ? (
     <Loading />
   ) : status === 'error' ? (
-    <p>{error.message}</p>
+    <p className='center-text'>{error.message}</p>
   ) : (
     <div ref={messagesContainerRef} className={classes.all}>
       <div ref={ref} className={classes.ref}>

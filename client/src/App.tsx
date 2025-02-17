@@ -75,7 +75,11 @@ function App() {
   const { isLoading } = useUser();
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div className="container-full fl-col center">
+        <Loading />
+      </div>
+    );
   }
 
   return <RouterProvider router={router} />;
