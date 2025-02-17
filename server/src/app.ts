@@ -9,19 +9,18 @@ import messageRoutes from './router/MessageRoutes.ts';
 import { setupSocket } from './socket/socket.ts';
 import groupRoutes from './router/GroupRoutes.ts';
 
-
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 const databaseURL = process.env.DATABASE_URL;
 
 app.use(
   cors({
-    origin: [process.env.ORIGIN!],
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTONS'],
+    origin: process.env.ORIGIN,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   }),
 );
+
 app.use(cookieParser());
 app.use(express.json());
 

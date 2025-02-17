@@ -61,6 +61,7 @@ export const signup: ControllerFunctionType = async (req, res, _next) => {
     res.cookie('jwt', createToken(email, user.id), {
       maxAge: tokenExpiration,
       secure: true,
+      httpOnly: true,
       sameSite: 'none',
     });
 
@@ -115,6 +116,7 @@ export const login: ControllerFunctionType = async (req, res, _next) => {
     res.cookie('jwt', createToken(email, foundUser!.id), {
       maxAge: tokenExpiration,
       secure: true,
+      httpOnly: true,
       sameSite: 'none',
     });
 
@@ -246,7 +248,7 @@ export const updateUserProfil: ControllerFunctionType = async (req, res, _next) 
 export const logout: ControllerFunctionType = async (_req, res, _next) => {
   try {
     console.log('object');
-    res.cookie('jwt', '', { maxAge: 1, secure: true, sameSite: 'none' });
+    res.cookie('jwt', '', { maxAge: 1, secure: true, httpOnly: true, sameSite: 'none' });
     res.status(200).send({ message: 'Logout was successfull' });
   } catch (err) {
     internalError(err, res);
