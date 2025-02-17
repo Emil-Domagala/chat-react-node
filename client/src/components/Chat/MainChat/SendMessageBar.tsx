@@ -1,6 +1,6 @@
 import ReactTextareaAutosize from 'react-textarea-autosize';
 import SendIconSVG from '../../../assets/Icons/SendIconSVG';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import classes from './SendMessageBar.module.css';
 import AddEmojiSVG from '../../../assets/Icons/AddEmojiSVG';
 import EmojiPicker from 'emoji-picker-react';
@@ -11,6 +11,7 @@ import { useUser } from '../../../store/userContext';
 import ErrorText from '../../UI/Form/ErrorText';
 import { Theme } from 'emoji-picker-react';
 import AddPhotoSVG from '../../../assets/Icons/AddPhotoSVG';
+import { sendMessageWithImgHTTP } from '../../../utils/httpMessageWithImg';
 
 const SendMessaggeBar = () => {
   const { mode } = useColorMode();
@@ -20,6 +21,9 @@ const SendMessaggeBar = () => {
   const { currentChatId } = useChatContext();
   const { user } = useUser();
   const [hasError, setHasError] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | undefined>(undefined);
+  const [image, setImage] = useState<undefined | File>(undefined);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const toggleEmojiPicker = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -31,17 +35,28 @@ const SendMessaggeBar = () => {
     setEmojiPickerOpen(false);
   };
 
-  const handleSendMessage = () => {
-    if (messageValue.trim() === '') return;
-    if (messageValue.trim().length > 600) return setHasError(true);
-    const message = {
-      sender: user?.id,
-      chatId: currentChatId,
+  const handleSendMessage = async () => {
+    const trimedMessageVal = messageValue.trim();
+    if (trimedMessageVal.length > 600) return setHasError(true);
+    const message: IMessage = {
+      sender: user!.id,
+      chatId: currentChatId!,
       messageType: 'text',
-      content: messageValue.trim(),
+      content: trimedMessageVal,
     };
+
+    if (image) {
+      message.messageType = 'image';
+      sendMessageWithImgHTTP(message, image);
+    }
+
+    if (!image) {
+      if (trimedMessageVal === '') return;
+      sendMessage(message as IMessage);
+    }
+    setImage(undefined);
+    setPreviewImage(undefined);
     setHasError(false);
-    sendMessage(message as IMessage);
     setMessageValue('');
   };
 
@@ -49,6 +64,17 @@ const SendMessaggeBar = () => {
     if (event.key === 'Enter' && !event.shiftKey) {
       handleSendMessage();
     }
+  };
+
+  const openFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImage(file);
+    setPreviewImage(URL.createObjectURL(file));
   };
 
   return (
@@ -69,14 +95,26 @@ const SendMessaggeBar = () => {
             value={messageValue}
           />
           <div className={classes['textarea-icons']}>
-            <button className={classes['svg']}>
+            <button onClick={openFileInput} className={classes['svg']}>
               <AddPhotoSVG />
+              <input
+                onChange={handleAddImage}
+                ref={fileInputRef}
+                className={classes.hidden}
+                type="file"
+                accept="image/png, image/jpeg, image/jpg, image/svg, image/webp"
+              />
             </button>
             <button className={classes['svg']} onClick={toggleEmojiPicker}>
               <AddEmojiSVG />
             </button>
           </div>
         </div>
+        {previewImage && (
+          <div className={classes['img-wrapper']}>
+            <img className={classes['prev-img']} src={previewImage} />
+          </div>
+        )}
         <EmojiPicker
           autoFocusSearch={false}
           theme={mode as Theme}

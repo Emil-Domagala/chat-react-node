@@ -3,18 +3,17 @@ import cloudinary from '../cloudinary.ts';
 import { Readable } from 'stream';
 import type { Express } from 'express';
 
-export const saveResizedImage = async (
-  image: Express.Multer.File,
-  userId: string,
-  width: number,
-  height?: number,
-): Promise<string> => {
+export const saveResizedImage = async (image: Express.Multer.File, userId: string, width: number): Promise<string> => {
   try {
-    const processedImage = await sharp(image.buffer)
-      .trim() // Auto-crops unnecessary whitespace
-      .resize({ width, height })
-      .toFormat('jpeg') // Convert to JPEG
-      .toBuffer();
+    const metadata = await sharp(image.buffer).metadata();
+
+    let processedImage = sharp(image.buffer).trim().toFormat('jpeg');
+
+    if ((metadata.width && metadata.width > width) || !metadata.width) {
+      processedImage = processedImage.resize({ width, fit: 'inside' });
+    }
+
+    const processedImageBuffer = await processedImage.toBuffer();
 
     return new Promise<string>((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
@@ -29,7 +28,7 @@ export const saveResizedImage = async (
         },
       );
 
-      Readable.from(processedImage).pipe(stream);
+      Readable.from(processedImageBuffer).pipe(stream);
     });
   } catch (error) {
     console.error('Error saving image:', error);

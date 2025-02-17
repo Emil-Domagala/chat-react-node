@@ -28,34 +28,6 @@ export const setupSocket = (server: Server) => {
     }
   };
 
-  const sendMessage = async (message: IMessage) => {
-    try {
-      const chat = await Chat.findById(message.chatId).populate('participants');
-      if (!chat) return console.log('Chat not found');
-
-      if (!message.content || message.content.trim().length > 600 || message.content.trim() == '') return;
-
-      const createMessage = await Message.create(message);
-
-      const messageData = await Message.findById(createMessage._id).populate(
-        'sender',
-        'id firstName lastName color image',
-      );
-
-      await chat.updateOne({ lastMessage: messageData!.sender._id });
-
-      chat.participants.forEach((participant) => {
-        const recipientSocketId = userSocketMap.get(participant._id.toString());
-        if (recipientSocketId) {
-          console.log(`Sending message to ${recipientSocketId}`);
-          io?.to(recipientSocketId).emit('receivedMessage', { messageData });
-        }
-      });
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
-  };
-
   io.on('connection', (socket) => {
     const userId = socket.handshake.query.userId;
     if (userId) {
@@ -70,6 +42,51 @@ export const setupSocket = (server: Server) => {
   });
 
   return io;
+};
+
+export const sendMessage = async (message: IMessage) => {
+  try {
+    const chat = await Chat.findById(message.chatId).populate('participants');
+    if (!chat) return console.log('Chat not found');
+
+    console.log(message);
+    console.log('Found chat');
+
+    if (
+      message.messageType === 'text' &&
+      (!message.content || message.content.trim().length > 600 || message.content.trim() == '')
+    )
+      return;
+
+    console.log('Passed MessageType=="text"');
+
+    if (
+      (message.messageType === 'image' && !message.imageUrl) ||
+      (message.content && message.content.trim().length > 600)
+    )
+      return;
+
+    console.log('Passed MessageType=="img"');
+
+    const createMessage = await Message.create(message);
+
+    const messageData = await Message.findById(createMessage._id).populate(
+      'sender',
+      'id firstName lastName color image',
+    );
+
+    await chat.updateOne({ lastMessage: messageData!.sender._id });
+
+    chat.participants.forEach((participant) => {
+      const recipientSocketId = userSocketMap.get(participant._id.toString());
+      if (recipientSocketId) {
+        console.log(`Sending message to ${recipientSocketId}`);
+        io?.to(recipientSocketId).emit('receivedMessage', { messageData });
+      }
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+  }
 };
 
 export const notifyContactDeletion = (deletedUserId: string, recipientId: string, chatId: string) => {

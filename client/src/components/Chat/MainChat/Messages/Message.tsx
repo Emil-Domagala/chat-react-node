@@ -11,6 +11,8 @@ type MessageCompType = {
   senderName: string;
   isFirstMessageOfDay: boolean;
   formattedDate: string;
+  messageType: string;
+  imageUrl?: string;
 };
 
 const Message = ({
@@ -22,6 +24,8 @@ const Message = ({
   senderName,
   isFirstMessageOfDay,
   formattedDate,
+  messageType,
+  imageUrl,
 }: MessageCompType) => {
   const { user } = useUser();
   const userColor = user?.color;
@@ -35,8 +39,15 @@ const Message = ({
       <div
         style={{ ...messageColor, alignSelf: messageSide }}
         className={`${classes.message} ${addMargin ? classes.margin : ''}`}>
+
         {showSender && <p className={classes.name}>{senderName}</p>}
-        <p className={classes.content}>{children}</p>
+
+        {children && (
+          <p className={`${classes.content} ${messageType === 'image' ? classes['add-padding'] : ''}`}>{children}</p>
+        )}
+
+        {messageType === 'image' && <img loading="lazy" className={classes['img']} src={imageUrl} />}
+        
         <p className={classes.time}>{time}</p>
       </div>
     </>

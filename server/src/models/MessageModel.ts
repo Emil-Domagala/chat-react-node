@@ -3,25 +3,25 @@ import mongoose from 'mongoose';
 export type IMessage = {
   sender: mongoose.Types.ObjectId;
   chatId: mongoose.Types.ObjectId;
-  messageType: 'text' | 'file';
+  messageType: 'text' | 'image';
   content?: string;
-  fileUrl?: string;
+  imageUrl?: string;
 };
 const messageSchema = new mongoose.Schema<IMessage>(
   {
     sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     chatId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat', required: true },
-    messageType: { type: String, enum: ['text', 'file'], required: true },
+    messageType: { type: String, enum: ['text', 'image'], required: true },
     content: {
       type: String,
       required: function () {
         return this.messageType === 'text';
       },
     },
-    fileUrl: {
+    imageUrl: {
       type: String,
       required: function () {
-        return this.messageType === 'file';
+        return this.messageType === 'image';
       },
     },
   },

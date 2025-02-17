@@ -3,6 +3,7 @@
 import { internalError } from '../utils/InternalError.ts';
 import Message from '../models/MessageModel.ts';
 import { saveResizedImage } from '../utils/sharp.ts';
+import { sendMessage } from '../socket/socket.ts';
 
 export const getMessages: ControllerFunctionType = async (req, res, _next) => {
   try {
@@ -33,12 +34,17 @@ export const getMessages: ControllerFunctionType = async (req, res, _next) => {
 export const uploadFile: ControllerFunctionType = async (req, res, _next) => {
   try {
     const { userId } = req;
+    const message = JSON.parse(req.body.message);
     const image = req.file;
     if (!image) return res.status(404).send({ message: 'Image is required' });
 
-    const imagePath = await saveResizedImage(image, userId!, 600);
+    const imageUrl = await saveResizedImage(image, userId!, 600);
 
-    return res.json({});
+    message.imageUrl = imageUrl;
+
+    await sendMessage(message);
+
+    return res.json({ message: 'succes' });
   } catch (err) {
     internalError(err, res);
   }

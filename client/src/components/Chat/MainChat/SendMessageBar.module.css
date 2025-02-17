@@ -79,6 +79,33 @@ textarea::-webkit-resizer {
   width: calc(100% - 6rem) !important;
 }
 
+.hidden {
+  height: 0;
+  width: 0;
+  opacity: 0;
+}
+
+.hidden::-webkit-file-upload-button {
+  width: 0px;
+  height: 0px;
+  cursor: pointer;
+}
+
+.img-wrapper {
+  position: absolute;
+  bottom: 8rem;
+  right: 0;
+  padding: 0.5rem;
+  border-radius: 0.7rem;
+  background-color: var(--color-1);
+  width: calc(100% - 6rem);
+  margin: 0 3rem;
+  .prev-img {
+    border-radius: 0.5rem;
+    width: 100%;
+  }
+}
+
 .send-button {
   border: none;
   background: var(--primary);
@@ -100,5 +127,11 @@ textarea::-webkit-resizer {
 .send-button:hover {
   .svg {
     transform: translateX(0.5rem);
+  }
+}
+
+@media screen and (min-width: 400px) {
+  .img-wrapper {
+    max-width: 400px;
   }
 }

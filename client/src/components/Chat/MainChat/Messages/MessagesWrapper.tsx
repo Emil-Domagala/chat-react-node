@@ -63,6 +63,7 @@ const MessagesWrapper = () => {
       lastDate = formattedDate;
       prevSender = msg.sender._id;
       const senderName = `${msg.sender.firstName} ${msg.sender.lastName}`;
+      console.log(msg);
 
       return (
         <Message
@@ -73,7 +74,9 @@ const MessagesWrapper = () => {
           formattedDate={formattedDate}
           showSender={showSender}
           senderId={msg.sender._id}
-          senderName={senderName}>
+          senderName={senderName}
+          messageType={msg.messageType}
+          imageUrl={msg.imageUrl}>
           {msg.content}
         </Message>
       );

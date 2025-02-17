@@ -9,9 +9,9 @@ export type IMessage = {
   _id?: string;
   sender: string;
   chatId: string;
-  messageType: 'text' | 'file';
+  messageType: 'text' | 'image';
   content?: string;
-  fileUrl?: string;
+  imageUrl?: string;
 };
 
 type SocketContextType = {
@@ -96,14 +96,16 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.current.on('receivedMessage', (message) => {
         saveUserOnNewMessage(message.messageData.chatId, message.messageData.sender._id);
 
-        queryClient.setQueryData(['messages', message.messageData.chatId], (oldData:any) => {
+        console.log(message);
+
+        queryClient.setQueryData(['messages', message.messageData.chatId], (oldData: any) => {
           if (!oldData) {
             return { pages: [{ messages: [message.messageData] }], pageParams: [] };
           }
 
           return {
             ...oldData,
-            pages: oldData.pages!.map((page:any, index: number) =>
+            pages: oldData.pages!.map((page: any, index: number) =>
               index === 0 ? { ...page, messages: [message.messageData, ...page.messages] } : page,
             ),
           };

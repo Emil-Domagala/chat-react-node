@@ -45,3 +45,12 @@
   right: 10px;
   font-size: var(--fz-xs);
 }
+
+.add-padding {
+  margin-bottom: 1rem;
+}
+
+.img {
+  margin-bottom: 1rem;
+  border-radius: 0.7rem;
+}
