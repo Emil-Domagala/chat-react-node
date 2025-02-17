@@ -49,9 +49,6 @@ export const sendMessage = async (message: IMessage) => {
     const chat = await Chat.findById(message.chatId).populate('participants');
     if (!chat) return console.log('Chat not found');
 
-    console.log(message);
-    console.log('Found chat');
-
     if (
       message.messageType === 'text' &&
       (!message.content || message.content.trim().length > 600 || message.content.trim() == '')

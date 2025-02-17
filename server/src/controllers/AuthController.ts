@@ -4,7 +4,6 @@ import User from '../models/UserModel.ts';
 import bcrypt from 'bcryptjs';
 import { validateEmailPassword } from '../utils/validateEmailPassword.ts';
 import { saveResizedImage } from '../utils/sharp.ts';
-import '../../types/types.d.ts';
 import cloudinary from '../cloudinary.ts';
 
 const tokenExpiration = 60 * 60 * 1000 * 2;
