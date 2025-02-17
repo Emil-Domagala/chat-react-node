@@ -7,6 +7,7 @@ const UserItem = ({
   lastName,
   firstName,
   userColor,
+  email,
 }: {
   imageURL?: string;
   lastName?: string;
@@ -17,9 +18,9 @@ const UserItem = ({
   return (
     <div className={classes['info-wrapper']}>
       <div className={classes['avatar-wrapper']}>
-        <Avatar fontSize={2.25} userColor={userColor} imageUrl={imageURL} firstName={firstName} />
+        <Avatar fontSize={2.25} userColor={userColor} imageUrl={imageURL} firstName={firstName} email={email} />
       </div>
-      <NameField firstName={firstName} lastName={lastName} />
+      <NameField firstName={firstName} lastName={lastName} email={email} />
     </div>
   );
 };

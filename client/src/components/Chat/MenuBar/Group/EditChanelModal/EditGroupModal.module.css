@@ -25,6 +25,9 @@
   max-height: 250px;
   overflow: scroll;
   margin-top: 2rem;
+  text-align: center;
+  color: var(--text);
+  font-size: var(--fz-m);
 }
 
 .chat-link {

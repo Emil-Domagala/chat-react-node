@@ -6,8 +6,9 @@ import { validateEmailPassword } from '../utils/validateEmailPassword.ts';
 import { saveResizedImage } from '../utils/sharp.ts';
 import cloudinary from '../cloudinary.ts';
 
+const domain = process.env.DOMAIN;
+
 const tokenExpiration = 60 * 60 * 1000 * 2;
-const cookieConfig = {};
 const createToken = (email: string, userId: string) => {
   return jswt.sign({ email, userId }, process.env.JWT_KEY!, { expiresIn: tokenExpiration });
 };
@@ -63,7 +64,8 @@ export const signup: ControllerFunctionType = async (req, res, _next) => {
       maxAge: tokenExpiration,
       secure: true,
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'lax',
+      domain: domain,
     });
 
     return res.status(200).json({ user: { id: user.id, email: user.email, profileSetup: user.profileSetup } });
@@ -118,7 +120,8 @@ export const login: ControllerFunctionType = async (req, res, _next) => {
       maxAge: tokenExpiration,
       secure: true,
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'lax',
+      domain: domain,
     });
 
     return res.status(200).json({
@@ -251,7 +254,8 @@ export const logout: ControllerFunctionType = async (_req, res, _next) => {
       maxAge: 1,
       secure: true,
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'lax',
+      domain: domain,
     });
     res.status(200).send({ message: 'Logout was successfull' });
   } catch (err) {

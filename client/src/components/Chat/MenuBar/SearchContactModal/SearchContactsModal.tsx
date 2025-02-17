@@ -52,6 +52,7 @@ const SearchContactsModal = ({ turnOff }: { turnOff: React.MouseEventHandler<HTM
                   imageURL={item.image}
                   firstName={item.firstName}
                   lastName={item.lastName}
+                  email={item.email}
                 />
               </div>
             ))

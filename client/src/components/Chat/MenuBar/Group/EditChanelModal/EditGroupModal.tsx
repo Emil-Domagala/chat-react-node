@@ -20,6 +20,7 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
   const [foundContact, setFoundContact] = useState<ContactDetail[] | []>([]);
   const [selectedMembers, setSelectedMembers] = useState<ContactDetail[] | []>([]);
   const [groupName, setGroupName] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [groupNameWasTouched, setGroupNameWasTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [groupAdminId, setGroupAdminId] = useState<string | null>(null);
@@ -53,6 +54,7 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
 
   const searchContact = async (searchTerm: string) => {
     if (searchTerm.trim().length < 1) return setFoundContact([]);
+    setSearchTerm(searchTerm.trim());
     let foundContactIDs: string[] = [];
     if (selectedMembers.length > 0) {
       foundContactIDs = selectedMembers.map((contact) => {
@@ -130,7 +132,7 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
             return <AddedUser contact={contact} key={contact._id} onClick={handleUnselectContact} />;
           })}
         </ul>
-        <Input placeholder="Search contacts" square onChange={(e) => searchContact(e.target.value)} />
+        <Input placeholder="Add your contacts" square onChange={(e) => searchContact(e.target.value)} />
         <div className={classes['founded-contacts--wrapper']}>
           {foundContact.length > 0 ? (
             foundContact.map((item) => (
@@ -140,12 +142,14 @@ const EditGroupModal = ({ turnOff, groupId }: { turnOff: React.MouseEventHandler
                   imageURL={item.image}
                   firstName={item.firstName}
                   lastName={item.lastName}
+                  email={item.email}
                 />
               </div>
             ))
           ) : (
             <div className={classes['empty']}>
               <Lottie size={100} />
+              {searchTerm !== '' ? <p>No contacts found</p> : <p>Add your contacts</p>}
             </div>
           )}
         </div>

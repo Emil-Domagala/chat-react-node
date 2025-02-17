@@ -25,7 +25,7 @@ export const searchContacts: ControllerFunctionType = async (req, res, _next) =>
         { _id: { $in: userContacts, $nin: alredySelectedIds } },
         { $or: [{ firstName: regex }, { lastName: regex }, { email: regex }] },
       ],
-    }).select('_id firstName lastName image color');
+    }).select('_id firstName lastName image color email');
 
     return res.status(200).json({ possibleContacts });
   } catch (err) {

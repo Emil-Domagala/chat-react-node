@@ -96,8 +96,6 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.current.on('receivedMessage', (message) => {
         saveUserOnNewMessage(message.messageData.chatId, message.messageData.sender._id);
 
-        console.log(message);
-
         queryClient.setQueryData(['messages', message.messageData.chatId], (oldData: any) => {
           if (!oldData) {
             return { pages: [{ messages: [message.messageData] }], pageParams: [] };

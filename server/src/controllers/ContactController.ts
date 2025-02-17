@@ -23,6 +23,7 @@ export const searchContacts: ControllerFunctionType = async (req, res, _next) =>
         { _id: { $ne: req.userId } },
         { _id: { $nin: userContacts } },
         { $or: [{ firstName: regex }, { lastName: regex }, { email: regex }] },
+        { profileSetup: true },
       ],
     }).select('_id email firstName lastName image color');
 
