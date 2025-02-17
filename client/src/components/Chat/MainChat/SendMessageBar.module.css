@@ -52,13 +52,11 @@ textarea::-webkit-resizer {
   bottom: 0px;
   display: flex;
   flex-direction: row;
-  height: 100%;
   .hidden {
     height: 0;
     width: 0;
     opacity: 0;
   }
-
   .hidden::-webkit-file-upload-button {
     width: 0px;
     height: 0px;
@@ -69,6 +67,7 @@ textarea::-webkit-resizer {
     border: none;
     border-radius: 1rem;
     width: 4rem;
+    height: 4rem;
     padding: 0.7rem;
     color: var(--color-3);
     cursor: pointer;
