@@ -63,8 +63,6 @@ const MessagesWrapper = () => {
       lastDate = formattedDate;
       prevSender = msg.sender._id;
       const senderName = `${msg.sender.firstName} ${msg.sender.lastName}`;
-      console.log(msg);
-
       return (
         <Message
           addMargin={addMargin}

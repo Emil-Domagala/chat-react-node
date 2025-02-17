@@ -39,15 +39,18 @@ const Message = ({
       <div
         style={{ ...messageColor, alignSelf: messageSide }}
         className={`${classes.message} ${addMargin ? classes.margin : ''}`}>
-
         {showSender && <p className={classes.name}>{senderName}</p>}
 
         {children && (
           <p className={`${classes.content} ${messageType === 'image' ? classes['add-padding'] : ''}`}>{children}</p>
         )}
 
-        {messageType === 'image' && <img loading="lazy" className={classes['img']} src={imageUrl} />}
-        
+        {messageType === 'image' && (
+          <a href={imageUrl} target="_blank" rel="noopener noreferrer">
+            <img loading="lazy" className={classes['img']} src={imageUrl} />
+          </a>
+        )}
+
         <p className={classes.time}>{time}</p>
       </div>
     </>

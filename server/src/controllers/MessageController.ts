@@ -38,7 +38,7 @@ export const uploadFile: ControllerFunctionType = async (req, res, _next) => {
     const image = req.file;
     if (!image) return res.status(404).send({ message: 'Image is required' });
 
-    const imageUrl = await saveResizedImage(image, userId!, 600);
+    const imageUrl = await saveResizedImage(image, userId!, 700);
 
     message.imageUrl = imageUrl;
 
