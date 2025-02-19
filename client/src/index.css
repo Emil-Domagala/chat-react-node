@@ -102,6 +102,17 @@ h6 {
   flex-direction: row;
 }
 
+.loading-wrapper {
+  p.top {
+    margin-top: 20px;
+  }
+  p {
+    text-align: center;
+    font-size: var(--fz-m);
+    color: var(--text);
+  }
+}
+
 @media (min-width: 576px) {
   .container {
     padding: 0 2.5vw;

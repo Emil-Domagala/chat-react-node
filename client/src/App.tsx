@@ -76,8 +76,10 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="container-full fl-col center">
+      <div className="loading-wrapper container-full fl-col center">
         <Loading />
+        <p className='top'>Due to Render cold start it might take a while.</p>
+        <p>Sorry for inconvinience.</p>
       </div>
     );
   }
