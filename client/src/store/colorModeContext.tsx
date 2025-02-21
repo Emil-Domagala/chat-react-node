@@ -10,7 +10,7 @@ const ColorModeContext = createContext<ColorModeContextType | undefined>(undefin
 
 export const ColorModeProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState<'light' | 'dark'>(() => {
-    return (localStorage.getItem('color-mode') as 'light' | 'dark') || 'light';
+    return (localStorage.getItem('color-mode') as 'light' | 'dark') || 'dark';
   });
 
   useEffect(() => {

@@ -7,7 +7,7 @@ declare module 'express-serve-static-core' {
 }
 
 declare global {
-  type ControllerFunctionType = (req: Request, res: Response, next: NextFunction) => Promise<any>;
+  type ControllerFunctionType = (req: Request, res: Response, next?: NextFunction) => Promise<any>;
 
   type ControllerErrorType = {
     status: number | null;
