@@ -13,7 +13,9 @@
 #root {
   margin: 0;
   min-height: 100vh;
-  max-height: 100vh;
+  min-height: 100vh;
+  max-height: 100dvh;
+  max-height: 100dvh;
   overflow: hidden;
 }
 
@@ -91,6 +93,7 @@ h6 {
 
 .container-full {
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .fl-col {
